@@ -9,6 +9,7 @@ import axios from 'axios'
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false
+ 
 Vue.prototype.$axios = axios
 
 //请求头加token

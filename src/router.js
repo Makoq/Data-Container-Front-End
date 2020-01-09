@@ -14,17 +14,20 @@ const router= new Router({
     {
       path: '/',
       name: 'index',
+      redirect:'/Home',
       component: Index,
       children:[
-        {path: '/TestInfo', component: TestInfo}
+       
+        {
+          path: '/Home',
+          name: 'home',
+          component: Home
+        },
+
       ]
     },
     
-    {
-      path: '/Home',
-      name: 'home',
-      component: Home
-    },
+    
     {
       path: '/Login',
       name: 'Login',

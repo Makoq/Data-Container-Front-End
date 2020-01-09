@@ -3,15 +3,15 @@ import LeftMenu from '@/components/LeftMenu';
 <el-row style="height:100%">
    <el-col :span="24" class="eMenu">
 
-    <el-button  @click="LeftMenuCollapse"    style="background:rgb(56, 61, 66);width:64px"   ref="leftBtnCollapse">
-      <i :class="isCollapse===true?'el-icon-s-unfold':'el-icon-s-fold'" style="color:white"></i>
+    <el-button  @click="LeftMenuCollapse"    style="background:rgb(56, 61, 66);width:100%"   ref="leftBtnCollapse">
+      <i :class="Collapse===true?'el-icon-s-unfold':'el-icon-s-fold'" style="color:white"></i>
     </el-button>
     <el-menu 
             default-active="1-4-1" 
             class="el-menu-vertical-demo" 
             @open="handleOpen" 
             @close="handleClose" 
-            :collapse="isCollapse"
+            :collapse="Collapse"
             background-color="rgb(56, 61, 66"
             text-color="#fff"
             active-text-color="#ffd04b"
@@ -84,13 +84,18 @@ import LeftMenu from '@/components/LeftMenu';
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
   export default {
     data() {
       return {
-        isCollapse: true
+        Collapse: false
       };
     },
     methods: {
+       ...mapMutations(['isCollapse','notCollapse']),
+
+
       //leftbar methods
       handleOpen(key, keyPath) {
         console.log('open',key, keyPath);
@@ -100,22 +105,36 @@ import LeftMenu from '@/components/LeftMenu';
       },
       //leftbar collapse button event
       LeftMenuCollapse(){
-        if(this.isCollapse){
-          this.isCollapse=false
-          console.log(this.$refs)
+         let _this=this
+        if(this.Collapse){
+          
+         
+        
+
           this.$nextTick(() => {
-            this.$refs.leftBtnCollapse.$el.style.width='100%'
+            _this.$refs.leftBtnCollapse.$el.style.width='100%'
+            _this.Collapse=false
+            _this.notCollapse()
+             
+
 　　　　   }, 0)
+
+         
           
 
         }else{
-          this.isCollapse=true
 
-          console.log(this.$refs.leftBtnCollapse)
+          
           this.$nextTick(() => {
-            this.$refs.leftBtnCollapse.$el.style.width='64px'
+            _this.$refs.leftBtnCollapse.$el.style.width='64px';
+           
+            _this.Collapse=true
+             _this.isCollapse()
+            
 
 　　　　   }, 0)
+
+
 
         }
       }

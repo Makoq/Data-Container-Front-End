@@ -1,13 +1,19 @@
 <template>
-  <HelloWorld />
+  <div class="home">
+  <div v-for="(item,key) in 1000" :key="key">{{item}}</div>
+  </div> 
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+   
 
   export default {
-    components: {
-      HelloWorld
-    }
+     
   }
 </script>
+
+<style scoped>
+.home{
+  height: 1000px;
+}
+</style>>
