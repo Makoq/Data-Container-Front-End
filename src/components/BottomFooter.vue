@@ -1,7 +1,8 @@
 <template>
   <el-row class="bottom-footer">
     <el-col :span="24" class="eMenu">
-         &nbsp; OpenGMS DataService Container 苏ICP 备05007121. Copyright © 2017 南京师范大学. All rights reserved.
+         
+         &nbsp;&nbsp; OpenGMS Data Service Container 苏ICP 备05007121. Copyright © 2017 南京师范大学. All rights reserved.
     </el-col>
   </el-row>
 

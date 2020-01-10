@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Index from './views/Index.vue'
 
 import Home from './views/Home.vue'
-import TestInfo from './components/TestInfo.vue'
+ 
 
 Vue.use(Router)
 
@@ -18,11 +18,22 @@ const router= new Router({
       component: Index,
       children:[
        
-        {
+        {//home页面
           path: '/Home',
-          name: 'home',
+          name: 'Home',
           component: Home
         },
+
+
+
+        {//about页面
+          path: '/about',
+          name: 'About',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+        }
 
       ]
     },
@@ -38,14 +49,7 @@ const router= new Router({
       name: 'Register',
       component: () => import(/* webpackChunkName: "about" */ './views/user/Register.vue')
     },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }
+    
   ]
 });
 

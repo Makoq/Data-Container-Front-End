@@ -1,9 +1,9 @@
-import LeftMenu from '@/components/LeftMenu';
+ 
 <template>
 <el-row style="height:100%">
    <el-col :span="24" class="eMenu">
 
-    <el-button  @click="LeftMenuCollapse"    style="background:rgb(56, 61, 66);width:100%"   ref="leftBtnCollapse">
+    <el-button  id="colbtn"  @click="LeftMenuCollapse"    style=""   ref="leftBtnCollapse">
       <i :class="Collapse===true?'el-icon-s-unfold':'el-icon-s-fold'" style="color:white"></i>
     </el-button>
     <el-menu 
@@ -11,42 +11,43 @@ import LeftMenu from '@/components/LeftMenu';
             class="el-menu-vertical-demo" 
             @open="handleOpen" 
             @close="handleClose" 
+            @select="selectMenuItem"
             :collapse="Collapse"
-            background-color="rgb(56, 61, 66"
+            background-color="rgb(69, 73, 76)"
             text-color="#fff"
             active-text-color="#ffd04b"
             :unique-opened="true"
             >
       
         <el-menu-item index="0">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">HOME</span>
+          <i  style="color:white" class="el-icon-s-home"></i>
+          <span slot="title">Home</span>
         </el-menu-item>
     
       <el-submenu index="1">
 
         <template slot="title">
-          <i class="el-icon-files"></i>
-          <span>File Data Service</span>
+          <i  style="color:white" class="el-icon-files"></i>
+          <span>File Service</span>
         </template>
 
-        <el-menu-item index="1-1">Workspace</el-menu-item>
-          <el-menu-item index="1-2">Service Instance</el-menu-item>
+        <el-menu-item index="1-1"><span>Workspace</span></el-menu-item>
+          <el-menu-item index="1-2"><span>Service Instance</span></el-menu-item>
       </el-submenu>
 
 
       <el-submenu index="2">
 
         <template slot="title">
-          <i class="el-icon-postcard"></i>
-          <span>Udx Data Service</span>
+          <i style="color:white" class="el-icon-postcard"></i>
+          <span>Udx Service</span>
         </template>
 
-        <el-menu-item index="2-1">Workspace</el-menu-item>
-          <el-menu-item index="2-2">Service Instance</el-menu-item>
-          <el-menu-item index="2-3">Converting</el-menu-item>
-          <el-menu-item index="2-4">Refactoring</el-menu-item>
-          <el-menu-item index="2-5">Visualization</el-menu-item>
+        <el-menu-item index="2-1"><span>Workspace</span></el-menu-item>
+          <el-menu-item index="2-2"><span>Service Instance </span></el-menu-item>
+          <el-menu-item index="2-3"><span>Converting </span></el-menu-item>
+          <el-menu-item index="2-4"><span>Refactoring </span></el-menu-item>
+          <el-menu-item index="2-5"><span>Visualization </span></el-menu-item>
 
 
 
@@ -56,11 +57,11 @@ import LeftMenu from '@/components/LeftMenu';
        <el-submenu index="3">
 
         <template slot="title">
-          <i class="el-icon-setting"></i>
+          <i style="color:white"  class="el-icon-setting"></i>
           <span>Setting</span>
         </template>
 
-        <el-menu-item index="3-1">state</el-menu-item>
+        <el-menu-item index="3-1"><span>State</span></el-menu-item>
          
       </el-submenu>
 
@@ -68,13 +69,18 @@ import LeftMenu from '@/components/LeftMenu';
        <el-submenu index="4">
 
         <template slot="title">
-          <i class="el-icon-connection"></i>
+          <i style="color:white" class="el-icon-connection"></i>
           <span>Clusters</span>
         </template>
 
-        <el-menu-item index="4-1">clusters</el-menu-item>
+        <el-menu-item index="4-1"><span>Clusters</span></el-menu-item>
         
       </el-submenu>
+
+      <el-menu-item index="5">
+          <i  style="color:white" class="el-icon-info"></i>
+          <span slot="title">About</span>
+        </el-menu-item>
 
      
       
@@ -103,24 +109,34 @@ import { mapMutations } from 'vuex';
       handleClose(key, keyPath) {
         console.log(key, keyPath);
       },
+      //路由跳转
+      selectMenuItem(index){
+
+        console.log("st",this.$store.state.menuCollapse )
+        console.log("el",this.$refs)
+        if(index==='5'){
+          this.$router.push('/about')
+        }else if(index==='0'){
+          this.$router.push('/Home')
+        }
+         
+      },
       //leftbar collapse button event
       LeftMenuCollapse(){
          let _this=this
         if(this.Collapse){
-          
-         
-        
 
           this.$nextTick(() => {
+          
+             setTimeout(()=>{
             _this.$refs.leftBtnCollapse.$el.style.width='100%'
+           
+            },150)
             _this.Collapse=false
             _this.notCollapse()
              
 
 　　　　   }, 0)
-
-         
-          
 
         }else{
 
@@ -155,5 +171,12 @@ import { mapMutations } from 'vuex';
   }
   .el-menu--collapse{
     height: 100%;
+  }
+   span{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: larger
+  }
+  #colbtn{
+       height:35px ; border-radius: 0px; border: 1px solid rgb(56, 61, 66);background:rgb(69, 73, 76);width:100%
   }
 </style>

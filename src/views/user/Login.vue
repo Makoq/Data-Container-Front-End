@@ -62,10 +62,10 @@ import { mapMutations } from 'vuex';
                     //获取到当前的登录用户
                      _this.loginUser=res.data.message.account
 
-                                    
+                                 
                     // 将用户token保存到vuex中
                     console.log(_this)
-                    _this.changeLogin({ Authorization: res.data.message.token });
+                    _this.changeLogin({ Authorization:res.data.message.token });
                     setTimeout(() => {
                         _this.$router.push('/')
                     }, 1000);
