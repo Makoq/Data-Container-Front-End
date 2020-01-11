@@ -18,35 +18,42 @@
         </el-dialog>
     </el-row>
      
-    <el-divider></el-divider>
-
+    
+    <el-row style="height:30px;margin-left: 20PX;margin-top:10px"> 
+            <el-button v-if="folderLayer.length===1" size="mini" type="text" disabled>  All file</el-button>
+           <el-button  v-else size="mini" type="text"  @click="backUpperFolder"  >Upper Folder</el-button>
+           <el-divider v-if="folderLayer.length>1" direction="vertical"></el-divider>
+           <span v-if="folderLayer.length>1">&nbsp;{{folderLayer.join(' / ')}}</span>
+    </el-row>
+   
     <el-row  >
-        <el-row  >
-            <el-col :span="1"    > 
-                    <span style="margin-left:70px">  
-                       Name
+        <el-row  s>
+            <el-col :span="2"    :offset="2" > 
+                    <span  >  
+                       &nbsp;Name
                     </span> 
             </el-col>
 
-            <el-col :span="1" :offset="5"   > 
-                    <span style="margin-left:70px">  
+            <el-col :span="1" :offset="3"   > 
+                    <span  >  
                        Size
                     </span> 
             </el-col>
 
             <el-col :span="1" :offset="3"   > 
-                    <span style="margin-left:70px">  
+                    <span  >  
                       Date
                     </span> 
             </el-col>
 
              <el-col :span="1" :offset="3"   > 
-                    <span style="margin-left:70px">  
+                    <span  >  
                       Operate
                     </span> 
             </el-col>
            
         </el-row>
+        <el-divider ></el-divider>
        <!-- <el-card v-for="(it,key) in 10" :key="key" shadow="hover" style="margin-top:2px">{{key}}</el-card> -->
       
             <el-row  v-for="(it,key) in list" :key="key" class="item">
@@ -57,13 +64,13 @@
                 </el-col>
                 <el-col :span="4" style="height:100%"> 
                    
-                        <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
-                        <el-input id="renameInput" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
-                        </el-row>
+                    <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
+                    <el-input id="renameInput" autofocus="autofocus" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                    </el-row>
                     
-                    <button v-else-if="it.type==='folder'" class="floderName" type="text" href=""  ref="floderName">
+                    <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it.name)"  ref="floderName">
                         {{it.name}}
-                    </button>
+                    </a>
                     <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
 
                 </el-col>
@@ -71,12 +78,13 @@
                 <el-col :span="3" :offset="1"> 
                     
                     <span class="dataName"  v-if="it.type==='file'">{{it.size}}</span>
+                    <span v-else>&nbsp;</span>
 
                 </el-col>
 
                 <el-col :span="4" :offset="1"> 
                     
-                    <span class="dataName"  v-if="it.type==='file'">{{it.date}}</span>
+                    <span class="dataName"   >{{it.date}}</span>
 
                 </el-col>
 
@@ -99,6 +107,7 @@
 </template>
 
 <script>
+import utils from '../utils/utils.js'
 import ManagerList from '../components/ManagerList'
  import uuidv4 from 'uuid/v4' 
   export default {
@@ -109,7 +118,13 @@ import ManagerList from '../components/ManagerList'
     data: () => ({
         //select workspace massagebox visiable attribute
        selectWorkspaceList: false,
+       //newFloderName
        newFloderName:'',
+       //只允许操作一个新文件夹
+       operateNweFolder:false,
+       //文件夹层次
+       folderLayer:['All File'],
+      
        list:[
         {
           name: 'folder',
@@ -133,29 +148,86 @@ import ManagerList from '../components/ManagerList'
           size:'12m',
            type:'file'
         }
-        ]
+        ],
+         //存取同一级下的所有文件夹目录
+       allFolderLayer:[],
     }),
     methods:{
+        
         newFolder(){
+            let _this=this
             let newFolder={
                 name: 'NewFolder',
-                date:new Date('yyyy-mm-dd'),
+                date:utils.formatDate(new Date()),
                 type:'folder',
                 id:uuidv4()
 
             }
-            console.log(newFolder)
-            this.list.unshift(newFolder)
+             //创建新文件夹到最开始
+            if(!this.operateNweFolder){
+                this.list.unshift(newFolder)
+                this.operateNweFolder=true
+            }else{
+                alert("finish create folder first")
+            }
+            
 
             
         },
         renameFolder(){
+            if(this.newFloderName.length===0){
+                alert("not empty!")
+            }else{
+                //重命名功能
             this.list[0].name=this.newFloderName
-            this.newFloderName
+            this.newFloderName=''
+            this.operateNweFolder=false
+            }
+            
+
+            
         },
         cancel(){
             let current=new Date()
-            this.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+'_'+current.getDay()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
+            this.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
+            this.operateNweFolder=false
+        },
+        intoFolder(clickFolder){
+            if(this.allFolderLayer.length===0){
+                this.allFolderLayer.push([...this.list])
+            }
+            let li=[
+                {
+                    name: 'folder2',
+                    date:'2020.1.1',
+                    type:'folder'
+                    
+                    }, {
+                    name: 'folder2',
+                    date:'2020.1.1',          
+                    type:'folder'
+                    }, {
+                    name: 'file2.zip',
+                    date:'2020.1.1',
+
+                    size:'12m',
+                    type:'file'
+                    },  
+
+            ]
+
+            this.allFolderLayer.push([...li])
+            this.list=li
+            //面包屑层次
+            this.folderLayer.push(clickFolder)
+        },
+        backUpperFolder(){
+            //面包屑层次
+            this.folderLayer.pop()
+
+            this.allFolderLayer.pop()
+            this.list=this.allFolderLayer[this.allFolderLayer.length-1]
+
         },
         addFolderAjax(){
 
@@ -188,7 +260,7 @@ import ManagerList from '../components/ManagerList'
 }
 .floderName:hover{
     color: rgb(0, 174, 255);
-    cursor: pointer;
+    cursor:pointer;
 }
 .operate i{
     margin-left: 10px;
