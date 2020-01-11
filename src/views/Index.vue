@@ -114,6 +114,6 @@ export default {
 span{
  font-family: 'Times New Roman', Times, serif;
     font-size: medium
-
 }
+
 </style>>

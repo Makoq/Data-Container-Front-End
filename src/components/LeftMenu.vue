@@ -13,8 +13,9 @@
             @close="handleClose" 
             @select="selectMenuItem"
             :collapse="Collapse"
-            background-color="rgb(69, 73, 76)"
+            mode="vertical"
             text-color="#fff"
+            background-color="#545c64"
             active-text-color="#ffd04b"
             :unique-opened="true"
             >
@@ -98,13 +99,18 @@ import { mapMutations } from 'vuex';
         Collapse: false
       };
     },
+    mounted(){
+      
+    },
     methods: {
        ...mapMutations(['isCollapse','notCollapse']),
 
 
       //leftbar methods
       handleOpen(key, keyPath) {
-        console.log('open',key, keyPath);
+          
+          console.log('open',key, keyPath );
+ 
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
@@ -112,12 +118,20 @@ import { mapMutations } from 'vuex';
       //路由跳转
       selectMenuItem(index){
 
-        console.log("st",this.$store.state.menuCollapse )
-        console.log("el",this.$refs)
+        console.log("st", index )
+         
         if(index==='5'){
           this.$router.push('/about')
         }else if(index==='0'){
           this.$router.push('/Home')
+        }else if(index==='1-1'){
+          this.$router.push({path:'/workSpace',params:{type:'File'}})
+        }else if(index==='1-2'){
+          this.$router.push({path:'/instance',params:{type:'File'}})
+        }else if(index==='2-1'){
+          this.$router.push({path:'/workSpace',params:{type:'Udx'}})
+        }else if(index==='2-2'){
+          this.$router.push({path:'/instance',params:{type:'Udx'}})
         }
          
       },
@@ -167,12 +181,20 @@ import { mapMutations } from 'vuex';
     height: 100%;
     width: 100%;
     min-height: 100%;
-    
+    background-color:rgb(69, 73, 76)
   }
+
+ .el-submenu__icon-arrow el-icon-arrow-down {
+   color: aliceblue
+ }
+  
+  
+ 
+  
   .el-menu--collapse{
     height: 100%;
   }
-   span{
+  span{
     font-family: 'Times New Roman', Times, serif;
     font-size: larger
   }

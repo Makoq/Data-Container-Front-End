@@ -22,4 +22,5 @@ export default {
   padding: 0px;
   height: 100%;;
 }
+ 
 </style>

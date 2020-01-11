@@ -23,6 +23,22 @@ const router= new Router({
           name: 'Home',
           component: Home
         },
+        {
+          path:'/workSpace',
+          name:'Workspace List: Manage your workspace',
+          component: () => import(/* webpackChunkName: "about" */ './views/WorkSpace.vue')
+        },
+        {
+          path:'/instance',
+          name:'Instances List: Manage your service instances',
+          component: () => import(/* webpackChunkName: "about" */ './views/Instances.vue')
+        },
+        {
+          path:'/form/:type',
+          name:'Create Service: Create your service',
+          component: () => import(/* webpackChunkName: "about" */ './views/FormInput.vue')
+        },
+
 
 
 

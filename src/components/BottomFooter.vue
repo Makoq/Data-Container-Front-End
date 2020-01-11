@@ -2,7 +2,7 @@
   <el-row class="bottom-footer">
     <el-col :span="24" class="eMenu">
          
-         &nbsp;&nbsp; OpenGMS Data Service Container 苏ICP 备05007121. Copyright © 2017 南京师范大学. All rights reserved.
+        <span> &nbsp;&nbsp;<strong> OpenGMS Data Service Container</strong> &nbsp;&nbsp;  苏ICP 备05007121. Copyright © 2017 南京师范大学. All rights reserved.</span>
     </el-col>
   </el-row>
 
@@ -27,7 +27,12 @@
 
 }
  .eMenu{
-     color: aliceblue
+     color: aliceblue;
+     height: 100%;
+     padding: 5px
  }
+  .eMenu span{
+      font-family:'Times New Roman', Times, serif;
+  }
 
 </style>
