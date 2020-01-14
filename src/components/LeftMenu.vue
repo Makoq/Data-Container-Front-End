@@ -125,13 +125,13 @@ import { mapMutations } from 'vuex';
         }else if(index==='0'){
           this.$router.push('/Home')
         }else if(index==='1-1'){
-          this.$router.push({path:'/workSpace',params:{type:'File'}})
+          this.$router.push({path:'/workSpace',query:{type:'File'}})
         }else if(index==='1-2'){
-          this.$router.push({path:'/instance',params:{type:'File'}})
+          this.$router.push({path:'/instance',query:{type:'FileInstance'}})
         }else if(index==='2-1'){
-          this.$router.push({path:'/workSpace',params:{type:'Udx'}})
+          this.$router.push({path:'/workSpace',query:{type:'Udx'}})
         }else if(index==='2-2'){
-          this.$router.push({path:'/instance',params:{type:'Udx'}})
+          this.$router.push({path:'/instance',query:{type:'UdxInstance'}})
         }
          
       },

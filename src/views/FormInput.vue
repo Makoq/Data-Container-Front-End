@@ -1,8 +1,23 @@
+import Content from '@/views/Content';
 <template>
   <div class="form">
     <el-row :gutter="20">
       <el-col :span="12">
         <el-form ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+         
+          <!-- 工作空间 -->
+          <el-form-item v-if="this.$route.query.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
+
+            <el-select   v-model="form.workspace" placeholder="请选择">
+                <el-option
+                v-for="item in workspaceList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+          </el-form-item>
+         
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
             <el-input v-model="form.name" placeholder="请输入数据源名称" style="width:220px;"></el-input>
@@ -30,7 +45,40 @@
             ></el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ add Tags</el-button>
           </el-form-item>
-          <!--   -->
+
+          <!-- 链接参数 -->
+           <el-form-item  v-if="this.$route.query.type!='FileWorkSpace'" label="Local URL" prop="Url">
+            <el-input v-model="form.LocalURL" placeholder="file://" style="width:420px;"></el-input><el-button  @click="browse" style="position:fixed;float:left">Browse</el-button>
+          </el-form-item>
+          <!-- 文件路径选择 -->
+          <el-dialog
+            
+            :visible.sync="LocalURLDialogVisible"
+            width="30%"
+             >
+             
+             <el-row>
+                <el-select v-model="localDisk" placeholder="请选择">
+                    <el-option
+                    v-for="item in localDiskList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
+             </el-row>
+             <div style="height:400px;overflow-y:scroll;margin-top:10px">
+            <el-row v-for="(it,k) in 1000" :key="k">
+                <button  type="text" @click="connectLocalPath">{{it}}</button>
+
+            </el-row>
+             </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="LocalURLDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="LocalURLDialogVisible = false">确 定</el-button>
+            </span>
+         </el-dialog>
+          <!-- 提交或编辑  -->
           <el-form-item
             label=""
           >
@@ -39,7 +87,7 @@
               size="small"
               type="success"
               @click="submitUpload"
-            >{{isEditType?"Create":"Edite"}}</el-button>
+            >{{isEditType?"Edite":"Create"}}</el-button>
           </el-form-item>
           <!--  -->
         </el-form>
@@ -56,12 +104,22 @@ export default {
   data() {
     return {
       form: {
+        workspace:"",
         name: "",
         // tag
         dynamicTags: ["UDX", "水文学"],
-        desc: ""
+        desc: "",
+        LocalURL:''
       },
-
+      workspaceList:[
+        {
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, 
+      ],
       inputVisible: false,
       inputValue: "",
 
@@ -69,19 +127,33 @@ export default {
       fileList: [],
       //编辑
       editData: {},
-      isEditType: false
+      isEditType: false,
       // udx_source_upload_url: urlUtils.udx_source_upload
+      LocalURLDialogVisible:false,
+      
+      localDiskList:[
+          {
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, 
+      ],
+      localDisk:''
     };
   },
   computed: {
   
   },
   mounted() {
+      console.log(this.$route)
     this.isEdit();
   },
   methods: {
     isEdit() {
       //   console.log(this.$route.query.id)
+      //   在编辑时路由参数为type:edit
       let id = this.$route.query.id;
       if (this.$route.query.type === "edit") {
         httpUtils.get(this, urlUtils.workspace_single + "?id=" + id, data => {
@@ -177,7 +249,16 @@ export default {
       }
       this.inputVisible = false;
       this.inputValue = "";
+    },
+    browse(){
+        this.$axios.get('/api/')
+        this.LocalURLDialogVisible=true
+        //
+    },
+    connectLocalPath(){
+        //ajax
     }
+
   }
 };
 </script>

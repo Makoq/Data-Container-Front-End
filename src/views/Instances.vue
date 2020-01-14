@@ -1,16 +1,37 @@
 <template>
   <div class="instances">
    <el-row  class="instanceBtn">
-       <!-- //挑选工作空间 -->
-      <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button>
-      <el-button   @click="newFolder">New Floder</el-button>
-
+       <el-col :span="14">
+        <!-- //挑选工作空间 -->
+        <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button>
+        <el-button   type="warning" @click="newFolder" >New Floder</el-button>
+        <el-button   type="success"  @click="newFileData">New File</el-button>
+       </el-col>
+       <el-col :span="10">
+        <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
+        <el-button   style="position:fixed;float:left"><i class="el-icon-search"></i></el-button>       
+       </el-col>
       <el-dialog
-        title="提示"
+        title="Workspace Select"
         :visible.sync="selectWorkspaceList"
-        width="30%"
+        width="500px"
          >
-        <span>Workspace</span>
+        <el-row>
+                <el-col :span="24">
+                    <el-input v-model="workspaceSearch" style="width:300px" placeholder="workspace search"></el-input>
+                    <el-button   style="position:fixed;float:left"><i class="el-icon-search"></i></el-button>
+                </el-col>
+        </el-row>
+        <div style="height:400px;overflow-y:scroll;margin-top:10px">
+           
+         <el-row v-for="(it,key) in 100" :key="key">
+             <el-col :span="14">{{it}}</el-col>
+             <el-col :span="10">
+                <el-button type="text">xxxxx</el-button>
+             </el-col>
+             
+         </el-row>
+        </div>
         <span slot="footer" class="dialog-footer">
             
             <el-button type="primary" @click="selectWorkspaceList = false">ok</el-button>
@@ -124,6 +145,8 @@ import ManagerList from '../components/ManagerList'
        operateNweFolder:false,
        //文件夹层次
        folderLayer:['All File'],
+       //搜索工作空间
+       workspaceSearch:'',
       
        list:[
         {
@@ -151,7 +174,13 @@ import ManagerList from '../components/ManagerList'
         ],
          //存取同一级下的所有文件夹目录
        allFolderLayer:[],
+
+       //类型
+       instnaceType:""
     }),
+    mounted(){
+        this.instnaceType=this.$route.query.type
+    },
     methods:{
         
         newFolder(){
@@ -171,8 +200,12 @@ import ManagerList from '../components/ManagerList'
                 alert("finish create folder first")
             }
             
+        },
+        newFileData(){
+            if(this.instnaceType==='FileInstance'){
+          this.$router.push({path:'/form/instance',query:{type:'FileInstance'}})
 
-            
+            }
         },
         renameFolder(){
             if(this.newFloderName.length===0){
@@ -183,8 +216,6 @@ import ManagerList from '../components/ManagerList'
             this.newFloderName=''
             this.operateNweFolder=false
             }
-            
-
             
         },
         cancel(){
