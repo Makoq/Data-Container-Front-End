@@ -29,11 +29,9 @@
 
         <template slot="title">
           <i  style="color:white" class="el-icon-files"></i>
-          <span>File Service</span>
+          <span>Data</span>
         </template>
-
-        <el-menu-item index="1-1"><span>Workspace</span></el-menu-item>
-          <el-menu-item index="1-2"><span>Service Instance</span></el-menu-item>
+          <el-menu-item index="1-1"><span>Instances</span></el-menu-item>
       </el-submenu>
 
 
@@ -41,44 +39,48 @@
 
         <template slot="title">
           <i style="color:white" class="el-icon-postcard"></i>
-          <span>Udx Service</span>
+          <span>Processing</span>
         </template>
-
-        <el-menu-item index="2-1"><span>Workspace</span></el-menu-item>
-          <el-menu-item index="2-2"><span>Service Instance </span></el-menu-item>
-          <el-menu-item index="2-3"><span>Converting </span></el-menu-item>
-          <el-menu-item index="2-4"><span>Refactoring </span></el-menu-item>
-          <el-menu-item index="2-5"><span>Visualization </span></el-menu-item>
-
-
-
-
+          <el-menu-item index="2-1"><span>Instances</span></el-menu-item>
+    
       </el-submenu>
 
-       <el-submenu index="3">
+      <el-submenu index="3">
 
         <template slot="title">
           <i style="color:white"  class="el-icon-setting"></i>
-          <span>Setting</span>
-        </template>
+          <span>Visualization</span>
+        </template>        
+            <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
+        
+       </el-submenu>
 
-        <el-menu-item index="3-1"><span>State</span></el-menu-item>
+       <el-submenu index="4">
+
+        <template slot="title">
+          <i style="color:white"  class="el-icon-setting"></i>
+          <span>Manage</span>
+        </template>
+       <el-menu-item index="4-1"><span>Workspace</span></el-menu-item>
+        <el-menu-item index="4-3"><span>State</span></el-menu-item>
+         <el-menu-item index="4-2"><span>Functions</span></el-menu-item>
+         
          
       </el-submenu>
 
 
-       <el-submenu index="4">
+       <el-submenu index="5">
 
         <template slot="title">
           <i style="color:white" class="el-icon-connection"></i>
           <span>Clusters</span>
         </template>
 
-        <el-menu-item index="4-1"><span>Clusters</span></el-menu-item>
+        <el-menu-item index="5-1"><span>Clusters</span></el-menu-item>
         
       </el-submenu>
 
-      <el-menu-item index="5">
+      <el-menu-item index="6">
           <i  style="color:white" class="el-icon-info"></i>
           <span slot="title">About</span>
         </el-menu-item>
@@ -125,13 +127,13 @@ import { mapMutations } from 'vuex';
         }else if(index==='0'){
           this.$router.push('/Home')
         }else if(index==='1-1'){
-          this.$router.push({path:'/workSpace',query:{type:'File'}})
-        }else if(index==='1-2'){
-          this.$router.push({path:'/instance',query:{type:'FileInstance'}})
+          this.$router.push({path:'/instance',query:{type:'Data'}})
         }else if(index==='2-1'){
-          this.$router.push({path:'/workSpace',query:{type:'Udx'}})
-        }else if(index==='2-2'){
-          this.$router.push({path:'/instance',query:{type:'UdxInstance'}})
+          this.$router.push({path:'/instance',query:{type:'Processing'}})
+        }else if(index==='3-1'){
+          this.$router.push({path:'/instance',query:{type:'Visualization'}})
+        }else if(index==='4-1'){
+          this.$router.push({path:'/workSpace',query:{type:'WorkSpace'}})
         }
          
       },
@@ -187,7 +189,6 @@ import { mapMutations } from 'vuex';
  .el-submenu__icon-arrow el-icon-arrow-down {
    color: aliceblue
  }
-  
   
  
   

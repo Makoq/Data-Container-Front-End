@@ -8,15 +8,15 @@
             </div>
            <el-form :model="ruleForm" status-icon   ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="Account:" prop="account">
-                <el-input type="text" v-model="ruleForm.account" autocomplete="off"></el-input>
+                <el-input type="text" v-model="ruleForm.name" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="Password:" prop="pass">
-                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+                <el-input type="password" v-model="ruleForm.pwd" autocomplete="off"></el-input>
             </el-form-item>
         
             <el-form-item>
                 <el-button  type="primary" @click="submitForm()">Login</el-button>
-                <el-button @click="Register" type="success">Register</el-button>
+                <!-- <el-button @click="Register" type="success">Register</el-button> -->
             </el-form-item>
             </el-form>
              
@@ -31,12 +31,13 @@
 
 // import { Session } from 'inspector';
 import { mapMutations } from 'vuex';
+import DecryptJS from '../../utils/cycrypto.js';
   export default {
     data() { 
       return {
         ruleForm: {
-          pass: '',
-          account:'',
+          pwd: '123',
+          name:'admin',
           loginUser:''
           
         },
@@ -46,12 +47,20 @@ import { mapMutations } from 'vuex';
     computed:{
         
     },
+    mounted:{
+      //  
+    },
     methods: {
-        ...mapMutations(['changeLogin']),
+       ...mapMutations(['changeLogin','changerelatedUsr']),
       submitForm(){
           var _this=this
+          let enCodePwd=_this.ruleForm.pwd
+          
          _this.$axios.post('/api/login', 
-                  _this.ruleForm
+                  {
+                    name:_this.ruleForm.name,
+                    pwd:DecryptJS.Encrypt(enCodePwd)
+                  }
               )
              .then((res)=>{
                  if(res.data.code===0){
@@ -64,10 +73,13 @@ import { mapMutations } from 'vuex';
 
                                  
                     // 将用户token保存到vuex中
-                    console.log(_this)
                     _this.changeLogin({ Authorization:res.data.message.token });
-                    setTimeout(() => {
-                        _this.$router.push('/')
+                   //将关联用户信息包村到vuex中
+        
+                   _this.changerelatedUsr({relatedUsr:res.data.message.relatedUser})
+                   
+                   setTimeout(() => {
+                        _this.$router.push('/Home')
                     }, 1000);
                     
                  }else{

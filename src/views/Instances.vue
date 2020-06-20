@@ -39,7 +39,7 @@
         </el-dialog>
     </el-row>
      
-    
+    <!-- 文件层次深浅进出功能按钮 -->
     <el-row style="height:30px;margin-left: 20PX;margin-top:10px"> 
             <el-button v-if="folderLayer.length===1" size="mini" type="text" disabled>  All file</el-button>
            <el-button  v-else size="mini" type="text"  @click="backUpperFolder"  >Upper Folder</el-button>
@@ -72,12 +72,18 @@
                       Operate
                     </span> 
             </el-col>
+            <!-- authority -->
+
+             <el-col :span="1" :offset="3"   > 
+                    <span  >  
+                      Authority
+                    </span> 
+            </el-col>
            
         </el-row>
         <el-divider ></el-divider>
-       <!-- <el-card v-for="(it,key) in 10" :key="key" shadow="hover" style="margin-top:2px">{{key}}</el-card> -->
-      
-            <el-row  v-for="(it,key) in list" :key="key" class="item">
+       <!-- 文件夹列表 -->
+            <el-row  v-for="(it,key) in instancesCont.list" :key="key" class="item">
                 <el-col :span="1" :offset="1">
                    <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
 
@@ -113,7 +119,7 @@
                 <el-col  v-if="it.type==='file'" :span="6" class="operate" > 
                     
                      <i class="el-icon-bottom"></i>
-                     <i class="el-icon-share"></i>
+                     <i class="el-icon-share" @click="in_situ_share"></i>
                      <i class="el-icon-more"></i>
 
                 </el-col>
@@ -147,31 +153,26 @@ import ManagerList from '../components/ManagerList'
        folderLayer:['All File'],
        //搜索工作空间
        workspaceSearch:'',
-      
-       list:[
-        {
-          name: 'folder',
-          date:'2020.1.1',
-          type:'folder'
-         
-        }, {
-          name: 'folder',
-          date:'2020.1.1',          
-          type:'folder'
-        }, {
-          name: 'file.zip',
-          date:'2020.1.1',
-
-          size:'12m',
-           type:'file'
-        }, {
-          name: 'file.zip',
-          date:'2020.1.1',
-
-          size:'12m',
-           type:'file'
-        }
-        ],
+      //文件夹列表数据结构
+       instancesCont:{
+            id:'123',
+            list:[
+                {
+                name: 'folder',
+                date:'2020.1.1',
+                type:'folder',
+                subfolderId:'345',
+                authority:'1'//1表示公开，0表示未公开
+                }, 
+                {
+                name: 'file.zip',
+                date:'2020.1.1',
+                size:'12m',
+                type:'file'
+                }
+            ]
+       }
+      ,
          //存取同一级下的所有文件夹目录
        allFolderLayer:[],
 
@@ -262,6 +263,17 @@ import ManagerList from '../components/ManagerList'
         },
         addFolderAjax(){
 
+        },
+        in_situ_share(){
+            this.$alert('participate A', '标题名称', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
         }
     }
      

@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/ui": "^0.11.4",
     "core-js": "^2.6.5",
+    "crypto-js": "^4.0.0",
     "element-ui": "^2.12.0",
     "inspector": "^0.5.0",
     "vue": "^2.6.10",
