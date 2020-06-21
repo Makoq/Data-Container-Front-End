@@ -55,26 +55,27 @@
                     </span> 
             </el-col>
 
-            <el-col :span="1" :offset="3"   > 
+            <!-- <el-col :span="1" :offset="3"   > 
                     <span  >  
                        Size
                     </span> 
-            </el-col>
+            </el-col> -->
 
-            <el-col :span="1" :offset="3"   > 
+            <el-col :span="1" :offset="4"   > 
                     <span  >  
                       Date
                     </span> 
             </el-col>
 
-             <el-col :span="1" :offset="3"   > 
+             <el-col :span="1" :offset="4"   > 
                     <span  >  
+                       
                       Operate
                     </span> 
             </el-col>
             <!-- authority -->
 
-             <el-col :span="1" :offset="3"   > 
+             <el-col :span="1" :offset="2"   > 
                     <span  >  
                       Authority
                     </span> 
@@ -83,46 +84,87 @@
         </el-row>
         <el-divider ></el-divider>
        <!-- 文件夹列表 -->
+                <el-dialog
+                    title="Attention!"
+                    :visible.sync="delInstanceDialogVisible"
+                    width="30%"
+                    >
+                    <span>Are you sure to delete this item ? </span>
+                    
+                    <span slot="footer" class="dialog-footer">
+                        
+                        <el-button type="primary" @click="delInstance()">确 定</el-button>
+                    </span>
+                </el-dialog>
             <el-row  v-for="(it,key) in instancesCont.list" :key="key" class="item">
+                 
                 <el-col :span="1" :offset="1">
                    <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
 
                     <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
                 </el-col>
-                <el-col :span="4" style="height:100%"> 
+                <el-col :span="2" style="height:100%"> 
                    
                     <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
-                    <el-input id="renameInput" autofocus="autofocus" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                    <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
                     </el-row>
                     
-                    <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it.name)"  ref="floderName">
+                    <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
                         {{it.name}}
                     </a>
                     <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
 
                 </el-col>
 
-                <el-col :span="3" :offset="1"> 
+                <!-- <el-col :span="3" :offset="1"> 
                     
                     <span class="dataName"  v-if="it.type==='file'">{{it.size}}</span>
                     <span v-else>&nbsp;</span>
 
-                </el-col>
+                </el-col> -->
 
-                <el-col :span="4" :offset="1"> 
+                <el-col :span="4" :offset="3"> 
                     
                     <span class="dataName"   >{{it.date}}</span>
 
                 </el-col>
 
-
-                <el-col  v-if="it.type==='file'" :span="6" class="operate" > 
-                    
+                <el-col  v-if="it.type==='file'" :span="4"  :offset="1" class="operate" > 
+                    &nbsp;
                      <i class="el-icon-bottom"></i>
-                     <i class="el-icon-share" @click="in_situ_share"></i>
+                     <i class="el-icon-share" style="color: #cd7100" @click="in_situ_share"></i>
+                    <i class="el-icon-edit"></i>
+                    
+                     <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
                      <i class="el-icon-more"></i>
+                          
 
                 </el-col>
+                <el-col  v-else-if="it.type==='folder'" :span="4" :offset="1"  class="operate" > 
+                     &nbsp;
+                    <i class="el-icon-edit"></i>
+                   
+                    <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
+                             
+                </el-col>
+
+           
+
+                <el-col v-if="it.type==='folder'" :span="1"  >
+                   
+                     admin
+                </el-col>
+                <el-col v-else-if="it.type==='file'" :span="1"  >
+                   
+                    <el-switch
+                        @change="authoritySwitch(it)"
+                        v-model="it.authority"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949">
+                    </el-switch>
+                </el-col>
+
+
             </el-row>
              
             
@@ -151,51 +193,80 @@ import ManagerList from '../components/ManagerList'
        operateNweFolder:false,
        //文件夹层次
        folderLayer:['All File'],
+       instanceLayer:[],
        //搜索工作空间
        workspaceSearch:'',
       //文件夹列表数据结构
-       instancesCont:{
-            id:'123',
-            list:[
-                {
-                name: 'folder',
-                date:'2020.1.1',
-                type:'folder',
-                subfolderId:'345',
-                authority:'1'//1表示公开，0表示未公开
-                }, 
-                {
-                name: 'file.zip',
-                date:'2020.1.1',
-                size:'12m',
-                type:'file'
-                }
-            ]
-       }
-      ,
+       instancesCont:{},
          //存取同一级下的所有文件夹目录
        allFolderLayer:[],
 
        //类型
-       instnaceType:""
+       instnaceType:"",
+       //组件初始化时的列表id
+       listUid:0,
+       //删除提示框
+       delInstanceDialogVisible:false,
+       //点击的对应项
+       theItem:''
     }),
+    created(){
+        //初始化组件时，初始化内容列表id为0
+        this.listUid=0,
+        
+        console.log('createa')
+    },
+    watch:{
+         $route: 'watchrouter'//路由变化时，执行的方法
+    },
     mounted(){
+        //组件初始化时，确定instance类型
+        console.log('mounted')
         this.instnaceType=this.$route.query.type
+        let _this=this
+        //通过列表id和用户token获取对应层级的列表
+        let initList={
+            type: _this.instnaceType,
+            uid:_this.listUid,
+            parentLevel:'-1',
+            userToken:localStorage.getItem('Authorization')
+        }
+        //获取初始列表，最上层列表
+        this.$axios.get('/api/instances',{
+            params:initList
+        })
+        .then((res)=>{
+            if(res.data.code===-1){
+                  _this.$message({
+                        message: 'instances request failed ',
+                        type: 'fail'
+                    });
+            }else{
+                console.log('init data',res.data)
+                _this.instancesCont=res.data.data
+                _this.instanceLayer=[initList] 
+            }
+            
+        })
     },
     methods:{
         
         newFolder(){
             let _this=this
             let newFolder={
+                id:uuidv4(),
                 name: 'NewFolder',
                 date:utils.formatDate(new Date()),
                 type:'folder',
-                id:uuidv4()
-
+                subContentId:'',
+                authority:true//1表示公开，0表示未公开
             }
              //创建新文件夹到最开始
             if(!this.operateNweFolder){
-                this.list.unshift(newFolder)
+
+                this.instancesCont.list.unshift(newFolder)
+                 
+
                 this.operateNweFolder=true
             }else{
                 alert("finish create folder first")
@@ -203,9 +274,9 @@ import ManagerList from '../components/ManagerList'
             
         },
         newFileData(){
-            if(this.instnaceType==='FileInstance'){
-          this.$router.push({path:'/form/instance',query:{type:'FileInstance'}})
-
+            if(this.instnaceType==='Data'){
+                let _this=this,userToken=localStorage.getItem('Authorization')
+                this.$router.push({path:'/form/data',query:{type:'Data',instance_uid:_this.instancesCont.uid,userToken:userToken}})
             }
         },
         renameFolder(){
@@ -213,56 +284,110 @@ import ManagerList from '../components/ManagerList'
                 alert("not empty!")
             }else{
                 //重命名功能
-            this.list[0].name=this.newFloderName
-            this.newFloderName=''
-            this.operateNweFolder=false
+                this.instancesCont.list[0].name=this.newFloderName
+                this.newFloderName=''
+                this.operateNweFolder=false
+                let _this=this
+                let newInst={
+
+                    uid:_this.instancesCont.uid,
+                    userToken:_this.instancesCont.userToken,
+                    type:_this.instancesCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.instancesCont.list[0]//只使用新建项
+                }
+                this.addFolderAjax(newInst)
+
+
             }
             
         },
         cancel(){
             let current=new Date()
-            this.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
+            this.instancesCont.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
             this.operateNweFolder=false
+
+            let _this=this
+                let newInst={
+
+                    uid:_this.instancesCont.uid,
+                    userToken:_this.instancesCont.userToken,
+                    type:_this.instancesCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.instancesCont.list[0]
+                }
+            this.addFolderAjax(newInst)
+
+
+
+
         },
-        intoFolder(clickFolder){
-            if(this.allFolderLayer.length===0){
-                this.allFolderLayer.push([...this.list])
+        intoFolder(Folder){
+            let _this=this
+            let info={
+                uid:Folder.subContentId,
+                userToken:localStorage.getItem('Authorization'),
+                type:this.$route.query.type,
+                parentLevel:_this.instancesCont.parentLevel,
+                subContConnect:{
+                    uid:_this.instancesCont.uid,
+                    id:Folder.id
+                }//关联文件下的子instances
             }
-            let li=[
-                {
-                    name: 'folder2',
-                    date:'2020.1.1',
-                    type:'folder'
+
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.instancesCont=res.data.data
+                    //面包屑层次
+                    _this.folderLayer.push(Folder.name)
+                    _this.instanceLayer.push({
+                        type: _this.instancesCont.type,
+                        uid:_this.instancesCont.uid,
+                        parentLevel:_this.instancesCont.parentLevel,
+                        userToken:_this.instancesCont.userToken
+                    })
                     
-                    }, {
-                    name: 'folder2',
-                    date:'2020.1.1',          
-                    type:'folder'
-                    }, {
-                    name: 'file2.zip',
-                    date:'2020.1.1',
-
-                    size:'12m',
-                    type:'file'
-                    },  
-
-            ]
-
-            this.allFolderLayer.push([...li])
-            this.list=li
-            //面包屑层次
-            this.folderLayer.push(clickFolder)
+                }
+            });
+            
         },
         backUpperFolder(){
             //面包屑层次
             this.folderLayer.pop()
-
-            this.allFolderLayer.pop()
-            this.list=this.allFolderLayer[this.allFolderLayer.length-1]
+            this.instanceLayer.pop()
+            let info=this.instanceLayer[this.instanceLayer.length-1]
+             
+            
+            let _this=this
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.instancesCont=res.data.data
+                   
+                    
+                }
+            })
 
         },
-        addFolderAjax(){
+        addFolderAjax(newInstance){
+            let _this=this
+            _this.$axios.post('/api/newInst',newInstance)
+            .then((res)=>{
 
+            })
         },
         in_situ_share(){
             this.$alert('participate A', '标题名称', {
@@ -274,6 +399,76 @@ import ManagerList from '../components/ManagerList'
             });
           }
         });
+        },
+        //监听路由变化
+        watchrouter(){
+            let _this=this
+            let initList={
+            type: _this.$route.query.type,
+            uid:0,
+            parentLevel:'-1',
+            userToken:localStorage.getItem('Authorization')
+            }
+            //获取初始列表，最上层列表
+            this.$axios.get('/api/instances',{
+                params:initList
+            })
+            .then((res)=>{
+                if(res.data.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                     
+                    _this.instancesCont=res.data.data
+                }
+                
+            })
+
+            //路由变化后面包屑相关内容存储清空
+            _this.folderLayer=["All file"]
+            _this.instanceLayer=[initList]
+             
+        },
+        authoritySwitch(it){
+            console.log(it.authority,'authority')
+        },
+        shouwDelConfirm(it){
+            
+            this.delInstanceDialogVisible=true
+            this.theItem=it
+             
+        },
+        delInstance(){
+            
+            let _this=this,it=this.theItem
+            
+            this.delInstanceDialogVisible=false
+            console.log("d",it)
+            
+            let del={
+                uid:_this.instancesCont.uid,
+                id:it.id,
+                type:it.type
+            }
+            this.$axios.get('/api/delInst',{
+                params:del
+            }).then(res=>{
+                if(res.data.code===-1){
+                    
+                }else if(res.data.code===0){
+
+                    for(let i=0;i<_this.instancesCont.list.length;i++){
+                        if(_this.instancesCont.list[i].id===res.data.data.id){
+                            _this.instancesCont.list.splice(i,1)
+                            console.log("d", _this.instancesCont.list)
+
+                            break;
+                        }
+                    }
+                }
+            })
         }
     }
      
@@ -318,6 +513,14 @@ import ManagerList from '../components/ManagerList'
 }
 .el-input__inner{
     height: 100% !important;
+}
+.el-col i:hover{
+    color: #29e929;
+    font-weight: bolder;
+}
+.el-col .el-icon-delete:hover{
+    color:red;
+    font-weight: bolder;
 }
 
 </style>

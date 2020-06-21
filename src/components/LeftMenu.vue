@@ -102,7 +102,12 @@ import { mapMutations } from 'vuex';
       };
     },
     mounted(){
-      
+      //组件初始化后，通过localstorage判断登录状态，若未登录跳转至登录界面
+        let userState=localStorage.getItem('Authorization')
+        if(!userState){//如果未登录，则跳转登录界面
+          alert("please login first")
+          this.$router.push('/Login')
+        }
     },
     methods: {
        ...mapMutations(['isCollapse','notCollapse']),
@@ -120,21 +125,26 @@ import { mapMutations } from 'vuex';
       //路由跳转
       selectMenuItem(index){
 
-        console.log("st", index )
+        let userState=localStorage.getItem('Authorization')
          
-        if(index==='5'){
-          this.$router.push('/about')
-        }else if(index==='0'){
-          this.$router.push('/Home')
-        }else if(index==='1-1'){
-          this.$router.push({path:'/instance',query:{type:'Data'}})
-        }else if(index==='2-1'){
-          this.$router.push({path:'/instance',query:{type:'Processing'}})
-        }else if(index==='3-1'){
-          this.$router.push({path:'/instance',query:{type:'Visualization'}})
-        }else if(index==='4-1'){
-          this.$router.push({path:'/workSpace',query:{type:'WorkSpace'}})
-        }
+          if(index==='5'){
+            this.$router.push('/about')
+          }else if(index==='0'){
+            this.$router.push('/Home')
+          }else if(index==='1-1'){
+            this.$router.push({path:'/instance',query:{type:'Data'}})
+
+          }else if(index==='2-1'){
+            this.$router.push({path:'/instance',query:{type:'Processing'}})
+
+          }else if(index==='3-1'){
+            this.$router.push({path:'/instance',query:{type:'Visualization'}})
+            
+          }else if(index==='4-1'){
+            this.$router.push({path:'/workSpace',query:{type:'WorkSpace'}})
+          }
+        
+        
          
       },
       //leftbar collapse button event

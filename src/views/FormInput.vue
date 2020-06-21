@@ -6,7 +6,7 @@ import Content from '@/views/Content';
         <el-form ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
-          <el-form-item v-if="this.$route.query.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
+          <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
 
             <el-select   v-model="form.workspace" placeholder="请选择">
                 <el-option
@@ -48,7 +48,15 @@ import Content from '@/views/Content';
 
           <!-- 链接参数 -->
            <el-form-item  v-if="this.$route.query.type!='FileWorkSpace'" label="Local URL" prop="Url">
-            <el-input v-model="form.LocalURL" placeholder="file://" style="width:420px;"></el-input><el-button  @click="browse" style="position:fixed;float:left">Browse</el-button>
+            <el-popover
+              placement="top-start"
+              title="Attention"
+              width="200"
+              trigger="hover"
+              content="Specific to a file or a folder(for multi files)">
+            </el-popover>
+            <el-input v-model="form.LocalURL" placeholder="file://" style="width:420px;"></el-input>
+            <el-button  @click="browse"  style="position:fixed;float:left">Browse</el-button>
           </el-form-item>
           <!-- 文件路径选择 -->
           <el-dialog
@@ -83,10 +91,10 @@ import Content from '@/views/Content';
             label=""
           >
             <el-button
-              style="margin-left: 10px;"
-              size="small"
+              style="margin-top:30px"
+              size="large"
               type="success"
-              @click="submitUpload"
+              @click="submitUpload()"
             >{{isEditType?"Edite":"Create"}}</el-button>
           </el-form-item>
           <!--  -->
@@ -98,6 +106,8 @@ import Content from '@/views/Content';
 
 <script>
  
+import uuidv4 from 'uuid/v4' 
+import utils from '../utils/utils.js'
 
 export default {
   props: ["user"],
@@ -147,7 +157,7 @@ export default {
   
   },
   mounted() {
-      console.log(this.$route)
+      console.log("init",this.$route.query)
     this.isEdit();
   },
   methods: {
@@ -169,52 +179,53 @@ export default {
     },
     submitUpload() {
     
-
-      if (this.form.name.length <= 0) {
-        alert("name empty");
+      
+      if (this.form.name.length == 0||this.form.LocalURL.length ==0) {
+        alert("please complete content!");
         return;
       }
-
-      let formData = new FormData();
-
-      formData.append("name", this.form.name);
-      formData.append("tags", this.form.dynamicTags);
-      formData.append("desc", this.form.desc);
-      formData.append("username", this.user.username);
-      formData.append("uid", this.user.uid);
-
-      if (this.isEditType) {
-        formData.append("id", this.$route.query.id);
-        httpUtils.post(this, urlUtils.workspace_update, formData, data => {
-          if (data === "workspace already exist!") {
-            this.$message({
-              type: "success",
-              message: "工作空间已存在，请重命名！"
-            });
-          } else {
-            this.$message({
-              type: "success",
-              message: "工作空间修改成功"
-            });
-            this.$router.replace("/console/workspace");
-          }
-        });
-      } else {
-        httpUtils.post(this, urlUtils.workspace_create, formData, data => {
-          if (data === "workspace already exist!") {
-            this.$message({
-              type: "success",
-              message: "工作空间已存在，请重命名！"
-            });
-          } else {
-            this.$message({
-              type: "success",
-              message: "工作空间创建成功"
-            });
-            this.$router.replace("/console/workspace");
-          }
-        });
+      let _this=this
+      let newFile={
+        //instance基本信息
+        uid:_this.$route.query.instance_uid,
+        instype:_this.$route.query.type,
+        userToken:_this.$route.query.userToken,
+       //文件信息
+        id:uuidv4(),
+        name:_this.form.name,
+        date:utils.formatDate(new Date()),
+        type:'file',
+        authority:true,
+        meta:{
+          workspace:_this.form.workspace,
+          description:_this.form.desc,
+          tags:_this.form.dynamicTags,
+          dataPath:_this.form.LocalURL
+        }
       }
+      console.log("file",newFile)
+
+      this.$axios.post('/api/newFile',newFile)
+      .then((res)=>{
+        if(res.data.code===-1){
+            _this.$message({
+                message: 'failed ',
+                type: 'fail'
+            });
+          }else{
+
+            if(_this.$route.query.type==='Data'){
+                 this.$router.push({path:'/instance',query:{type:'Data'}})
+                  
+
+            }           
+
+          }
+      })
+
+
+
+
     },
     handleRemove(file, fileList) {
       console.log("remove", file, fileList);

@@ -13,6 +13,9 @@ const store = new Vuex.Store({
     //关联的门户用户信息
     relatedUsr:localStorage.getItem('relatedUsr') ? localStorage.getItem('relatedUsr') : '',
 
+    //当前列表id
+    currentListId:''
+
   },
  //更改store的状态
   mutations: {
