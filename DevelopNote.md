@@ -35,6 +35,7 @@
                 }, 
                 {
                     id:'02',
+                    oid:'',
                     name: 'file.zip',
                     date:'2020.1.1',
                     size:'12m',
@@ -42,13 +43,11 @@
                     authority:true//true表示公开，false表示未公开
                     meta:{
                        workspace:''
+                       overview:'',
                        description:'',
                        tags:[],
                        dataPath:'‪D:\Projects\dataContainerFrontEnd\data\config.udxcfg', 
                     }
-                    
-
-
                 }
             ]
        }

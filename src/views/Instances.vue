@@ -131,7 +131,7 @@
 
                 <el-col  v-if="it.type==='file'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
-                     <i class="el-icon-bottom"></i>
+                     <i @click="download(it)" class="el-icon-bottom"></i>
                      <i class="el-icon-share" style="color: #cd7100" @click="in_situ_share"></i>
                     <i class="el-icon-edit"></i>
                     
@@ -468,6 +468,15 @@ import ManagerList from '../components/ManagerList'
                         }
                     }
                 }
+            })
+        },
+        download(it){
+            let _this=this
+            this.$axios('/api/insitudownload',{
+                uid:_this.instancesCont.uid,
+                id:it.id
+            }).then(res=>{
+
             })
         }
     }

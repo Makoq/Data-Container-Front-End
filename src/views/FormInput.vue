@@ -115,11 +115,11 @@ export default {
     return {
       form: {
         workspace:"",
-        name: "",
+        name: "test data copy",
         // tag
         dynamicTags: ["UDX", "水文学"],
         desc: "",
-        LocalURL:''
+        LocalURL:'D:\\Projects\\dataContainerFrontEnd\\data'
       },
       workspaceList:[
         {
