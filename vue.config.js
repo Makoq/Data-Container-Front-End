@@ -12,6 +12,7 @@ module.exports = {
             '/api':{
                 target:'http://localhost:8899/',
                 ws:true,
+                timeout:600000,
                 changOrigin:true,
                 pathRewrite:{
                     '^/api':'/',

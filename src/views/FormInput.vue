@@ -2,7 +2,7 @@ import Content from '@/views/Content';
 <template>
   <div class="form">
     <el-row :gutter="20">
-      <el-col :span="12">
+      <el-col :span="12" style="width: 90%;">
         <el-form ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
@@ -20,11 +20,17 @@ import Content from '@/views/Content';
          
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
-            <el-input v-model="form.name" placeholder="请输入数据源名称" style="width:220px;"></el-input>
+            <el-input v-model="form.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
           </el-form-item>
+          <!-- describe -->
           <el-form-item  label="Describe">
-            <el-input type="textarea" v-model="form.desc"></el-input>
+            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
+          <!-- detail -->
+          <el-form-item  label="Detail">
+            <el-input type="textarea" rows="6"  maxlength="200" show-word-limit v-model="form.detail" placeholder="Detail about this..."></el-input>
+          </el-form-item>
+
           <!-- 标签 -->
           <el-form-item label="Tags" prop="name">
             <el-tag
@@ -55,8 +61,8 @@ import Content from '@/views/Content';
               trigger="hover"
               content="Specific to a file or a folder(for multi files)">
             </el-popover>
-            <el-input v-model="form.LocalURL" placeholder="file://" style="width:420px;"></el-input>
-            <el-button  @click="browse"  style="position:fixed;float:left">Browse</el-button>
+            <el-input v-model="form.LocalURL" placeholder="file://" style="width:90%;"></el-input>
+            <!-- <el-button  @click="browse"  style="position:fixed;float:left">Browse</el-button> -->
           </el-form-item>
           <!-- 文件路径选择 -->
           <el-dialog
@@ -88,11 +94,13 @@ import Content from '@/views/Content';
          </el-dialog>
           <!-- 提交或编辑  -->
           <el-form-item
-            label=""
+            label="Submit"
+            style="margin-bottom:100px"
           >
             <el-button
-              style="margin-top:30px"
+             
               size="large"
+              style="width:250px"
               type="success"
               @click="submitUpload()"
             >{{isEditType?"Edite":"Create"}}</el-button>
@@ -119,6 +127,7 @@ export default {
         // tag
         dynamicTags: ["UDX", "水文学"],
         desc: "",
+        detail:"",
         LocalURL:'D:\\Projects\\dataContainerFrontEnd\\data'
       },
       workspaceList:[
@@ -190,6 +199,8 @@ export default {
         uid:_this.$route.query.instance_uid,
         instype:_this.$route.query.type,
         userToken:_this.$route.query.userToken,
+        //关联用户信息
+        oid:localStorage.getItem('relatedUsr'),
        //文件信息
         id:uuidv4(),
         name:_this.form.name,
@@ -199,14 +210,16 @@ export default {
         meta:{
           workspace:_this.form.workspace,
           description:_this.form.desc,
+          detail:_this.form.detail,
           tags:_this.form.dynamicTags,
           dataPath:_this.form.LocalURL
         }
       }
       console.log("file",newFile)
 
-      this.$axios.post('/api/newFile',newFile)
+      this.$axios.put('/api/newFile',newFile,{timeout:600000})//请求超时10分钟
       .then((res)=>{
+       
         if(res.data.code===-1){
             _this.$message({
                 message: 'failed ',
@@ -215,8 +228,12 @@ export default {
           }else{
 
             if(_this.$route.query.type==='Data'){
+                 
                  this.$router.push({path:'/instance',query:{type:'Data'}})
-                  
+                  _this.$message({
+                        message: 'create success ',
+                        type: 'success'
+                    });
 
             }           
 

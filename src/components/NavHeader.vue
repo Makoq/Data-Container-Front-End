@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
   export default {
     data: () => ({
       
@@ -65,6 +67,8 @@
       }
     }),
     methods: {
+       ...mapMutations(['changerelatedUsr']),
+
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
@@ -87,7 +91,7 @@
       connectPortal(){
          var _this=this
          //通过门户的email关联用户
-         _this.$axios.post('/api/connectusr',
+         _this.$axios.put('/api/connectusr',
           {
             email:_this.connectPortalUsr.email
           }
@@ -97,6 +101,8 @@
                         message: 'Success! ',
                         type: 'success'
                 });
+                //将登录用户信息存入vuex
+                 _this.changerelatedUsr({relatedUsr:res.data.message.info.oid})
 
                 _this.settingDialog=false
            }else{//门户中找不到用户

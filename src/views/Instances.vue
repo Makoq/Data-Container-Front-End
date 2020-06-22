@@ -384,7 +384,7 @@ import ManagerList from '../components/ManagerList'
         },
         addFolderAjax(newInstance){
             let _this=this
-            _this.$axios.post('/api/newInst',newInstance)
+            _this.$axios.put('/api/newInst',newInstance)
             .then((res)=>{
 
             })
@@ -402,6 +402,7 @@ import ManagerList from '../components/ManagerList'
         },
         //监听路由变化
         watchrouter(){
+           
             let _this=this
             let initList={
             type: _this.$route.query.type,
@@ -452,7 +453,7 @@ import ManagerList from '../components/ManagerList'
                 id:it.id,
                 type:it.type
             }
-            this.$axios.get('/api/delInst',{
+            this.$axios.delete('/api/delInst',{
                 params:del
             }).then(res=>{
                 if(res.data.code===-1){
@@ -472,11 +473,24 @@ import ManagerList from '../components/ManagerList'
         },
         download(it){
             let _this=this
-            this.$axios('/api/insitudownload',{
-                uid:_this.instancesCont.uid,
-                id:it.id
+            
+            this.$axios.get('/api/insitudownload',{
+                params:{
+                    uid:_this.instancesCont.uid,
+                    id:it.id
+                },
+                responseType:'arraybuffer'
             }).then(res=>{
-
+                
+                let blob = new Blob([res.data], {type: 'application/zip;charset=utf-8'}); //指定格式为application/zip;charset=utf-8
+                let downloadElement = document.createElement('a');
+                let href = window.URL.createObjectURL(blob); //创建下载的链接
+                downloadElement.href = href;
+                downloadElement.download =unescape(res.headers.filename); //下载后文件名
+                document.body.appendChild(downloadElement);
+                downloadElement.click(); //点击下载
+                document.body.removeChild(downloadElement); //下载完成移除元素
+                window.URL.revokeObjectURL(href); 
             })
         }
     }

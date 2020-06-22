@@ -9,6 +9,7 @@ const store = new Vuex.Store({
   state: {
     // 存储token
     Authorization: localStorage.getItem('Authorization') ? localStorage.getItem('Authorization') : '',
+    
     menuCollapse:'100%',
     //关联的门户用户信息
     relatedUsr:localStorage.getItem('relatedUsr') ? localStorage.getItem('relatedUsr') : '',
@@ -24,6 +25,7 @@ const store = new Vuex.Store({
       state.Authorization = user.Authorization;
       localStorage.setItem('Authorization', user.Authorization);
     },
+     
     isCollapse(state){
         state.menuCollapse='64px'
     },
