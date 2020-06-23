@@ -47,8 +47,8 @@
            <span v-if="folderLayer.length>1">&nbsp;{{folderLayer.join(' / ')}}</span>
     </el-row>
    
-    <el-row  >
-        <el-row  s>
+    <el-row v-loading="loading" >
+        <el-row   >
             <el-col :span="2"    :offset="2" > 
                     <span  >  
                        &nbsp;Name
@@ -83,7 +83,7 @@
            
         </el-row>
         <el-divider ></el-divider>
-       <!-- 文件夹列表 -->
+                <!-- 删除确认 -->
                 <el-dialog
                     title="Attention!"
                     :visible.sync="delInstanceDialogVisible"
@@ -96,14 +96,29 @@
                         <el-button type="primary" @click="delInstance()">确 定</el-button>
                     </span>
                 </el-dialog>
-            <el-row  v-for="(it,key) in instancesCont.list" :key="key" class="item">
+                <!-- 共享确认 -->
+                <el-dialog
+                    title="Attention!"
+                    :visible.sync="shareDialogVisible"
+                    width="50%"
+                    >
+                    <h3>Are you sure to share this data on OpenGMS Portal DataItem List ? </h3></br></br></br>
+                    <p> Current connected account in OpenGMS Portal is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
+                    <span slot="footer" class="dialog-footer">
+                        
+                        <el-button type="primary" @click="public_local_data()">确 定</el-button>
+                    </span>
+                </el-dialog>
+
+                 <!-- 文件夹列表 -->     
+            <el-row  v-for="(it,key) in instancesCont.list" :key="key"  class="item">
                  
                 <el-col :span="1" :offset="1">
                    <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
 
                     <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
                 </el-col>
-                <el-col :span="2" style="height:100%"> 
+                <el-col :span="3" style="height:100%"> 
                    
                     <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
                     <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
@@ -123,7 +138,7 @@
 
                 </el-col> -->
 
-                <el-col :span="4" :offset="3"> 
+                <el-col :span="4" :offset="2"> 
                     
                     <span class="dataName"   >{{it.date}}</span>
 
@@ -132,7 +147,7 @@
                 <el-col  v-if="it.type==='file'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
                      <i @click="download(it)" class="el-icon-bottom"></i>
-                     <i class="el-icon-share" style="color: #cd7100" @click="in_situ_share"></i>
+                     <i class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
                     <i class="el-icon-edit"></i>
                     
                      <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
@@ -177,6 +192,7 @@
 
 <script>
 import utils from '../utils/utils.js'
+import DecryptJS from '../utils/cycrypto.js';
 import ManagerList from '../components/ManagerList'
  import uuidv4 from 'uuid/v4' 
   export default {
@@ -196,11 +212,10 @@ import ManagerList from '../components/ManagerList'
        instanceLayer:[],
        //搜索工作空间
        workspaceSearch:'',
-      //文件夹列表数据结构
+      //instances列表数据结构
        instancesCont:{},
-         //存取同一级下的所有文件夹目录
+      //存取同一级下的所有文件夹目录
        allFolderLayer:[],
-
        //类型
        instnaceType:"",
        //组件初始化时的列表id
@@ -208,13 +223,29 @@ import ManagerList from '../components/ManagerList'
        //删除提示框
        delInstanceDialogVisible:false,
        //点击的对应项
-       theItem:''
+       theItem:'',
+       //加载项
+       loading:false,
+       //共享确认
+       shareDialogVisible:false
     }),
     created(){
         //初始化组件时，初始化内容列表id为0
         this.listUid=0,
         
         console.log('createa')
+    },
+    computed:{
+        connectPortalUsr(){
+            let connUsr=localStorage.getItem('relatedUsr')
+            if(connUsr){
+
+                return DecryptJS.Decrypt(connUsr.split(',')[1])
+            }else{
+                return 'no usr'
+            }
+            
+        }
     },
     watch:{
          $route: 'watchrouter'//路由变化时，执行的方法
@@ -389,16 +420,30 @@ import ManagerList from '../components/ManagerList'
 
             })
         },
-        in_situ_share(){
-            this.$alert('participate A', '标题名称', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: `action: ${ action }`
-            });
-          }
-        });
+        public_data_item_to_portal(it){
+            if(!localStorage.getItem('relatedUsr')){
+                alert('please connect usr firstly!')
+                
+            }else{
+                 this.theItem=it
+                 this.shareDialogVisible=true
+            }
+           
+        },
+        public_local_data(){
+            let _this=this
+        
+            this.$axios.post('/portal/dataItem/getDistributedData/',_this.theItem)
+            .then(res=>{
+                if(res.code===0){
+
+                    this.$message({
+                        message:'',
+                        type:'success'
+                    })
+                }
+            })
+
         },
         //监听路由变化
         watchrouter(){
@@ -434,6 +479,32 @@ import ManagerList from '../components/ManagerList'
         },
         authoritySwitch(it){
             console.log(it.authority,'authority')
+            this.loading=true
+            let _this=this
+            //TODO 权限控制
+            let switchAuthority={
+                uid:_this.instancesCont.uid,
+                id:it.id,
+                authority:it.authority
+            }
+            this.$axios.put('/api/authority',switchAuthority)
+            .then(res=>{
+                if(res.data.code===0&&res.data.message=='ok'){
+                    _this.loading=false
+                    _this.$message({
+                        message:'Authority change success!!',
+                        type:'success'
+                    })
+                }else{
+                    _this.loading=false
+
+                     _this.$message({
+                        message:'Authority change success!!',
+                        type:'success'
+                    })
+                }
+            })
+
         },
         shouwDelConfirm(it){
             
@@ -482,15 +553,22 @@ import ManagerList from '../components/ManagerList'
                 responseType:'arraybuffer'
             }).then(res=>{
                 
-                let blob = new Blob([res.data], {type: 'application/zip;charset=utf-8'}); //指定格式为application/zip;charset=utf-8
-                let downloadElement = document.createElement('a');
-                let href = window.URL.createObjectURL(blob); //创建下载的链接
-                downloadElement.href = href;
-                downloadElement.download =unescape(res.headers.filename); //下载后文件名
-                document.body.appendChild(downloadElement);
-                downloadElement.click(); //点击下载
-                document.body.removeChild(downloadElement); //下载完成移除元素
-                window.URL.revokeObjectURL(href); 
+                if(res.headers.filename==="#"){
+                    this.$message({
+                        message:'no authority!',
+                        type:'failed'
+                    })
+                }else{
+                    let blob = new Blob([res.data], {type: 'application/zip;charset=utf-8'}); //指定格式为application/zip;charset=utf-8
+                    let downloadElement = document.createElement('a');
+                    let href = window.URL.createObjectURL(blob); //创建下载的链接
+                    downloadElement.href = href;
+                    downloadElement.download =unescape(res.headers.filename); //下载后文件名
+                    document.body.appendChild(downloadElement);
+                    downloadElement.click(); //点击下载
+                    document.body.removeChild(downloadElement); //下载完成移除元素
+                    window.URL.revokeObjectURL(href); 
+                }
             })
         }
     }

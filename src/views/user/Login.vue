@@ -76,7 +76,7 @@ import DecryptJS from '../../utils/cycrypto.js';
                     _this.changeLogin({ Authorization:res.data.message.token });
                    //将关联用户信息包村到vuex中
         
-                   _this.changerelatedUsr({relatedUsr:res.data.message.relatedUser.oid})
+                   _this.changerelatedUsr({relatedUsr:res.data.message.relatedUser.oid+','+res.data.message.relatedUser.email})
                    
                    setTimeout(() => {
                         _this.$router.push('/Home')

@@ -22,6 +22,15 @@ import Content from '@/views/Content';
           <el-form-item  label="Name" prop="name">
             <el-input v-model="form.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
           </el-form-item>
+          <!-- 权限 -->
+          <el-form-item  label="Authority" prop="name">
+            <el-switch
+            v-model="form.authority"
+            active-text="public"
+            inactive-text="private">
+          </el-switch>
+          </el-form-item>
+
           <!-- describe -->
           <el-form-item  label="Describe">
             <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
@@ -128,6 +137,7 @@ export default {
         dynamicTags: ["UDX", "水文学"],
         desc: "",
         detail:"",
+        authority:true,
         LocalURL:'D:\\Projects\\dataContainerFrontEnd\\data'
       },
       workspaceList:[
@@ -206,9 +216,9 @@ export default {
         name:_this.form.name,
         date:utils.formatDate(new Date()),
         type:'file',
-        authority:true,
+        authority:_this.form.authority,
         meta:{
-          workspace:_this.form.workspace,
+          workSpace:_this.form.workspace,
           description:_this.form.desc,
           detail:_this.form.detail,
           tags:_this.form.dynamicTags,

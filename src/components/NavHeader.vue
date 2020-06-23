@@ -102,7 +102,7 @@ import { mapMutations } from 'vuex';
                         type: 'success'
                 });
                 //将登录用户信息存入vuex
-                 _this.changerelatedUsr({relatedUsr:res.data.message.info.oid})
+                 _this.changerelatedUsr({relatedUsr:res.data.message.info.oid+','+res.data.message.info.email})
 
                 _this.settingDialog=false
            }else{//门户中找不到用户
