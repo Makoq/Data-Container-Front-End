@@ -447,7 +447,7 @@ import ManagerList from '../components/ManagerList'
         },
         //监听路由变化
         watchrouter(){
-           
+           console.log('ws',this.ws)
             let _this=this
             let initList={
             type: _this.$route.query.type,

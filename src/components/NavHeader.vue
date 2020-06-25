@@ -23,7 +23,8 @@
           </template>
         <el-menu-item v-if="this.$store.state.Authorization==='' "   index="2-1" @click="Login" >login in</el-menu-item>
         
-        <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-2" @click="Setting" >Connect</el-menu-item>
+        <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-3" @click="Setting" >Setting</el-menu-item>
+        <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-2" @click="OnlineWithCenterServer" >Online</el-menu-item>
       
         <el-menu-item   index="2-2" @click="Logout" >Log out</el-menu-item>
      
@@ -54,6 +55,7 @@
 
 <script>
 import { mapMutations } from 'vuex';
+import ws from '../utils/websocket.js'
 
   export default {
     data: () => ({
@@ -68,7 +70,9 @@ import { mapMutations } from 'vuex';
     }),
     methods: {
        ...mapMutations(['changerelatedUsr']),
-
+      OnlineWithCenterServer(){
+        ws.websocket(this)
+      },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },

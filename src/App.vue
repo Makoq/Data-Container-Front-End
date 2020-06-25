@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import ws from './utils/websocket.js'
 export default {
   name: 'App',
   components: {
@@ -13,6 +14,10 @@ export default {
     return {
       //
     }
+  },
+  mounted(){
+    //建立与中转服务器的websocket
+    ws.websocket(this)
   }
 }
 </script>
