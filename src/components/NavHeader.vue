@@ -1,8 +1,10 @@
 <template>
 <el-row class="head-nav">
+ 
   <el-col :span="8" class="logo"> 
     &nbsp;<img src="../assets/dataServiceContainer3.png"  style="width:350px;margin-top: 10px">
   </el-col>
+  
   <el-col :span="16" class="eMenu">
     <el-menu
       :default-active="activeIndex2"
@@ -24,7 +26,7 @@
         <el-menu-item v-if="this.$store.state.Authorization==='' "   index="2-1" @click="Login" >login in</el-menu-item>
         
         <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-3" @click="Setting" >Setting</el-menu-item>
-        <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-2" @click="OnlineWithCenterServer" >Online</el-menu-item>
+        <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-2" @click="OnlineWithCenterServer" >State</el-menu-item>
       
         <el-menu-item   index="2-2" @click="Logout" >Log out</el-menu-item>
      
@@ -66,12 +68,22 @@ import ws from '../utils/websocket.js'
       connectPortalUsr:{
         email:'',
 
-      }
+      },
+      
+      
+      
     }),
+    
+    computed:{
+      // myState:function(){
+      //   return this.$root.$el.myWS?'Online':'Offline'
+      // }
+    },
     methods: {
        ...mapMutations(['changerelatedUsr']),
       OnlineWithCenterServer(){
         ws.websocket(this)
+        console.log(this.$root.$el.myWS)
       },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);

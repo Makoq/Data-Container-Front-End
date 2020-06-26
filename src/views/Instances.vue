@@ -195,6 +195,7 @@ import utils from '../utils/utils.js'
 import DecryptJS from '../utils/cycrypto.js';
 import ManagerList from '../components/ManagerList'
  import uuidv4 from 'uuid/v4' 
+import cycrypto from '../utils/cycrypto.js';
   export default {
     name:'instance',
     components:{
@@ -432,14 +433,48 @@ import ManagerList from '../components/ManagerList'
         },
         public_local_data(){
             let _this=this
-        
-            this.$axios.post('/portal/dataItem/getDistributedData/',_this.theItem)
+
+            // {"id":"bd9d66b4-117c-4752-a114-1aae34153b11",
+            // "oid":"mgCD/aEcP5R03p8BCzCSXw==",
+            // "name":"test data copy",
+            // "date":"2020-06-23 15:29",
+            // "type":"file",
+            // "authority":true,
+            // "meta":{
+            //     "workSpace":"选项1",
+            //     "description":"",
+            //     "detail":"",
+            //     "tags":["UDX","水文学"],
+            //     "dataPath":"D:\\Projects\\dataContainerFrontEnd\\data",
+            //     "currentPath":"d:\\Projects\\transitDataServer\\service/../dataStorage/bd9d66b4-117c-4752-a114-1aae34153b11"
+            // }}
+            
+            
+            let form=new FormData()
+            form.append("id",_this.theItem.id)
+            form.append("oid",cycrypto.Decrypt(_this.theItem.oid))
+            form.append("name",_this.theItem.name)
+            form.append("type",_this.theItem.type)
+            form.append("authority",_this.theItem.authority)
+            form.append("meta",JSON.stringify(_this.theItem.meta))
+            form.append("date",utils.formatDate(new Date()))
+
+
+            this.$axios.post('/portal/dataItem/getDistributedData/',form)
             .then(res=>{
-                if(res.code===0){
+                if(res.data.code===0){
 
                     this.$message({
-                        message:'',
+                        message:'publie data success',
                         type:'success'
+                    })
+                    window.open('http://223.2.38.183:8080/'+res.data.data);
+                    // window.location.href = 'http://223.2.38.183:8080/'+res.data.data;
+                    _this.shareDialogVisible=false
+                }else{
+                    this.$message({
+                        message:'publie data failed',
+                        type:'fail'
                     })
                 }
             })
@@ -447,7 +482,7 @@ import ManagerList from '../components/ManagerList'
         },
         //监听路由变化
         watchrouter(){
-           console.log('ws',this.ws)
+           console.log('ws', this.$root.$el.myWS )
             let _this=this
             let initList={
             type: _this.$route.query.type,

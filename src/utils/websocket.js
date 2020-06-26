@@ -5,15 +5,16 @@ var websocket=function(it){
     .then((res)=>{
       if(res.data.code===0){
         _this.$message({
-          message:'local service success',
+          message:'本地服务正常',
           type:'success'
         })
 
         //连接中转服务器websocket
         
-        if(_this.myWS==undefined){
-           var ws = new WebSocket('ws://localhost:1708');
-          _this.myWS=ws
+        if(_this.$root.$el.myWS==undefined){
+           var ws = new WebSocket('ws://111.229.14.128:1708');
+           
+          _this.$root.$el.myWS=ws
            ws.onopen = function(e){
                 
                 let token=localStorage.getItem('relatedUsr')
@@ -31,15 +32,19 @@ var websocket=function(it){
                   message:'中转服务器关闭',
                   type:'fail'
                 })
-                 
-                delete  _this.myWS
+              
+                delete _this.$root.$el.myWS 
+
             }
             ws.onerror = function(){
                  _this.$message({
                   message:'连接中转服务出错',
                   type:'fail'
                 })
-                delete  _this.myWS
+                
+
+                delete _this.$root.$el.myWS 
+
 
             }
              ws.onmessage = function(e){
@@ -50,6 +55,7 @@ var websocket=function(it){
                         message:'连接中转服务器成功',
                         type:'success'
                     })
+                     
                    return
                } 
                if(e.data==='beat'){
@@ -72,6 +78,12 @@ var websocket=function(it){
                             "id":resp.data.uid,
                             "reqUsr":re.reqUsrOid
                         }
+
+                        _this.$message({
+                            message:'就地共享数据'+resp.data.uid,
+                            type:'success'
+                        })
+
                         console.log(dataRes)
                         //数据下载信息发送回中转服务器
                         ws.send(JSON.stringify(dataRes))
@@ -84,8 +96,8 @@ var websocket=function(it){
         }else{
             setTimeout(()=>{
                   _this.$message({
-                  message:'已经成功连接中转服务器',
-                  type:'fail'
+                  message:'中转服务器连接正常',
+                  type:'succsee'
                 })
             },1000)
          

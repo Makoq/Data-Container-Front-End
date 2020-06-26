@@ -24,7 +24,7 @@ module.exports = {
                 timeout:600000,
                 changOrigin:true,
                 pathRewrite:{
-                    '^/api':'/',
+                    '^/portal':'/',
                 }
             }
         }

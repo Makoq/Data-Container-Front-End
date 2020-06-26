@@ -18,6 +18,13 @@ export default {
   mounted(){
     //建立与中转服务器的websocket
     ws.websocket(this)
+  },
+  beforeDestroy(){
+    console.log("destroyed")
+
+  },
+  destroyed(){
+    console.log("destroyed")
   }
 }
 </script>
