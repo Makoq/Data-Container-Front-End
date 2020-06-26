@@ -72,22 +72,38 @@ var websocket=function(it){
                            name:re.name,
                            token:re.token
                         }
-                   }).then(resp=>{   
-                        let dataRes={
-                            "msg":"resdata",
-                            "id":resp.data.uid,
-                            "reqUsr":re.reqUsrOid
-                        }
+                   }).then(resp=>{  
+                       if(resp.data.code===-1){
+                           if(resp.data.message=='no authority'){
+                                let noAuthority={
+                                    "msg":"resdata",
+                                    "type":"noAuthority"
+                                }
+                                ws.send(JSON.stringify(noAuthority))
+                           }else
+                                if(resp.data.message=='db find err'){
+                                    let noAuthority={
+                                        "msg":"resdata",
+                                        "type":"db find err"
+                                    }
+                                    ws.send(JSON.stringify(noAuthority))
+                            }
+                       }else{ 
+                            let dataRes={
+                                "msg":"resdata",
+                                "id":resp.data.uid,
+                                "reqUsr":re.reqUsrOid
+                            }
 
-                        _this.$message({
-                            message:'就地共享数据'+resp.data.uid,
-                            type:'success'
-                        })
+                            _this.$message({
+                                message:'就地共享数据'+resp.data.uid,
+                                type:'success'
+                            })
 
-                        console.log(dataRes)
-                        //数据下载信息发送回中转服务器
-                        ws.send(JSON.stringify(dataRes))
-                        
+                            console.log(dataRes)
+                            //数据下载信息发送回中转服务器
+                            ws.send(JSON.stringify(dataRes))
+                       }
                    })
                }
                 
