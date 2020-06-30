@@ -3,10 +3,10 @@ import Content from '@/views/Content';
   <div class="form">
     <el-row :gutter="20">
       <el-col :span="12" style="width: 90%;">
-        <el-form ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+        <el-form v-if="this.$route.query.type==='Data'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
-          <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
+          <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
 
             <el-select   v-model="form.workspace" placeholder="请选择">
                 <el-option
@@ -16,7 +16,7 @@ import Content from '@/views/Content';
                 :value="item.value">
                 </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
          
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
@@ -28,7 +28,7 @@ import Content from '@/views/Content';
             v-model="form.authority"
             active-text="public"
             inactive-text="private">
-          </el-switch>
+           </el-switch>
           </el-form-item>
 
           <!-- describe -->
@@ -71,41 +71,14 @@ import Content from '@/views/Content';
               content="Specific to a file or a folder(for multi files)">
             </el-popover>
             <el-input v-model="form.LocalURL" placeholder="file://" style="width:90%;"></el-input>
-            <!-- <el-button  @click="browse"  style="position:fixed;float:left">Browse</el-button> -->
-          </el-form-item>
-          <!-- 文件路径选择 -->
-          <el-dialog
-            
-            :visible.sync="LocalURLDialogVisible"
-            width="30%"
-             >
              
-             <el-row>
-                <el-select v-model="localDisk" placeholder="请选择">
-                    <el-option
-                    v-for="item in localDiskList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-             </el-row>
-             <div style="height:400px;overflow-y:scroll;margin-top:10px">
-            <el-row v-for="(it,k) in 1000" :key="k">
-                <button  type="text" @click="connectLocalPath">{{it}}</button>
-
-            </el-row>
-             </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="LocalURLDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="LocalURLDialogVisible = false">确 定</el-button>
-            </span>
-         </el-dialog>
+          </el-form-item>
+           
           <!-- 提交或编辑  -->
           <el-form-item
             label="Submit"
             style="margin-bottom:100px"
-          >
+           >
             <el-button
              
               size="large"
@@ -115,6 +88,83 @@ import Content from '@/views/Content';
             >{{isEditType?"Edite":"Create"}}</el-button>
           </el-form-item>
           <!--  -->
+        </el-form>
+        <el-form v-if="this.$route.query.type==='Processing'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+            <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
+
+              <el-select   v-model="form.workspace" placeholder="请选择">
+                  <el-option
+                  v-for="item in workspaceList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                  </el-option>
+              </el-select>
+          </el-form-item> -->
+         
+          <!-- 名称 -->
+          <el-form-item  label="Name" prop="name">
+            <el-input v-model="form.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
+          </el-form-item>
+          <!-- 权限 -->
+          <el-form-item  label="Authority" prop="name">
+            <el-switch
+            v-model="form.authority"
+            active-text="public"
+            inactive-text="private">
+          </el-switch>
+          </el-form-item>
+
+          <!-- describe -->
+          <el-form-item  label="Describe">
+            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
+          </el-form-item>
+
+          <!-- 上传按钮 -->
+          <el-form-item  label="Upload">
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              action="/api/newprocessing"
+              multiple
+              :limit="2"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="processingList"
+              :on-exceed="handleExceed"
+              :auto-upload="false">
+              
+                  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+               
+                  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadProcessing">上传到服务器</el-button>
+
+              <div slot="tip" class="el-upload__tip">上传python处理方法脚本以及执行参数描述xml</div>
+            </el-upload>
+          </el-form-item>
+          <!-- 关联数据 -->
+          <el-form-item label="Select Data">
+            <el-button type="primary" @click="selectData">Select </el-button>
+            <el-dialog
+              title="提示"
+              :visible.sync="dialogVisible"
+              width="30%"
+              :before-close="handleClose">
+              <span>这是一段信息</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              </span>
+            </el-dialog>
+          </el-form-item>
+          <!-- 创建按钮 -->
+          <el-form-item  label="Create">
+            <el-button
+            size="large"
+              style="width:250px"
+              type="success"
+             @click="createProcessingMethod">Create</el-button>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
@@ -142,12 +192,9 @@ export default {
       },
       workspaceList:[
         {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, 
+          value: 'option1',
+          label: 'My Workspace'
+        },  
       ],
       inputVisible: false,
       inputValue: "",
@@ -169,6 +216,7 @@ export default {
           label: '双皮奶'
         }, 
       ],
+      processingList:[],
       localDisk:''
     };
   },
@@ -288,14 +336,27 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     },
-    browse(){
-        this.$axios.get('/api/')
-        this.LocalURLDialogVisible=true
-        //
+    submitUploadProcessing() {
+        this.$refs.upload.submit();
     },
-    connectLocalPath(){
-        //ajax
+    handleRemove(file, fileList) {
+        console.log(file, fileList);
+    },
+    handlePreview(file) {
+        console.log(file);
+    },
+    handleExceed(files, fileList){
+      this.$message.warning(`当前限制选择 2 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    selectData(){
+      
     }
+
+
+
+
+    
+     
 
   }
 };

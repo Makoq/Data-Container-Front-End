@@ -3,9 +3,9 @@
    <el-row  class="instanceBtn">
        <el-col :span="14">
         <!-- //挑选工作空间 -->
-        <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button>
+        <!-- <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button> -->
         <el-button   type="warning" @click="newFolder" >New Floder</el-button>
-        <el-button   type="success"  @click="newFileData">New File</el-button>
+        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type}}</el-button>
        </el-col>
        <el-col :span="10">
         <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
@@ -309,7 +309,13 @@ import cycrypto from '../utils/cycrypto.js';
             if(this.instnaceType==='Data'){
                 let _this=this,userToken=localStorage.getItem('Authorization')
                 this.$router.push({path:'/form/data',query:{type:'Data',instance_uid:_this.instancesCont.uid,userToken:userToken}})
+            }else if(this.instnaceType==='Processing'){
+                let _this=this,userToken=localStorage.getItem('Authorization')
+
+                this.$router.push({path:'/form/processing',query:{type:'Processing',instance_uid:_this.instancesCont.uid,userToken:userToken}})
+
             }
+
         },
         renameFolder(){
             if(this.newFloderName.length===0){
@@ -458,6 +464,7 @@ import cycrypto from '../utils/cycrypto.js';
             form.append("authority",_this.theItem.authority)
             form.append("meta",JSON.stringify(_this.theItem.meta))
             form.append("date",utils.formatDate(new Date()))
+            form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
 
 
             this.$axios.post('/portal/dataItem/getDistributedData/',form)
@@ -468,7 +475,7 @@ import cycrypto from '../utils/cycrypto.js';
                         message:'publie data success',
                         type:'success'
                     })
-                    window.open('http://223.2.38.183:8080/'+res.data.data);
+                    window.open('http://111.229.14.128:8898/'+res.data.data);
                     // window.location.href = 'http://223.2.38.183:8080/'+res.data.data;
                     _this.shareDialogVisible=false
                 }else{
@@ -490,6 +497,7 @@ import cycrypto from '../utils/cycrypto.js';
             parentLevel:'-1',
             userToken:localStorage.getItem('Authorization')
             }
+            this.instnaceType=this.$route.query.type
             //获取初始列表，最上层列表
             this.$axios.get('/api/instances',{
                 params:initList
@@ -557,7 +565,8 @@ import cycrypto from '../utils/cycrypto.js';
             let del={
                 uid:_this.instancesCont.uid,
                 id:it.id,
-                type:it.type
+                type:it.type,
+                instType:_this.$route.query.type
             }
             this.$axios.delete('/api/delInst',{
                 params:del

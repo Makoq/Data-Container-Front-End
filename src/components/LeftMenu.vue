@@ -48,7 +48,7 @@
       <el-submenu index="3">
 
         <template slot="title">
-          <i style="color:white"  class="el-icon-setting"></i>
+          <i style="color:white"  class="el-icon-picture"></i>
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
