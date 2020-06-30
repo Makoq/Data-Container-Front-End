@@ -117,6 +117,8 @@
                    <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
 
                     <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
+                    <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="30" alt="Safari" title="Safari">
+
                 </el-col>
                 <el-col :span="3" style="height:100%"> 
                    
@@ -127,7 +129,7 @@
                     <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
                         {{it.name}}
                     </a>
-                    <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
+                    <span class="dataName"  v-if="it.type==='file'||it.type==='Processing'">{{it.name}}</span>
 
                 </el-col>
 
@@ -144,7 +146,7 @@
 
                 </el-col>
 
-                <el-col  v-if="it.type==='file'" :span="4"  :offset="1" class="operate" > 
+                <el-col  v-if="it.type==='file'||'processing'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
                      <i @click="download(it)" class="el-icon-bottom"></i>
                      <i class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
@@ -568,23 +570,45 @@ import cycrypto from '../utils/cycrypto.js';
                 type:it.type,
                 instType:_this.$route.query.type
             }
-            this.$axios.delete('/api/delInst',{
-                params:del
-            }).then(res=>{
-                if(res.data.code===-1){
-                    
-                }else if(res.data.code===0){
+            if(it.type!="Processing"){
 
-                    for(let i=0;i<_this.instancesCont.list.length;i++){
-                        if(_this.instancesCont.list[i].id===res.data.data.id){
-                            _this.instancesCont.list.splice(i,1)
-                            console.log("d", _this.instancesCont.list)
+            
+                this.$axios.delete('/api/delInst',{
+                    params:del
+                }).then(res=>{
+                    if(res.data.code===-1){
+                        
+                    }else if(res.data.code===0){
 
-                            break;
+                        for(let i=0;i<_this.instancesCont.list.length;i++){
+                            if(_this.instancesCont.list[i].id===res.data.data.id){
+                                _this.instancesCont.list.splice(i,1)
+                                console.log("d", _this.instancesCont.list)
+
+                                break;
+                            }
                         }
                     }
-                }
-            })
+                })
+            }else if(it.type=="Processing"){
+                this.$axios.delete('/api/delpro',{
+                    params:del
+                }).then(res=>{
+                    if(res.data.code===-1){
+                        
+                    }else if(res.data.code===0){
+
+                        for(let i=0;i<_this.instancesCont.list.length;i++){
+                            if(_this.instancesCont.list[i].id===res.data.data.id){
+                                _this.instancesCont.list.splice(i,1)
+                                console.log("d", _this.instancesCont.list)
+
+                                break;
+                            }
+                        }
+                    }
+                })
+            }
         },
         download(it){
             let _this=this

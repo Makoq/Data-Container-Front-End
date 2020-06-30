@@ -104,12 +104,12 @@ import Content from '@/views/Content';
          
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
-            <el-input v-model="form.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
+            <el-input v-model="processing.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
           </el-form-item>
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
             <el-switch
-            v-model="form.authority"
+            v-model="processing.authority"
             active-text="public"
             inactive-text="private">
           </el-switch>
@@ -117,53 +117,80 @@ import Content from '@/views/Content';
 
           <!-- describe -->
           <el-form-item  label="Describe">
-            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
+            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
-
-          <!-- 上传按钮 -->
-          <el-form-item  label="Upload">
-            <el-upload
-              class="upload-demo"
-              ref="upload"
-              action="/api/newprocessing"
-              multiple
-              :limit="2"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :file-list="processingList"
-              :on-exceed="handleExceed"
-              :auto-upload="false">
-              
-                  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-               
-                  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadProcessing">上传到服务器</el-button>
-
-              <div slot="tip" class="el-upload__tip">上传python处理方法脚本以及执行参数描述xml</div>
-            </el-upload>
-          </el-form-item>
-          <!-- 关联数据 -->
+           <!-- 关联数据 -->
           <el-form-item label="Select Data">
             <el-button type="primary" @click="selectData">Select </el-button>
+            <!-- </br><span>choose related data</span> -->
             <el-dialog
-              title="提示"
-              :visible.sync="dialogVisible"
-              width="30%"
-              :before-close="handleClose">
-              <span>这是一段信息</span>
+              title="挑选数据"
+              :visible.sync="selectDialogVisible"
+              width="60%"
+              height="280px"
+               >
+               <el-row style=" height:250px">
+               <el-col :span="10" style=" height:250px;overflow-y:scroll">
+                 <span v-if="chooseDataArray.length==0">choose data</span>
+                 <el-tag
+                  v-for="tag in chooseDataArray"
+                  :key="tag.name"
+                   
+                   >
+                  {{tag.name}}
+                </el-tag>
+               </el-col>
+               <el-col :span="14" style=" height:250px;overflow-y:scroll">
+                <!-- 文件层次深浅进出功能按钮 -->
+                <el-row style="height:30px;margin-left: 20PX;margin-top:10px"> 
+                        <el-button v-if="folderLayer.length===1" size="mini" type="text" disabled>  All file</el-button>
+                      <el-button  v-else size="mini" type="text"  @click="backUpperFolder"  >Upper Folder</el-button>
+                      <el-divider v-if="folderLayer.length>1" direction="vertical"></el-divider>
+                      <span v-if="folderLayer.length>1">&nbsp;{{folderLayer.join(' / ')}}</span>
+                </el-row>
+                  <el-row  v-for="(it,key) in instancesCont.list" :key="key"  class="item" >
+                 
+                    <el-col :span="2" :offset="1">
+                      <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
+
+                        <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
+                    </el-col>
+                    <el-col :span="17" style="height:100%"> 
+                        <a v-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
+                            {{it.name}}
+                        </a>
+                        <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
+
+                    </el-col>
+                    <el-col v-if="it.type==='file'" :span="3" style="height:100%"> 
+                      <el-button type="primary" @click="chooseData(it)">Add</el-button>
+                    </el-col>
+                  </el-row>
+              </el-col>
+               </el-row>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button @click="selectDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="connectData">确 定</el-button>
               </span>
             </el-dialog>
+            <span v-if="connectedData"></span>
           </el-form-item>
-          <!-- 创建按钮 -->
-          <el-form-item  label="Create">
-            <el-button
-            size="large"
-              style="width:250px"
-              type="success"
-             @click="createProcessingMethod">Create</el-button>
+          <!-- 上传按钮 -->
+          
+          <el-form-item  label="Upload">
+             
+            <el-button     type="primary" @click="upload_pro">Choose Data</el-button>
+            <div   class="el-upload__tip">上传python处理方法脚本以及执行参数描述xml</div>
+           
           </el-form-item>
+
+          <el-form-item>
+            <el-button    type="success" @click="submitUploadProcessing">Create</el-button>
+
+          </el-form-item>
+         
+            <input ref="pro"   id="procesing_up" style="visibility: hidden;" type="file" placeholder="请输入内容" multiple/>
+         
 
         </el-form>
       </el-col>
@@ -175,7 +202,7 @@ import Content from '@/views/Content';
  
 import uuidv4 from 'uuid/v4' 
 import utils from '../utils/utils.js'
-
+import request from 'request'
 export default {
   props: ["user"],
   data() {
@@ -189,6 +216,13 @@ export default {
         detail:"",
         authority:true,
         LocalURL:'D:\\Projects\\dataContainerFrontEnd\\data'
+      },
+      processing:{
+        name:'',
+        authority:true,
+        desc:'',
+
+
       },
       workspaceList:[
         {
@@ -217,7 +251,17 @@ export default {
         }, 
       ],
       processingList:[],
-      localDisk:''
+      localDisk:'',
+      selectDialogVisible:false,
+      instancesCont:{},
+      listUid:0,
+      folderLayer:['All File'],
+      instanceLayer:[],
+      chooseDataArray:[],
+      connectedData:[]
+
+
+
     };
   },
   computed: {
@@ -337,7 +381,74 @@ export default {
       this.inputValue = "";
     },
     submitUploadProcessing() {
-        this.$refs.upload.submit();
+      // if(document.querySelector('#procesing_up').fileList.length<2){
+      //   this.$message({
+      //     message:'no processing files',
+      //     type:'fail'
+      //   })
+      //   return
+      // }
+      let _this=this
+      console.log(document.getElementById('procesing_up').files)
+      let fileNameList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
+      let upObj={
+        //instance基本信息
+        'uid':_this.$route.query.instance_uid,
+        'instype':_this.$route.query.type,
+        'userToken':_this.$route.query.userToken,
+        //关联用户信息
+        'oid':localStorage.getItem('relatedUsr'),
+     
+       
+        //处理方法信息
+        'id':uuidv4(),
+        'name':_this.processing.name,
+        'date':utils.formatDate(new Date()),
+        'type':'Processing',
+        'relatedData':_this.connectedData,
+        'authority':_this.processing.authority,
+        'fileList':fileNameList,
+        
+        'description':_this.processing.desc,
+
+         
+      }
+      var formdata=new FormData()
+      for(let v in upObj){
+        formdata.append(v,upObj[v])
+      }
+      formdata.append('files', document.getElementById('procesing_up').files[0])
+      formdata.append('files', document.getElementById('procesing_up').files[1])
+
+      
+      this.$axios.post('/api/newprocess',formdata,{
+       headers: {'Content-Type': 'multipart/form-data'}
+      })
+      .then(res=>{
+        
+        if(res.data.code===-1){
+            _this.$message({
+                message: 'failed ',
+                type: 'fail'
+            });
+          }else{
+
+            if(_this.$route.query.type==='Processing'){
+                 
+                 this.$router.push({path:'/instance',query:{type:'Processing'}})
+                  _this.$message({
+                        message: 'create success ',
+                        type: 'success'
+                    });
+
+            }           
+
+          }
+
+
+      })
+       
+        
     },
     handleRemove(file, fileList) {
         console.log(file, fileList);
@@ -349,16 +460,126 @@ export default {
       this.$message.warning(`当前限制选择 2 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
     selectData(){
-      
-    }
+      this.chooseDataArray=[]//选择数据置空
+      this.connectedData=[]//选择id置空
+      this.selectDialogVisible=true
+      this.instnaceType=this.$route.query.type
+        let _this=this
+        //通过列表id和用户token获取对应层级的列表
+        let initList={
+            type: 'Data',
+            uid:'0',
+            parentLevel:'-1',
+            userToken:localStorage.getItem('Authorization')
+        }
+        //获取初始列表，最上层列表
+        this.$axios.get('/api/instances',{
+            params:initList
+        })
+        .then((res)=>{
+            if(res.data.code===-1){
+                  _this.$message({
+                        message: 'instances request failed ',
+                        type: 'fail'
+                    });
+            }else{
+                console.log('init data',res.data)
+                _this.instancesCont=res.data.data
+                _this.instanceLayer=[initList] 
+            }
+            
+        })
 
-
-
-
-    
+    },
+    upload_pro(){
+      document.querySelector('#procesing_up').click()
+    },
+    chooseData(it){
+      if(this.chooseDataArray.indexOf(it)>-1){
+        this.$message({message:'already add',
+        type:'fail'})
+      }else{
+         this.chooseDataArray.push(it)
+      }
      
 
-  }
+    },
+    connectData(){
+      let _this=this
+      this.selectDialogVisible=false
+      this.chooseDataArray.forEach((it)=>{
+            _this.connectedData.push(it.id)        
+      })
+    },
+    
+    intoFolder(Folder){
+      let _this=this
+      let info={
+          uid:Folder.subContentId,
+          userToken:localStorage.getItem('Authorization'),
+          type:'Data',
+          parentLevel:_this.instancesCont.parentLevel,
+          subContConnect:{
+              uid:_this.instancesCont.uid,
+              id:Folder.id
+          }//关联文件下的子instances
+      }
+
+      this.$axios.get('/api/instances',{
+          params:info
+      }).then((res)=>{
+          if(res.code===-1){
+              _this.$message({
+                      message: 'instances request failed ',
+                      type: 'fail'
+                  });
+          }else{
+              _this.instancesCont=res.data.data
+              //面包屑层次
+              _this.folderLayer.push(Folder.name)
+              _this.instanceLayer.push({
+                  type: _this.instancesCont.type,
+                  uid:_this.instancesCont.uid,
+                  parentLevel:_this.instancesCont.parentLevel,
+                  userToken:_this.instancesCont.userToken
+              })
+              
+          }
+      });
+    
+},
+    backUpperFolder(){
+              //面包屑层次
+              this.folderLayer.pop()
+              this.instanceLayer.pop()
+              let info=this.instanceLayer[this.instanceLayer.length-1]
+              
+              
+              let _this=this
+              this.$axios.get('/api/instances',{
+                  params:info
+              }).then((res)=>{
+                  if(res.code===-1){
+                      _this.$message({
+                              message: 'instances request failed ',
+                              type: 'fail'
+                          });
+                  }else{
+                      _this.instancesCont=res.data.data
+                    
+                      
+                  }
+              })
+
+          },
+
+
+
+
+      
+      
+
+    }
 };
 </script>
 
@@ -398,5 +619,9 @@ export default {
   width: 90px;
   margin-left: 10px;
   vertical-align: bottom;
+}
+.floderName:hover{
+    color: rgb(0, 174, 255);
+    cursor:pointer;
 }
 </style>
