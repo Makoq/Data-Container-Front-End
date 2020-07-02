@@ -89,7 +89,7 @@ import Content from '@/views/Content';
           </el-form-item>
           <!--  -->
         </el-form>
-        <el-form v-if="this.$route.query.type==='Processing'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+        <el-form v-if="this.$route.query.type==='Processing'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
             <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
 
               <el-select   v-model="form.workspace" placeholder="请选择">
@@ -116,11 +116,11 @@ import Content from '@/views/Content';
           </el-form-item>
 
           <!-- describe -->
-          <el-form-item  label="Describe">
+          <el-form-item  label="Describe" prop="desc">
             <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
            <!-- 关联数据 -->
-          <el-form-item label="Select Data">
+          <el-form-item label="Data">
             <el-button type="primary" @click="selectData">Select </el-button>
             <!-- </br><span>choose related data</span> -->
             <el-dialog
@@ -177,19 +177,36 @@ import Content from '@/views/Content';
           </el-form-item>
           <!-- 上传按钮 -->
           
-          <el-form-item  label="Upload">
+          <el-form-item  label="Scripts">
              
             <el-button     type="primary" @click="upload_pro">Choose Data</el-button>
             <div   class="el-upload__tip">上传python处理方法脚本以及执行参数描述xml</div>
            
           </el-form-item>
-
+           
+          <!-- 创建 -->
           <el-form-item>
-            <el-button    type="success" @click="submitUploadProcessing">Create</el-button>
+            <el-button    type="success" @click="showProcessInfoConfirm" >Create</el-button>
 
           </el-form-item>
-         
-            <input ref="pro"   id="procesing_up" style="visibility: hidden;" type="file" placeholder="请输入内容" multiple/>
+          <el-dialog
+          title="确认"
+              :visible.sync="createProcessConfirm"
+              width="60%"
+              height="280px"
+          >
+          <div>Name: {{processing.name}}</div>
+          <div>File List: {{fileList}}</div>
+          Related Data:<div v-for="(it,key) in chooseDataArray" :key="key">{{it.name}}</div>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="createProcessConfirm = false">取 消</el-button>
+                <el-button type="primary" @click="submitUploadProcessing">确 定</el-button>
+              </span>
+          </el-dialog>
+         <!-- 数据上传input,不可见 -->
+          <input ref="pro"   id="procesing_up" style="visibility: hidden;" type="file" placeholder="请输入内容" multiple/>
          
 
         </el-form>
@@ -258,7 +275,17 @@ export default {
       folderLayer:['All File'],
       instanceLayer:[],
       chooseDataArray:[],
-      connectedData:[]
+      connectedData:[],
+       rules: {
+          name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 25, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          desc: [
+            { required: true, message: '请填写描述', trigger: 'blur' }
+          ]
+       },
+       createProcessConfirm:false
 
 
 
@@ -271,6 +298,7 @@ export default {
       console.log("init",this.$route.query)
     this.isEdit();
   },
+  
   methods: {
     isEdit() {
       //   console.log(this.$route.query.id)
@@ -380,17 +408,25 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     },
+    showProcessInfoConfirm(){
+      this.createProcessConfirm=true
+      this.fileList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
+
+    },
     submitUploadProcessing() {
-      // if(document.querySelector('#procesing_up').fileList.length<2){
-      //   this.$message({
-      //     message:'no processing files',
-      //     type:'fail'
-      //   })
-      //   return
-      // }
+      if(document.getElementById('procesing_up').files.length<2){
+        this.$message({
+          message:'no processing files',
+          type:'fail'
+        })
+        return
+      }
+
       let _this=this
       console.log(document.getElementById('procesing_up').files)
+
       let fileNameList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
+       
       let upObj={
         //instance基本信息
         'uid':_this.$route.query.instance_uid,
@@ -450,15 +486,10 @@ export default {
        
         
     },
-    handleRemove(file, fileList) {
-        console.log(file, fileList);
-    },
-    handlePreview(file) {
-        console.log(file);
-    },
-    handleExceed(files, fileList){
-      this.$message.warning(`当前限制选择 2 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
+    readyCreate(){
+
+    }
+    ,
     selectData(){
       this.chooseDataArray=[]//选择数据置空
       this.connectedData=[]//选择id置空
@@ -501,8 +532,6 @@ export default {
       }else{
          this.chooseDataArray.push(it)
       }
-     
-
     },
     connectData(){
       let _this=this
@@ -579,7 +608,8 @@ export default {
       
       
 
-    }
+    },
+    
 };
 </script>
 

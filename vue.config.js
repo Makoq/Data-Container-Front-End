@@ -26,6 +26,15 @@ module.exports = {
                 pathRewrite:{
                     '^/portal':'/',
                 }
+            },
+            '/my':{
+                target:'http://223.2.38.183:8080/',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/my':'/',
+                }
             }
         }
     }

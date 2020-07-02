@@ -146,12 +146,14 @@
 
                 </el-col>
 
-                <el-col  v-if="it.type==='file'||'processing'" :span="4"  :offset="1" class="operate" > 
+                <el-col  v-if="it.type==='file'||it.type==='Processing'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
-                     <i @click="download(it)" class="el-icon-bottom"></i>
-                     <i class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
-                    <i class="el-icon-edit"></i>
-                    
+                     <i v-if="it.type!='Processing'" @click="download(it)" class="el-icon-bottom"></i>
+                     <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
+                    <!-- <i class="el-icon-edit"></i> -->
+                    <i v-if="it.type==='Processing'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
+
+                   
                      <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
                      <i class="el-icon-more"></i>
                           
@@ -159,7 +161,7 @@
                 </el-col>
                 <el-col  v-else-if="it.type==='folder'" :span="4" :offset="1"  class="operate" > 
                      &nbsp;
-                    <i class="el-icon-edit"></i>
+                    <!-- <i class="el-icon-edit"></i> -->
                    
                     <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
                              
@@ -442,20 +444,6 @@ import cycrypto from '../utils/cycrypto.js';
         public_local_data(){
             let _this=this
 
-            // {"id":"bd9d66b4-117c-4752-a114-1aae34153b11",
-            // "oid":"mgCD/aEcP5R03p8BCzCSXw==",
-            // "name":"test data copy",
-            // "date":"2020-06-23 15:29",
-            // "type":"file",
-            // "authority":true,
-            // "meta":{
-            //     "workSpace":"选项1",
-            //     "description":"",
-            //     "detail":"",
-            //     "tags":["UDX","水文学"],
-            //     "dataPath":"D:\\Projects\\dataContainerFrontEnd\\data",
-            //     "currentPath":"d:\\Projects\\transitDataServer\\service/../dataStorage/bd9d66b4-117c-4752-a114-1aae34153b11"
-            // }}
             
             
             let form=new FormData()
@@ -469,7 +457,7 @@ import cycrypto from '../utils/cycrypto.js';
             form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
 
 
-            this.$axios.post('/portal/dataItem/getDistributedData/',form)
+            this.$axios.post('/my/dataItem/getDistributedData/',form)
             .then(res=>{
                 if(res.data.code===0){
 
@@ -477,8 +465,8 @@ import cycrypto from '../utils/cycrypto.js';
                         message:'publie data success',
                         type:'success'
                     })
-                    window.open('http://111.229.14.128:8898/'+res.data.data);
-                    // window.location.href = 'http://223.2.38.183:8080/'+res.data.data;
+                    window.open('http://223.2.38.183:8080/'+res.data.data);
+                    
                     _this.shareDialogVisible=false
                 }else{
                     this.$message({
@@ -488,6 +476,35 @@ import cycrypto from '../utils/cycrypto.js';
                 }
             })
 
+        },
+        public_processing_item_to_portal(it){
+            let _this=this
+            let query={
+                id:it.id,
+                uid:_this.instancesCont.uid,
+                instType:_this.instancesCont.type,
+                token:localStorage.getItem('relatedUsr').split(',')[1]
+            }
+            this.$axios.get('/api/bindprocessing',{params:query})
+            .then(res=>{
+                if(res.data.code===0){
+                    this.$message({
+                        message:'bind process success',
+                        type:'success'
+                    })
+                    setTimeout(()=>{
+                         window.open('http://223.2.38.183:8080'+res.data.data);
+                    },1000)
+                   
+                    
+
+                }else{
+                     this.$message({
+                        message:'bind process fail',
+                        type:'fail'
+                    })
+                }
+            })
         },
         //监听路由变化
         watchrouter(){
