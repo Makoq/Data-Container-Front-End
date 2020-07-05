@@ -77,14 +77,16 @@ var websocket=function(it){
                            if(resp.data.message=='no authority'){
                                 let noAuthority={
                                     "msg":"resdata",
-                                    "type":"noAuthority"
+                                    "type":"noAuthority",
+                                    "wsToken":re.wsToken
                                 }
                                 ws.send(JSON.stringify(noAuthority))
                            }else
                                 if(resp.data.message=='db find err'){
                                     let noAuthority={
                                         "msg":"resdata",
-                                        "type":"db find err"
+                                        "type":"db find err",
+                                        "wsToken":re.wsToken
                                     }
                                     ws.send(JSON.stringify(noAuthority))
                             }
@@ -92,7 +94,8 @@ var websocket=function(it){
                             let dataRes={
                                 "msg":"resdata",
                                 "id":resp.data.uid,
-                                "reqUsr":re.reqUsrOid
+                                "reqUsr":re.reqUsrOid,
+                                "wsToken":re.wsToken
                             }
 
                             _this.$message({
@@ -121,7 +124,8 @@ var websocket=function(it){
                             let dataRes={
                                 "msg":"resdata",
                                 "id":resp.data.uid,
-                                "reqUsr":re.reqUsrOid
+                                "reqUsr":re.reqUsrOid,
+                                "wsToken":re.wsToken
                             }
 
                             _this.$message({

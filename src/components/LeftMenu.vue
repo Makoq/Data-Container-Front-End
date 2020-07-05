@@ -29,7 +29,7 @@
 
         <template slot="title">
           <i  style="color:white" class="el-icon-files"></i>
-          <span>Data</span>
+          <span>File</span>
         </template>
           <el-menu-item index="1-1"><span>Instances</span></el-menu-item>
       </el-submenu>
@@ -39,7 +39,7 @@
 
         <template slot="title">
           <i style="color:white" class="el-icon-postcard"></i>
-          <span>Processing</span>
+          <span>Information</span>
         </template>
           <el-menu-item index="2-1"><span>Instances</span></el-menu-item>
     

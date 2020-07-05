@@ -89,7 +89,7 @@ import Content from '@/views/Content';
           </el-form-item>
           <!--  -->
         </el-form>
-        <el-form v-if="this.$route.query.type==='Processing'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+        <el-form v-if="this.$route.query.type==='Processing'||this.$route.query.type==='Visualization'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
             <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
 
               <el-select   v-model="form.workspace" placeholder="请选择">
@@ -104,7 +104,7 @@ import Content from '@/views/Content';
          
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
-            <el-input v-model="processing.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
+            <el-input v-model="processing.name"  maxlength="25" show-word-limit placeholder="input name.." style="width:220px;"></el-input>
           </el-form-item>
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
@@ -121,7 +121,8 @@ import Content from '@/views/Content';
           </el-form-item>
            <!-- 关联数据 -->
           <el-form-item label="Data">
-            <el-button type="primary" @click="selectData">Select </el-button>
+            <el-button type="primary" style="width:200px" @click="selectData">Select </el-button>
+           
             <!-- </br><span>choose related data</span> -->
             <el-dialog
               title="挑选数据"
@@ -174,19 +175,32 @@ import Content from '@/views/Content';
               </span>
             </el-dialog>
             <span v-if="connectedData"></span>
+            <div   class="el-upload__tip">*Specifies the processable data for the creating processing method</div>
+          
           </el-form-item>
           <!-- 上传按钮 -->
           
           <el-form-item  label="Scripts">
              
-            <el-button     type="primary" @click="upload_pro">Choose Data</el-button>
-            <div   class="el-upload__tip">上传python处理方法脚本以及执行参数描述xml</div>
+            <el-button     type="primary" @click="upload_pro" style="width:200px">Choose Scripts</el-button>
+            <div   class="el-upload__tip">*Upload custom processing files based on <el-button type="text" @click="programming_template_visable=true">the programming templates</el-button></div>
            
           </el-form-item>
+          <el-dialog
+            title="Programing Template"
+              :visible.sync="programming_template_visable"
+              width="60%"
+              height="280px"
+          >
+            <img src="../assets/programing_template.png" style="width:90%;height:90%">
+              <span slot="footer" class="dialog-footer">         
+                <el-button type="primary" @click="programming_template_visable=false">OK</el-button>
+              </span>
+          </el-dialog>
            
           <!-- 创建 -->
           <el-form-item>
-            <el-button    type="success" @click="showProcessInfoConfirm" >Create</el-button>
+            <el-button    type="success" @click="showProcessInfoConfirm"  style="width:200px">Create</el-button>
 
           </el-form-item>
           <el-dialog
@@ -201,15 +215,17 @@ import Content from '@/views/Content';
 
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="createProcessConfirm = false">取 消</el-button>
-                <el-button type="primary" @click="submitUploadProcessing">确 定</el-button>
+                <el-button @click="createProcessConfirm = false">Cancle</el-button>
+                <el-button type="primary" @click="submitUploadProcessing">OK</el-button>
               </span>
           </el-dialog>
          <!-- 数据上传input,不可见 -->
-          <input ref="pro"   id="procesing_up" style="visibility: hidden;" type="file" placeholder="请输入内容" multiple/>
+          <input ref="pro"   id="procesing_up" style="visibility: hidden;" type="file" multiple/>
          
 
         </el-form>
+
+        
       </el-col>
     </el-row>
   </div>
@@ -285,7 +301,8 @@ export default {
             { required: true, message: '请填写描述', trigger: 'blur' }
           ]
        },
-       createProcessConfirm:false
+       createProcessConfirm:false,
+       programming_template_visable:false
 
 
 
@@ -433,14 +450,14 @@ export default {
         'instype':_this.$route.query.type,
         'userToken':_this.$route.query.userToken,
         //关联用户信息
-        'oid':localStorage.getItem('relatedUsr'),
+        'oid':localStorage.getItem('relatedUsr').split(',')[0],
      
        
         //处理方法信息
         'id':uuidv4(),
         'name':_this.processing.name,
         'date':utils.formatDate(new Date()),
-        'type':'Processing',
+        'type':_this.$route.query.type,
         'relatedData':_this.connectedData,
         'authority':_this.processing.authority,
         'fileList':fileNameList,
@@ -477,7 +494,15 @@ export default {
                         type: 'success'
                     });
 
-            }           
+            }else if(_this.$route.query.type==='Visualization'){
+                 
+                 this.$router.push({path:'/instance',query:{type:'Visualization'}})
+                  _this.$message({
+                        message: 'create success ',
+                        type: 'success'
+                    });
+
+            }               
 
           }
 

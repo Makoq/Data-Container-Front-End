@@ -5,7 +5,7 @@
         <!-- //挑选工作空间 -->
         <!-- <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button> -->
         <el-button   type="warning" @click="newFolder" >New Floder</el-button>
-        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type}}</el-button>
+        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type==="Processing"?"Infoemation":this.$route.query.type}}</el-button>
        </el-col>
        <el-col :span="10">
         <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
@@ -117,8 +117,9 @@
                    <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
 
                     <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
-                    <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="30" alt="Safari" title="Safari">
+                    <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="28" alt="Safari" title="Safari">
 
+                    <img v-if="it.type==='Visualization'" src="../assets/visualization.png" width="28" height="28" alt="Safari" title="Safari">
                 </el-col>
                 <el-col :span="3" style="height:100%"> 
                    
@@ -129,7 +130,7 @@
                     <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
                         {{it.name}}
                     </a>
-                    <span class="dataName"  v-if="it.type==='file'||it.type==='Processing'">{{it.name}}</span>
+                    <span class="dataName"  v-if="it.type!='folder'">{{it.name}}</span>
 
                 </el-col>
 
@@ -146,13 +147,14 @@
 
                 </el-col>
 
-                <el-col  v-if="it.type==='file'||it.type==='Processing'" :span="4"  :offset="1" class="operate" > 
+                <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
-                     <i v-if="it.type!='Processing'" @click="download(it)" class="el-icon-bottom"></i>
+                     <i  v-if="it.type!='file'" class="el-icon-caret-right"></i>
+                     <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
                      <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
-                    <!-- <i class="el-icon-edit"></i> -->
-                    <i v-if="it.type==='Processing'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
-
+                    <!-- <i class="el-icon-info"></i> -->
+                    <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
+                    <i   class="el-icon-info"></i>
                    
                      <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
                      <i class="el-icon-more"></i>
@@ -198,9 +200,10 @@
 import utils from '../utils/utils.js'
 import DecryptJS from '../utils/cycrypto.js';
 import ManagerList from '../components/ManagerList'
- import uuidv4 from 'uuid/v4' 
+import uuidv4 from 'uuid/v4' 
 import cycrypto from '../utils/cycrypto.js';
-  export default {
+import myUrl from '../utils/config.js'
+export default {
     name:'instance',
     components:{
             ManagerList
@@ -317,6 +320,11 @@ import cycrypto from '../utils/cycrypto.js';
                 let _this=this,userToken=localStorage.getItem('Authorization')
 
                 this.$router.push({path:'/form/processing',query:{type:'Processing',instance_uid:_this.instancesCont.uid,userToken:userToken}})
+
+            }else if(this.instnaceType==='Visualization'){
+                let _this=this,userToken=localStorage.getItem('Authorization')
+
+                this.$router.push({path:'/form/processing',query:{type:'Visualization',instance_uid:_this.instancesCont.uid,userToken:userToken}})
 
             }
 
@@ -457,7 +465,7 @@ import cycrypto from '../utils/cycrypto.js';
             form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
 
 
-            this.$axios.post('/my/dataItem/getDistributedData/',form)
+            this.$axios.post('/portal/dataItem/getDistributedData/',form)
             .then(res=>{
                 if(res.data.code===0){
 
@@ -465,10 +473,15 @@ import cycrypto from '../utils/cycrypto.js';
                         message:'publie data success',
                         type:'success'
                     })
-                    window.open('http://223.2.38.183:8080/'+res.data.data);
+                 _this.shareDialogVisible=false
+                   
+                    window.open( myUrl.remote_test_url+res.data.data);
                     
-                    _this.shareDialogVisible=false
-                }else{
+                    
+                }else if(res.data.code===-2){
+                    window.open( myUrl.remote_test_url+res.data.msg);
+                }else
+                {
                     this.$message({
                         message:'publie data failed',
                         type:'fail'
@@ -483,6 +496,7 @@ import cycrypto from '../utils/cycrypto.js';
                 id:it.id,
                 uid:_this.instancesCont.uid,
                 instType:_this.instancesCont.type,
+                type:it.type,
                 token:localStorage.getItem('relatedUsr').split(',')[1]
             }
             this.$axios.get('/api/bindprocessing',{params:query})
@@ -493,7 +507,7 @@ import cycrypto from '../utils/cycrypto.js';
                         type:'success'
                     })
                     setTimeout(()=>{
-                         window.open('http://223.2.38.183:8080'+res.data.data);
+                         window.open( myUrl.remote_test_url+res.data.data);
                     },1000)
                    
                     
