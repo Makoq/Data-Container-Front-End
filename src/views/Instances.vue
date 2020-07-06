@@ -468,17 +468,20 @@ export default {
             this.$axios.post('/portal/dataItem/getDistributedData/',form)
             .then(res=>{
                 if(res.data.code===0){
-
-                    this.$message({
+                    _this.shareDialogVisible=false
+                    _this.$notify({
                         message:'publie data success',
-                        type:'success'
+                      
+                        duration: 0
                     })
-                 _this.shareDialogVisible=false
+                 
                    
                     window.open( myUrl.remote_test_url+res.data.data);
                     
                     
                 }else if(res.data.code===-2){
+                    _this.shareDialogVisible=false
+
                     window.open( myUrl.remote_test_url+res.data.msg);
                 }else
                 {
@@ -512,12 +515,19 @@ export default {
                    
                     
 
+                }else if(res.data.code===-2){
+                        this.$message({
+                            message:'bind process fail',
+                            type:'fail'
+                        })
                 }else{
-                     this.$message({
-                        message:'bind process fail',
-                        type:'fail'
-                    })
+                        this.$message({
+                                message:'bind process fail',
+                                type:'fail'
+                        })
                 }
+                     
+                
             })
         },
         //监听路由变化

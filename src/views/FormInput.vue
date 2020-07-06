@@ -242,13 +242,13 @@ export default {
     return {
       form: {
         workspace:"",
-        name: "test data copy",
+        name: "",
         // tag
         dynamicTags: ["UDX", "水文学"],
         desc: "",
         detail:"",
         authority:true,
-        LocalURL:'D:\\Projects\\dataContainerFrontEnd\\data'
+        LocalURL:'D:\\Projects\\testData\\china_admin_shp'
       },
       processing:{
         name:'',

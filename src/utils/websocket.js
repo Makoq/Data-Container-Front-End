@@ -98,12 +98,14 @@ var websocket=function(it){
                                 "wsToken":re.wsToken
                             }
 
-                            _this.$message({
-                                message:'就地共享数据'+resp.data.uid,
-                                type:'success'
+                            re.name
+                            _this.$notify({
+                                message:'In situ share in file level: '+re.name,
+                                type: 'success',
+                                duration: 0
                             })
 
-                            console.log(dataRes)
+                            
                             //数据下载信息发送回中转服务器
                             ws.send(JSON.stringify(dataRes))
                        }
@@ -128,18 +130,21 @@ var websocket=function(it){
                                 "wsToken":re.wsToken
                             }
 
-                            _this.$message({
-                                message:'就地共享内容层'+resp.data.uid,
-                                type:'success'
+                           
+                            _this.$notify({
+                                message:'In situ share in content level: '+re.name,
+                                type: 'success',
+                                duration: 0
                             })
 
                             console.log(dataRes)
                             //数据下载信息发送回中转服务器
                             ws.send(JSON.stringify(dataRes))
                         }else if(resp.data.code===-1){
-                            _this.$message({
+                            _this.$notify({
                                 message:'本地方法调用失败',
-                                type:'fail'
+                                type:'fail',
+                                duration: 0
                             })
                         }
 
