@@ -24,14 +24,18 @@
 
 <script>
 
-import NavHeader from '@/components/NavHeader'
-import LeftMenu from '@/components/LeftMenu'
-import BottomFooter from '@/components/BottomFooter'
+//组件懒加载
+const NavHeader =()=>import('@/components/NavHeader')
+const LeftMenu =()=>import('@/components/LeftMenu')
+const BottomFooter =()=>import('@/components/BottomFooter')
+
+
 import { mapGetters,mapState } from 'vuex'
  
 export default {
   name: 'index',
   components: {
+    
     NavHeader,
     LeftMenu,
     BottomFooter,
@@ -73,7 +77,7 @@ export default {
           _this.breadLoadName.push(v)
         }
       })
-      console.log(bread)
+   
 
     },
     //已经vuex数据，判断当前菜单项的状态

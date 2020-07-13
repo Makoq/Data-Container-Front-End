@@ -26,12 +26,15 @@ const router= new Router({
         {
           path:'/workSpace',
           name:'Workspace List: Manage your workspace',
-          component: () => import(/* webpackChunkName: "about" */ './views/WorkSpace.vue')
+          // 路由懒加载
+          component:resolve=>require(['./views/WorkSpace.vue'],resolve)
         },
         {
           path:'/instance',
           name:'Instances List: Manage your service instances',
-          component: () => import(/* webpackChunkName: "about" */ './views/Instances.vue')
+          //路由懒加载
+          component:resolve=>require(['./views/Instances.vue'],resolve)
+ 
         },
         {
           path:'/form/:type',

@@ -199,7 +199,7 @@
 <script>
 import utils from '../utils/utils.js'
 import DecryptJS from '../utils/cycrypto.js';
-import ManagerList from '../components/ManagerList'
+const ManagerList =()=>import( '../components/ManagerList')
 import uuidv4 from 'uuid/v4' 
 import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
@@ -517,7 +517,7 @@ export default {
 
                 }else if(res.data.code===-2){
                         this.$message({
-                            message:'bind process fail',
+                            message:'not public bind data',
                             type:'fail'
                         })
                 }else{
