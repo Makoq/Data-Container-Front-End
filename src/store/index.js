@@ -21,6 +21,7 @@ const store = new Vuex.Store({
  //更改store的状态
   mutations: {
     // 修改token，并将token存入localStorage
+    //第一个是state参数，第二个是usr自定义参数，或称为载荷（payload），也就是我在登录的时候传入的数据
     changeLogin (state, user) {
       state.Authorization = user.Authorization;
       localStorage.setItem('Authorization', user.Authorization);

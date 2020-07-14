@@ -151,27 +151,19 @@ import { mapMutations } from 'vuex';
       LeftMenuCollapse(){
          let _this=this
         if(this.Collapse){
+          _this.notCollapse()
 
-          this.$nextTick(() => {
-          
-             setTimeout(()=>{
+          this.$nextTick(() => { 
             _this.$refs.leftBtnCollapse.$el.style.width='100%'
-           
-            },150)
             _this.Collapse=false
-            _this.notCollapse()
-             
-
 　　　　   }, 0)
 
         }else{
 
-          
+          _this.isCollapse()
           this.$nextTick(() => {
             _this.$refs.leftBtnCollapse.$el.style.width='64px';
-           
             _this.Collapse=true
-             _this.isCollapse()
             
 
 　　　　   }, 0)

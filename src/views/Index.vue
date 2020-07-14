@@ -1,10 +1,10 @@
 <template>
   <div class="index">
-    <el-row style="height: 63.4px;border: 1px solid black">
+    <el-row style="height: 63.4px;border: 1px solid black;min-width:1080px">
         <nav-header></nav-header>
     </el-row>  
     <el-row style="height:  calc(100vh - 95px);width:100%; display:flex">
-      <div   style="height:100%;minwidth:185px" ref="leftMenu">
+      <div   style="height:100%;minwidth:185px;" ref="leftMenu">
         <left-Menu></left-Menu> 
       </div>
       <div   style="height:100%;" ref="content">
@@ -86,8 +86,10 @@ export default {
      
       if(menuState==='100%'){
          
-        this.$refs.leftMenu.style.width='15%'
-        this.$refs.content.style.width='85%'
+        this.$refs.leftMenu.style.width='205px'
+         
+
+        this.$refs.content.style.width='calc(100% - 205px)'
 
       }else{
 
