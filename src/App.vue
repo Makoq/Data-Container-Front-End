@@ -8,8 +8,7 @@
 import ws from './utils/websocket.js'
 export default {
   name: 'App',
-  components: {
-  },
+   
   data () {
     return {
       //

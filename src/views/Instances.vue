@@ -464,6 +464,8 @@ export default {
             form.append("date",utils.formatDate(new Date()))
             form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
 
+           // form.append("categoryId",'5cb83fd0ea3cba3224b6e24e')
+
 
             this.$axios.post('/portal/dataItem/getDistributedData/',form)
             .then(res=>{
