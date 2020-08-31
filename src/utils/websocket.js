@@ -1,5 +1,5 @@
 const util=require('./utils.js')
-var websocket=function(it){
+const websocket=function(it){
     let _this=it
     it.$axios.get('/api/state')
     .then((res)=>{
@@ -179,6 +179,5 @@ var websocket=function(it){
     })
 
 }
-export default{
-    websocket
- }
+export default websocket;
+ 

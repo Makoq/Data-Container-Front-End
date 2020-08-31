@@ -82,7 +82,7 @@ import ws from '../utils/websocket.js'
     methods: {
        ...mapMutations(['changerelatedUsr']),
       OnlineWithCenterServer(){
-        ws.websocket(this)
+        ws(this)
         console.log(this.$root.$el.myWS)
       },
       handleSelect(key, keyPath) {

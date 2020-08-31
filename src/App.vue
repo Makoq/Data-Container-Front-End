@@ -16,7 +16,7 @@ export default {
   },
   mounted(){
     //建立与中转服务器的websocket
-    ws.websocket(this)
+    ws(this)
   },
   beforeDestroy(){
     console.log("destroyed")
