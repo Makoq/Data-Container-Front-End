@@ -10,7 +10,7 @@ module.exports = {
         proxy:{
             //配置跨域
             '/api':{
-                target:'http://localhost:8899/',
+                target:'http://localhost:8899',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
@@ -18,15 +18,17 @@ module.exports = {
                     '^/api':'/',
                 }
             },
+            //发布数据公开页面
             '/portal':{
-                target:'http://111.229.14.128:8898/',
+                target:'http://223.2.40.210:8084',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
                 pathRewrite:{
-                    '^/portal':'/',
+                    '^/portal':'',
                 }
             },
+            //
             '/my':{
                 target:'http://223.2.38.183:8080',
                 ws:true,
@@ -35,7 +37,22 @@ module.exports = {
                 pathRewrite:{
                     '^/my':'/',
                 }
-            }
+            },
+            //参与式平台
+            '/geops':{
+                target:'http://223.2.40.210:8899/GeoProblemSolving',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/geops':'',
+                }
+            },
+
+
+
+
+
         }
     }
 }

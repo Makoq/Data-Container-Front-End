@@ -83,6 +83,17 @@
            
         </el-row>
         <el-divider ></el-divider>
+                <!-- 选择发布目标，门户或者参与式平台 -->
+                <el-dialog
+                title="Public Option"
+                :visible.sync="publicOptionDialog"
+                width="30%"
+                >
+                <span>Public Options:</span>
+
+                    <el-radio v-model="publicOption" label="1">OpenGMS Portal</el-radio>
+                    <el-radio v-model="publicOption" label="2">GeoProblems Solving</el-radio>
+                </el-dialog>
                 <!-- 删除确认 -->
                 <el-dialog
                     title="Attention!"
@@ -102,12 +113,26 @@
                     :visible.sync="shareDialogVisible"
                     width="50%"
                     >
-                    <h3>Are you sure to share this data on OpenGMS Portal DataItem List ? </h3></br></br></br>
-                    <p> Current connected account in OpenGMS Portal is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
-                    <span slot="footer" class="dialog-footer">
+                    <el-radio v-model="publicOption" label="portal">OpenGMS Portal</el-radio>
+                    <el-radio v-model="publicOption" label="geoproblem">GeoProblems Solving</el-radio>
+                    
+                    <div v-if="publicOption=='portal'" style="margin-top:50px">
+                        <h3>Are you sure to share this data on OpenGMS Portal DataItem List ? </h3></br></br></br>
+                        <p> Current connected account in OpenGMS Portal is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
                         
-                        <el-button type="primary" @click="public_local_data()">确 定</el-button>
-                    </span>
+                    </div>
+                    <div v-if="publicOption=='geoproblem'" style="margin-top:50px">
+                        <h3>Are you sure to share this data on GeoProblems Solving Plartform:</h3></br></br></br></h3>
+                        <p> Current connected account in GeoProblems Solving Plartform is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
+
+                    </div>
+                        
+                        <span slot="footer" class="dialog-footer">
+                            
+                            <el-button type="primary" @click="public_data_options()">确 定</el-button>
+                        </span>
+
+
                 </el-dialog>
 
                  <!-- 文件夹列表 -->     
@@ -203,6 +228,7 @@ const ManagerList =()=>import( '../components/ManagerList')
 import uuidv4 from 'uuid/v4' 
 import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
+const address = require('address');
 export default {
     name:'instance',
     components:{
@@ -235,7 +261,11 @@ export default {
        //加载项
        loading:false,
        //共享确认
-       shareDialogVisible:false
+       shareDialogVisible:false,
+       //发布数据选项
+       publicOption:'portal',
+       //发布数据弹出框
+       publicOptionDialog:false
     }),
     created(){
         //初始化组件时，初始化内容列表id为0
@@ -259,6 +289,9 @@ export default {
          $route: 'watchrouter'//路由变化时，执行的方法
     },
     mounted(){
+
+        
+
         //组件初始化时，确定instance类型
         console.log('mounted')
         this.instnaceType=this.$route.query.type
@@ -439,6 +472,20 @@ export default {
 
             })
         },
+        public_data_options(){
+            
+            if(this.publicOption==='portal'){
+
+                this.public_local_data()
+
+            }else if(this.publicOption==='geoproblem'){
+
+                this.public_local_data_to_GeoProblems()
+
+            }
+
+        },
+        //显示发布确认框
         public_data_item_to_portal(it){
             if(!localStorage.getItem('relatedUsr')){
                 alert('please connect usr firstly!')
@@ -449,6 +496,12 @@ export default {
             }
            
         },
+        getIPAdress() {
+            
+
+            
+        },
+        //发布数据条目到门户
         public_local_data(){
             let _this=this
 
@@ -463,6 +516,8 @@ export default {
             form.append("meta",JSON.stringify(_this.theItem.meta))
             form.append("date",utils.formatDate(new Date()))
             form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
+
+            form.append('ip',_this.$root.$el.insitu_ip)
 
            // form.append("categoryId",'5cb83fd0ea3cba3224b6e24e')
 
@@ -495,6 +550,16 @@ export default {
             })
 
         },
+        //发布数据到参与式平台
+        public_local_data_to_GeoProblems(){
+             
+            this.$axios.post('/geops/insituShare/newDistributedDataIndex',{params:{
+                data:"test"
+            }})
+
+
+        },
+        //发布处理方法到门户
         public_processing_item_to_portal(it){
             let _this=this
             let query={

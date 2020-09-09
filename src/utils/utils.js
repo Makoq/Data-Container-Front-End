@@ -1,4 +1,4 @@
-
+ 
 //格式化时间函数：传入new Date对象，返回2020-1-12 03：04格式的时间
 var formatDate=function(d){
     let curr_date = d.getDate();
@@ -18,3 +18,8 @@ var formatDate=function(d){
 }
 
 exports.formatDate=formatDate
+
+
+//获取本机ip
+
+ 

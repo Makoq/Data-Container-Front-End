@@ -9,6 +9,8 @@ const websocket=function(it){
           type:'success'
         })
 
+        _this.$root.$el.insitu_ip=res.data.ip
+
         //连接中转服务器websocket
         
         if(_this.$root.$el.myWS==undefined){
