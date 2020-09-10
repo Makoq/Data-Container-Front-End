@@ -20,7 +20,7 @@ import Content from '@/views/Content';
          
           <!-- 名称 -->
           <el-form-item  label="Name" prop="name">
-            <el-input v-model="form.name"  maxlength="25" show-word-limit placeholder="请输入数据源名称" style="width:220px;"></el-input>
+            <el-input v-model="form.name" style="width:40%" maxlength="25" show-word-limit placeholder="Name of the data" ></el-input>
           </el-form-item>
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
@@ -32,7 +32,7 @@ import Content from '@/views/Content';
           </el-form-item>
 
           <!-- describe -->
-          <el-form-item  label="Describe">
+          <el-form-item  label="Abstract">
             <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
           <!-- detail -->
@@ -41,7 +41,7 @@ import Content from '@/views/Content';
           </el-form-item>
 
           <!-- 标签 -->
-          <el-form-item label="Tags" prop="name">
+          <el-form-item label="Keywords" prop="name">
             <el-tag
               :key="tag"
               v-for="tag in form.dynamicTags"
@@ -60,6 +60,15 @@ import Content from '@/views/Content';
             ></el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ add Tags</el-button>
           </el-form-item>
+          <!-- data format -->
+          <el-form-item  label="Format">
+            <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.format" placeholder="Data Format about this..."></el-input>
+          </el-form-item>
+
+           <!-- email -->
+          <el-form-item  label="Email">
+            <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.email" placeholder="Data Format about this..."></el-input>
+          </el-form-item>
 
           <!-- 链接参数 -->
            <el-form-item  v-if="this.$route.query.type!='FileWorkSpace'" label="Local URL" prop="Url">
@@ -70,7 +79,7 @@ import Content from '@/views/Content';
               trigger="hover"
               content="Specific to a file or a folder(for multi files)">
             </el-popover>
-            <el-input v-model="form.LocalURL" placeholder="file://" style="width:90%;"></el-input>
+            <el-input v-model="form.LocalURL" placeholder="file://" style="width:100%;"></el-input>
              
           </el-form-item>
            
@@ -244,11 +253,13 @@ export default {
         workspace:"",
         name: "",
         // tag
-        dynamicTags: ["UDX", "水文学"],
+        dynamicTags: ["5f3e41e80e989714e8364e98"],
         desc: "",
         detail:"",
         authority:true,
-        LocalURL:'D:\\Projects\\testData\\china_admin_shp'
+        LocalURL:'D:\\Projects\\testData\\china_admin_shp',
+        format:'',
+        email:''
       },
       processing:{
         name:'',
@@ -359,7 +370,7 @@ export default {
           description:_this.form.desc,
           detail:_this.form.detail,
           tags:_this.form.dynamicTags,
-          dataPath:_this.form.LocalURL
+          dataPath:_this.form.LocalURL,
         }
       }
       console.log("file",newFile)

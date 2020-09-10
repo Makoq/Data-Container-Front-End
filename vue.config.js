@@ -15,7 +15,7 @@ module.exports = {
                 timeout:600000,
                 changOrigin:true,
                 pathRewrite:{
-                    '^/api':'/',
+                    '^/api':'',
                 }
             },
             //发布数据公开页面
