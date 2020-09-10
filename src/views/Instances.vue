@@ -117,13 +117,13 @@
                     <el-radio v-model="publicOption" label="geoproblem">GeoProblems Solving</el-radio>
                     
                     <div v-if="publicOption=='portal'" style="margin-top:50px">
-                        <h3>Are you sure to share this data on OpenGMS Portal DataItem List ? </h3></br></br></br>
-                        <p> Current connected account in OpenGMS Portal is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
+                        <h3>Are you sure to share this data on OpenGMS Portal DataItem List ? </h3><br><br><br>
+                        <p> Current connected account in OpenGMS Portal is  <br><br><strong>{{connectPortalUsr}}</strong> </p>
                         
                     </div>
                     <div v-if="publicOption=='geoproblem'" style="margin-top:50px">
-                        <h3>Are you sure to share this data on GeoProblems Solving Plartform:</h3></br></br></br></h3>
-                        <p> Current connected account in GeoProblems Solving Plartform is  </br></br><strong>{{connectPortalUsr}}</strong> </p>
+                        <h3>Are you sure to share this data on GeoProblems Solving Plartform:</h3><br><br><br></h3>
+                        <p> Current connected account in GeoProblems Solving Plartform is  <br><br><strong>{{connectPortalUsr}}</strong> </p>
 
                     </div>
                         
@@ -134,6 +134,40 @@
 
 
                 </el-dialog>
+
+                <el-dialog
+                    title="GeoProject!"
+                    :visible.sync="GeoProblemsData"
+                    width="50%"
+                    >
+
+                     <div v-if="GeoVisData=='login'">
+                        <el-form>
+                         <el-form-item  label="Login">
+                            <el-input type="text"      v-model="loginGeo.usr" placeholder="username"></el-input>
+
+                        </el-form-item>
+                        <el-form-item  label="PWS">
+                            <el-input type="text"      v-model="loginGeo.pwd" placeholder="password"></el-input>
+                        </el-form-item>
+                         <el-button @click="loginGeoP">LOGIN</el-button>
+                        </el-form>
+                     </div >
+
+                     <div v-else-if="GeoVisData=='list'">
+                         <div v-for="(it,key) in GeoProjectsList" :key="key">
+                             {{it.name}}<el-button>add</el-button>
+                             //TODO 美化数据展示
+                         </div>
+                     </div>
+
+                        <span slot="footer" class="dialog-footer">
+                            
+                            <el-button type="primary" @click="public_data_options()">确 定</el-button>
+                        </span>
+
+                </el-dialog>
+
 
                  <!-- 文件夹列表 -->     
             <el-row  v-for="(it,key) in instancesCont.list" :key="key"  class="item">
@@ -229,6 +263,7 @@ import uuidv4 from 'uuid/v4'
 import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
 const address = require('address');
+import md5 from "js-md5"
 export default {
     name:'instance',
     components:{
@@ -265,7 +300,16 @@ export default {
        //发布数据选项
        publicOption:'portal',
        //发布数据弹出框
-       publicOptionDialog:false
+       publicOptionDialog:false,
+       //获取参与式平台项目数据
+       GeoProblemsData:false,
+       GeoVisData:'login',
+       loginGeo:{
+           usr:'',
+           pwd:''
+       },
+       GeoProjectsList:[]
+
     }),
     created(){
         //初始化组件时，初始化内容列表id为0
@@ -496,16 +540,10 @@ export default {
             }
            
         },
-        getIPAdress() {
-            
-
-            
-        },
+        
         //发布数据条目到门户
         public_local_data(){
             let _this=this
-
-            
             
             let form=new FormData()
             form.append("id",_this.theItem.id)
@@ -552,12 +590,28 @@ export default {
         },
         //发布数据到参与式平台
         public_local_data_to_GeoProblems(){
-             
-            this.$axios.post('/geops/insituShare/newDistributedDataIndex',{params:{
-                data:"test"
-            }})
+            this.shareDialogVisible=false
+            this.GeoProblemsData=true
+            this.GeoVisData='login'
+            this.GeoProjectsList=[]
+            
 
 
+        },
+        loginGeoP(){
+            let obj={
+                userName:this.loginGeo.usr,
+                password:md5(this.loginGeo.pwd)
+            }
+            let _this=this
+            this.$axios.get('/test/GeoProblemSolving/insituShare/getProjectInfo',{params:obj})
+            .then(res=>{
+                if(res.data.code==0){
+                        _this.GeoVisData='list'
+                        _this.GeoProjectsList=res.data.data
+
+                }
+            })
         },
         //发布处理方法到门户
         public_processing_item_to_portal(it){

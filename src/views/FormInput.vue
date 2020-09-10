@@ -1,8 +1,54 @@
 import Content from '@/views/Content';
 <template>
-  <div class="form">
+  <div class="form" >
     <el-row :gutter="20">
-      <el-col :span="12" style="width: 90%;">
+       <el-col :span="this.$route.query.type==='Data'?6:0" class="category">
+              <el-card class="box-card categoryList" style="margin-left:20px">
+                    <div slot="header" class="clearfix text-center">
+                        <span style="font-size: 20px;color:#444">Data Categories</span>
+                    </div>
+
+                    <el-collapse v-model="categories.activeNames" @change="handleChange">
+                        <el-collapse-item title="Application-focused categories" style="font-size: smaller;" name="1">
+                            <el-collapse v-model="categories.activeNames1" @change="handleChange1">
+                                <el-collapse-item title="Natural-perspective" style="margin-left: 10%;font-size: smaller;" name="11">
+                                    <el-button type="text" id="5f3e42070e989714e8364e9a" @click="chooseCate('5f3e42070e989714e8364e9a')" style="font-size: x-small">Land Regions</el-button>
+                                    <el-button type="text" id="5f3e422a0e989714e8364e9c" @click="chooseCate('5f3e422a0e989714e8364e9c')" style="font-size: x-small">Ocean Regions</el-button>
+                                    <el-button type="text" id="5f3e42360e989714e8364e9e" @click="chooseCate('5f3e42360e989714e8364e9e')" style="font-size: x-small">Frozen Regions</el-button>
+                                    <el-button type="text" id="5f3e42400e989714e8364ea0" @click="chooseCate('5f3e42400e989714e8364ea0')" style="font-size: x-small">Atmosphere Regions</el-button>
+                                    <el-button type="text" id="5f3e424c0e989714e8364ea2" @click="chooseCate('5f3e424c0e989714e8364ea2')" style="font-size: x-small">Space Earth</el-button>
+                                    <el-button type="text" id="5f3e42550e989714e8364ea4" @click="chooseCate('5f3e42550e989714e8364ea4')" style="font-size: x-small">Soid Earth</el-button>
+                                    <el-button type="text" id="5f3e42610e989714e8364ea6" @click="chooseCate('5f3e42610e989714e8364ea6')" style="font-size: x-small">Integrated Perspective</el-button>
+                                </el-collapse-item>
+                                <el-collapse-item title="Human-perspective" style="margin-left: 10%;font-size: x-small;" name="12">
+                                    <el-button type="text" id="5f3e42780e989714e8364ea8" @click="chooseCate('5f3e42780e989714e8364ea8')" style="font-size: x-small">Administrative Regions</el-button>
+                                    <el-button type="text" id="5f3e42830e989714e8364eaa" @click="chooseCate('5f3e42830e989714e8364eaa')" style="font-size: x-small">Social Regions</el-button>
+                                    <el-button type="text" id="5f3e428c0e989714e8364eac" @click="chooseCate('5f3e428c0e989714e8364eac')" style="font-size: x-small">Economic Regions</el-button>
+                                    <el-button type="text" id="5f3e42940e989714e8364eae" @click="chooseCate('5f3e42940e989714e8364eae')" style="font-size: x-small">Integrated Perspective</el-button>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </el-collapse-item>
+                        <el-collapse-item title="Method-focused categories" style="font-size: smaller;" name="2">
+                            <el-collapse v-model="categories.activeNames2" @change="handleChange1">
+                                <el-collapse-item title="Data-perspective" style="margin-left: 10%;font-size: x-small;" name="21">
+                                    <el-button type="text" id="5f3e42ac0e989714e8364eb0" @click="chooseCate('5f3e42ac0e989714e8364eb0')" style="font-size: x-small">Geoinformation Analysis</el-button>
+                                    <el-button type="text" id="5f3e42b40e989714e8364eb2" @click="chooseCate('5f3e42b40e989714e8364eb2')" style="font-size: x-small">Remote Sensing Analysis</el-button>
+                                    <el-button type="text" id="5f3e42bc0e989714e8364eb4" @click="chooseCate('5f3e42bc0e989714e8364eb4')" style="font-size: x-small">Geostatistical Analysis</el-button>
+                                    <el-button type="text" id="5f3e42c30e989714e8364eb6" @click="chooseCate('5f3e42c30e989714e8364eb6')" style="font-size: x-small">Machine Learning Analysis</el-button>
+                                </el-collapse-item>
+                                <el-collapse-item title="Process-perspective" style="margin-left: 10%;font-size: x-small;" name="22">
+                                    <el-button type="text" id="5f3e42d40e989714e8364eb8" @click="chooseCate('5f3e42d40e989714e8364eb8')" style="font-size: x-small">Physical Process Simulation</el-button>
+                                    <el-button type="text" id="5f3e42dc0e989714e8364eba" @click="chooseCate('5f3e42dc0e989714e8364eba')" style="font-size: x-small">Chemical Process Simulation</el-button>
+                                    <el-button type="text" id="5f3e42e30e989714e8364ebc" @click="chooseCate('5f3e42e30e989714e8364ebc')" style="font-size: x-small">Biological Process Simulation</el-button>
+                                    <el-button type="text" id="5f3e42ec0e989714e8364ebe" @click="chooseCate('5f3e42ec0e989714e8364ebe')" style="font-size: x-small">Human-Activity Simulation</el-button>
+                                </el-collapse-item>
+                            </el-collapse>
+                        </el-collapse-item>
+                    </el-collapse>
+                </el-card>
+       </el-col>
+
+      <el-col :span="this.$route.query.type==='Data'?18:12"  >
         <el-form v-if="this.$route.query.type==='Data'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
@@ -22,6 +68,20 @@ import Content from '@/views/Content';
           <el-form-item  label="Name" prop="name">
             <el-input v-model="form.name" style="width:40%" maxlength="25" show-word-limit placeholder="Name of the data" ></el-input>
           </el-form-item>
+
+          <!-- 分类 -->
+          <el-form-item  label="Categories" prop="name">
+            <!-- <el-input v-model="form.categories" style="width:40%"   show-word-limit placeholder="Choose categories" ></el-input> -->
+            <el-tag
+              v-for="tag in form.categories"
+              :key="tag.cateId"
+              closable
+              @close="delCate(tag)"
+              :type="tag.type">
+              {{tag.cateId}}
+            </el-tag>
+          </el-form-item>
+
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
             <el-switch
@@ -233,8 +293,6 @@ import Content from '@/views/Content';
          
 
         </el-form>
-
-        
       </el-col>
     </el-row>
   </div>
@@ -252,8 +310,9 @@ export default {
       form: {
         workspace:"",
         name: "",
+        categories:[],
         // tag
-        dynamicTags: ["5f3e41e80e989714e8364e98"],
+        dynamicTags: ["gis",'地理学'],
         desc: "",
         detail:"",
         authority:true,
@@ -265,8 +324,6 @@ export default {
         name:'',
         authority:true,
         desc:'',
-
-
       },
       workspaceList:[
         {
@@ -313,21 +370,46 @@ export default {
           ]
        },
        createProcessConfirm:false,
-       programming_template_visable:false
+       programming_template_visable:false,
 
-
-
+       //分类
+       categories:{
+         activeNames:['1'],
+         activeNames1:['11'],
+         cateId:undefined
+       }
     };
   },
   computed: {
   
   },
   mounted() {
-      console.log("init",this.$route.query)
+    console.log("init",this.$route.query)
     this.isEdit();
   },
   
   methods: {
+    chooseCate(cateId){
+        //this.categories.cateId=cateId
+        let obj={id:cateId,cateId:document.getElementById(cateId).firstElementChild.innerHTML,type: 'success'}
+        let flag=true
+       console.log(obj,cateId)
+        for(let it of this.form.categories){
+          if(it.id==cateId) {
+           
+            flag=false
+             break
+          }
+        }
+        if(flag){
+          this.form.categories.push(obj)
+        }
+    },
+    delCate(tag){
+      this.form.categories.splice(this.form.categories.indexOf(tag), 1);
+    },
+    handleChange1(){},
+
     isEdit() {
       //   console.log(this.$route.query.id)
       //   在编辑时路由参数为type:edit
@@ -346,7 +428,10 @@ export default {
     },
     submitUpload() {
     
-      
+      if(this.form.categories.length==0){
+        alert("please choose category")
+        return
+      }
       if (this.form.name.length == 0||this.form.LocalURL.length ==0) {
         alert("please complete content!");
         return;
@@ -369,10 +454,19 @@ export default {
           workSpace:_this.form.workspace,
           description:_this.form.desc,
           detail:_this.form.detail,
-          tags:_this.form.dynamicTags,
+          tags:[],
+          keywords:_this.form.dynamicTags,
           dataPath:_this.form.LocalURL,
+          email:_this.form.email,
+          format:_this.form.format
         }
+
+        
       }
+      this.form.categories.forEach(v=>{
+          newFile['meta']['tags'].push(v.id)
+      })
+      
       console.log("file",newFile)
 
       this.$axios.put('/api/newFile',newFile,{timeout:600000})//请求超时10分钟
@@ -651,7 +745,8 @@ export default {
 
 <style>
 .form{
-    margin-top: 50px
+    margin-top: 50px;
+    min-width: 1200px;
 }
 .upload {
   width: 300px;
@@ -690,4 +785,14 @@ export default {
     color: rgb(0, 174, 255);
     cursor:pointer;
 }
+.category .el-button{
+
+  color:darkblue;
+  
+}
+ .category .el-button:hover{
+   color: rgb(209, 111, 31);
+   font-weight: bolder;
+ }
+
 </style>

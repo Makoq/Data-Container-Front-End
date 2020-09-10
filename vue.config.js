@@ -49,6 +49,19 @@ module.exports = {
                 }
             },
 
+            //测试
+            //参与式平台
+            '/test':{
+                target:'http://223.2.47.177:8081/',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/test':'',
+                }
+            },
+            
+
 
 
 
