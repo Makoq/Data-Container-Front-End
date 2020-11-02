@@ -128,6 +128,7 @@ const websocket=function(it){
                             let dataRes={
                                 "msg":"resdata",
                                 "id":resp.data.uid,
+                                'stout':resp.data.stout,    
                                 "reqUsr":re.reqUsrOid,
                                 "wsToken":re.wsToken
                             }
@@ -142,9 +143,24 @@ const websocket=function(it){
                             console.log(dataRes)
                             //数据下载信息发送回中转服务器
                             ws.send(JSON.stringify(dataRes))
-                        }else if(resp.data.code===-1){
+                        }else if(resp.data.code===-2){
+
+                            
+                            let executeError={
+                                "msg":"resdata",
+                                "id":resp.data.uid,
+                                'stoutErr':resp.data.message,
+                                "reqUsr":re.reqUsrOid,
+                                "wsToken":re.wsToken
+                            }
+
+                            
+                            
+                            ws.send(JSON.stringify(executeError))
+
+                           
                             _this.$notify({
-                                message:'本地方法调用失败',
+                                message:'本地方法调用失败\n'+resp.data.message,
                                 type:'fail',
                                 duration: 0
                             })

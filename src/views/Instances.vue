@@ -104,7 +104,7 @@
                     
                     <span slot="footer" class="dialog-footer">
                         
-                        <el-button type="primary" @click="delInstance()">确 定</el-button>
+                        <el-button type="primary" @click="delInstance()">OK</el-button>
                     </span>
                 </el-dialog>
                 <!-- 共享确认 -->
@@ -123,31 +123,32 @@
                     </div>
                     <div v-if="publicOption=='geoproblem'" style="margin-top:50px">
                         <h3>Are you sure to share this data on GeoProblems Solving Plartform:</h3><br><br><br></h3>
-                        <p> Current connected account in GeoProblems Solving Plartform is  <br><br><strong>{{connectPortalUsr}}</strong> </p>
+                        <!-- <p> Current connected account in GeoProblems Solving Plartform is  <br><br><strong>{{connectPortalUsr}}</strong> </p> -->
 
                     </div>
                         
                         <span slot="footer" class="dialog-footer">
                             
-                            <el-button type="primary" @click="public_data_options()">确 定</el-button>
+                            <el-button type="primary" @click="public_data_options()">OK</el-button>
                         </span>
 
 
                 </el-dialog>
 
                 <el-dialog
-                    title="GeoProject!"
+                    :title="GeoVisData=='login'?'login':'GeoProjectsList'"
                     :visible.sync="GeoProblemsData"
                     width="50%"
                     >
-
+                    
                      <div v-if="GeoVisData=='login'">
+                        
                         <el-form>
-                         <el-form-item  label="Login">
+                         <el-form-item  label="UserName">
                             <el-input type="text"      v-model="loginGeo.usr" placeholder="username"></el-input>
 
                         </el-form-item>
-                        <el-form-item  label="PWS">
+                        <el-form-item  label="PassWord">
                             <el-input type="text"      v-model="loginGeo.pwd" placeholder="password"></el-input>
                         </el-form-item>
                          <el-button @click="loginGeoP">LOGIN</el-button>
@@ -155,15 +156,35 @@
                      </div >
 
                      <div v-else-if="GeoVisData=='list'">
-                         <div v-for="(it,key) in GeoProjectsList" :key="key">
-                             {{it.name}}<el-button>add</el-button>
-                             //TODO 美化数据展示
-                         </div>
+                          
+                         <h3>Current Selected: <strong style="color:blue">{{selectProject===''?'no select':selectProject}}</strong></h3>
+                        <el-table
+                                    :data="GeoProjectsList"
+                                    style="width: 100%">
+                                    <el-table-column
+                                        prop="name"
+                                        label="Name"
+                                        width="180">
+                                    </el-table-column>
+                                    <el-table-column
+                                        prop="description"
+                                        label="Description">
+                                    </el-table-column>
+                                     <el-table-column label="Select">
+                                        <template slot-scope="scope">
+                                            <el-button
+                                            size="mini"
+                                            @click="selectProjectFromGeoProblems(scope.$index, scope.row)">Select</el-button>
+                                        </template>
+                                     </el-table-column>
+                        </el-table>
+
+                         
                      </div>
 
                         <span slot="footer" class="dialog-footer">
                             
-                            <el-button type="primary" @click="public_data_options()">确 定</el-button>
+                            <el-button type="primary" @click="publicDataToGeoProblem()">OK</el-button>
                         </span>
 
                 </el-dialog>
@@ -308,7 +329,10 @@ export default {
            usr:'',
            pwd:''
        },
-       GeoProjectsList:[]
+       GeoProjectsList:[],
+       selectProject:'',
+       selectProjectId:'',
+
 
     }),
     created(){
@@ -358,8 +382,9 @@ export default {
                         type: 'fail'
                     });
             }else{
-                console.log('init data',res.data)
-                _this.instancesCont=res.data.data
+                console.log('init data',JSON.parse(res.data))
+                let js=JSON.parse(res.data)
+                _this.instancesCont=js.data
                 _this.instanceLayer=[initList] 
             }
             
@@ -595,21 +620,70 @@ export default {
             this.GeoVisData='login'
             this.GeoProjectsList=[]
             
+        },
+        //选择要推送数据的项目
+        selectProjectFromGeoProblems(index,row){
+            this.selectProject=row.name
+            this.selectProjectId=row.id
+        },
+        //向挑选的过程推送数据
+        publicDataToGeoProblem(){
+
+            let form=new FormData(),_this=this
+            form.append("resourceId",_this.theItem.id)
+            form.append("authorId",cycrypto.Decrypt(_this.theItem.oid))
+            form.append("name",_this.theItem.name)
+            form.append("type",_this.theItem.type)
+            form.append("registerTime",utils.formatDate(new Date()))
+            form.append("origination",'insituNode')
+            form.append("folderId",this.selectProjectId)
+            // form.append("meta",JSON.stringify(_this.theItem.meta))
+            // form.append("token",localStorage.getItem('relatedUsr').split(',')[1])
+            // form.append('ip',_this.$root.$el.insitu_ip)
+            this.$axios.post('/geops/GeoProblemSolving/insituShare/getDistributedData',form)
+            .then(res=>{
+                if(res.code==0){
+
+                    _this.$message({
+                        type:'success',
+                        message:'push successfully'
+                    })
+
+                    _this.GeoProblemsData=false
+                }else{
+                    _this.$message({
+                        type:'fail',
+                        message:'push failed'
+                    })
+                }
+            })
+
 
 
         },
+        //登录参与式平台，以发布数据到参与式平台
         loginGeoP(){
             let obj={
                 userName:this.loginGeo.usr,
                 password:md5(this.loginGeo.pwd)
             }
             let _this=this
-            this.$axios.get('/test/GeoProblemSolving/insituShare/getProjectInfo',{params:obj})
+            this.$axios.get('/geops/GeoProblemSolving/insituShare/getProjectInfo',{params:obj})
             .then(res=>{
                 if(res.data.code==0){
                         _this.GeoVisData='list'
                         _this.GeoProjectsList=res.data.data
 
+                }else if(res.data.code==-2){
+                    _this.$message({
+                        type:'fail',
+                        message:'arleady in the GeoproblemsSolving Project'
+                    })
+                }else{
+                    _this.$message({
+                        type:'fail',
+                        message:'login failed'
+                    })
                 }
             })
         },

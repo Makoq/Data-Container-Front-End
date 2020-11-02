@@ -40,7 +40,7 @@ module.exports = {
             },
             //参与式平台
             '/geops':{
-                target:'http://223.2.40.210:8899/GeoProblemSolving',
+                target:'http://223.2.40.210:8081',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
