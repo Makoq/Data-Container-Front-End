@@ -381,10 +381,15 @@ export default {
                         message: 'instances request failed ',
                         type: 'fail'
                     });
+            }else if(res.data.code===-2){
+                 _this.$message({
+                        message: 'please logout,then login again',
+                        type: 'fail'
+                    });
             }else{
-                console.log('init data',JSON.parse(res.data))
-                let js=JSON.parse(res.data)
-                _this.instancesCont=js.data
+                
+                
+                _this.instancesCont=res.data.data
                 _this.instanceLayer=[initList] 
             }
             

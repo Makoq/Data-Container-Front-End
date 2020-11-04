@@ -7,44 +7,48 @@ import Content from '@/views/Content';
                     <div slot="header" class="clearfix text-center">
                         <span style="font-size: 20px;color:#444">Data Categories</span>
                     </div>
-
                     <el-collapse v-model="categories.activeNames" @change="handleChange">
-                        <el-collapse-item title="Application-focused categories" style="font-size: smaller;" name="1">
+                        <el-collapse-item title="Application-focused categories" name="1">
                             <el-collapse v-model="categories.activeNames1" @change="handleChange1">
                                 <el-collapse-item title="Natural-perspective" style="margin-left: 10%;font-size: smaller;" name="11">
-                                    <el-button type="text" id="5f3e42070e989714e8364e9a" @click="chooseCate('5f3e42070e989714e8364e9a')" style="font-size: x-small">Land Regions</el-button>
-                                    <el-button type="text" id="5f3e422a0e989714e8364e9c" @click="chooseCate('5f3e422a0e989714e8364e9c')" style="font-size: x-small">Ocean Regions</el-button>
-                                    <el-button type="text" id="5f3e42360e989714e8364e9e" @click="chooseCate('5f3e42360e989714e8364e9e')" style="font-size: x-small">Frozen Regions</el-button>
-                                    <el-button type="text" id="5f3e42400e989714e8364ea0" @click="chooseCate('5f3e42400e989714e8364ea0')" style="font-size: x-small">Atmosphere Regions</el-button>
-                                    <el-button type="text" id="5f3e424c0e989714e8364ea2" @click="chooseCate('5f3e424c0e989714e8364ea2')" style="font-size: x-small">Space Earth</el-button>
-                                    <el-button type="text" id="5f3e42550e989714e8364ea4" @click="chooseCate('5f3e42550e989714e8364ea4')" style="font-size: x-small">Soid Earth</el-button>
-                                    <el-button type="text" id="5f3e42610e989714e8364ea6" @click="chooseCate('5f3e42610e989714e8364ea6')" style="font-size: x-small">Integrated Perspective</el-button>
+                                    <el-button type="text" id="5f3e42070e989714e8364e9a" @click="chooseCate('5f3e42070e989714e8364e9a')">Land regions</el-button>
+                                    <el-button type="text" id="5f3e422a0e989714e8364e9c" @click="chooseCate('5f3e422a0e989714e8364e9c')">Ocean regions</el-button>
+                                    <el-button type="text" id="5f3e42360e989714e8364e9e" @click="chooseCate('5f3e42360e989714e8364e9e')">Frozen regions</el-button>
+                                    <el-button type="text" id="5f3e42400e989714e8364ea0" @click="chooseCate('5f3e42400e989714e8364ea0')">Atmospheric regions</el-button>
+                                    <el-button type="text" id="5f3e424c0e989714e8364ea2" @click="chooseCate('5f3e424c0e989714e8364ea2')">Space-earth regions</el-button>
+                                    <el-button type="text" id="5f3e42550e989714e8364ea4" @click="chooseCate('5f3e42550e989714e8364ea4')">Solid-earth regions</el-button>
+                                    <!--                                    <el-button type="text" id="5f3e42610e989714e8364ea6" @click="chooseCate('5f3e42610e989714e8364ea6')" style="font-size: x-small">Integrated Perspective</el-button>-->
                                 </el-collapse-item>
                                 <el-collapse-item title="Human-perspective" style="margin-left: 10%;font-size: x-small;" name="12">
-                                    <el-button type="text" id="5f3e42780e989714e8364ea8" @click="chooseCate('5f3e42780e989714e8364ea8')" style="font-size: x-small">Administrative Regions</el-button>
-                                    <el-button type="text" id="5f3e42830e989714e8364eaa" @click="chooseCate('5f3e42830e989714e8364eaa')" style="font-size: x-small">Social Regions</el-button>
-                                    <el-button type="text" id="5f3e428c0e989714e8364eac" @click="chooseCate('5f3e428c0e989714e8364eac')" style="font-size: x-small">Economic Regions</el-button>
-                                    <el-button type="text" id="5f3e42940e989714e8364eae" @click="chooseCate('5f3e42940e989714e8364eae')" style="font-size: x-small">Integrated Perspective</el-button>
+                                    <el-button type="text" id="5f3e42780e989714e8364ea8" @click="chooseCate('5f3e42780e989714e8364ea8')">Development activities</el-button>
+                                    <el-button type="text" id="5f3e42830e989714e8364eaa" @click="chooseCate('5f3e42830e989714e8364eaa')">Social activities</el-button>
+                                    <el-button type="text" id="5f3e428c0e989714e8364eac" @click="chooseCate('5f3e428c0e989714e8364eac')">Economic activities</el-button>
+                                    <!--                                    <el-button type="text" id="5f3e42940e989714e8364eae" @click="chooseCate('5f3e42940e989714e8364eae')" style="font-size: x-small">Integrated Perspective</el-button>-->
+                                </el-collapse-item>
+                                <el-collapse-item title="Integrated-perspective" style="margin-left: 10%;" name="13">
+                                    <el-button type="text" id="5f6c424eefdc249e286947b8" @click="chooseCate('5f6c424eefdc249e286947b8')">Global scale</el-button>
+                                    <el-button type="text" id="5f6c42d2efdc249dc47f4665" @click="chooseCate('5f6c42d2efdc249dc47f4665')">Regional scale</el-button>
                                 </el-collapse-item>
                             </el-collapse>
                         </el-collapse-item>
-                        <el-collapse-item title="Method-focused categories" style="font-size: smaller;" name="2">
+                        <el-collapse-item title="Method-focused categories" style="font-size: 14px;" name="2">
                             <el-collapse v-model="categories.activeNames2" @change="handleChange1">
                                 <el-collapse-item title="Data-perspective" style="margin-left: 10%;font-size: x-small;" name="21">
-                                    <el-button type="text" id="5f3e42ac0e989714e8364eb0" @click="chooseCate('5f3e42ac0e989714e8364eb0')" style="font-size: x-small">Geoinformation Analysis</el-button>
-                                    <el-button type="text" id="5f3e42b40e989714e8364eb2" @click="chooseCate('5f3e42b40e989714e8364eb2')" style="font-size: x-small">Remote Sensing Analysis</el-button>
-                                    <el-button type="text" id="5f3e42bc0e989714e8364eb4" @click="chooseCate('5f3e42bc0e989714e8364eb4')" style="font-size: x-small">Geostatistical Analysis</el-button>
-                                    <el-button type="text" id="5f3e42c30e989714e8364eb6" @click="chooseCate('5f3e42c30e989714e8364eb6')" style="font-size: x-small">Machine Learning Analysis</el-button>
+                                    <el-button type="text" id="5f3e42ac0e989714e8364eb0" @click="chooseCate('5f3e42ac0e989714e8364eb0')">Geoinformation analysis</el-button>
+                                    <el-button type="text" id="5f3e42b40e989714e8364eb2" @click="chooseCate('5f3e42b40e989714e8364eb2')">Remote Sensing analysis</el-button>
+                                    <el-button type="text" id="5f3e42bc0e989714e8364eb4" @click="chooseCate('5f3e42bc0e989714e8364eb4')">Geostatistical analysis</el-button>
+                                    <el-button type="text" id="5f3e42c30e989714e8364eb6" @click="chooseCate('5f3e42c30e989714e8364eb6')">Intelligent computation analysis</el-button>
                                 </el-collapse-item>
                                 <el-collapse-item title="Process-perspective" style="margin-left: 10%;font-size: x-small;" name="22">
-                                    <el-button type="text" id="5f3e42d40e989714e8364eb8" @click="chooseCate('5f3e42d40e989714e8364eb8')" style="font-size: x-small">Physical Process Simulation</el-button>
-                                    <el-button type="text" id="5f3e42dc0e989714e8364eba" @click="chooseCate('5f3e42dc0e989714e8364eba')" style="font-size: x-small">Chemical Process Simulation</el-button>
-                                    <el-button type="text" id="5f3e42e30e989714e8364ebc" @click="chooseCate('5f3e42e30e989714e8364ebc')" style="font-size: x-small">Biological Process Simulation</el-button>
-                                    <el-button type="text" id="5f3e42ec0e989714e8364ebe" @click="chooseCate('5f3e42ec0e989714e8364ebe')" style="font-size: x-small">Human-Activity Simulation</el-button>
+                                    <el-button type="text" id="5f3e42d40e989714e8364eb8" @click="chooseCate('5f3e42d40e989714e8364eb8')">Physical process calculation</el-button>
+                                    <el-button type="text" id="5f3e42dc0e989714e8364eba" @click="chooseCate('5f3e42dc0e989714e8364eba')">Chemical process calculation</el-button>
+                                    <el-button type="text" id="5f3e42e30e989714e8364ebc" @click="chooseCate('5f3e42e30e989714e8364ebc')">Biological process calculation</el-button>
+                                    <el-button type="text" id="5f3e42ec0e989714e8364ebe" @click="chooseCate('5f3e42ec0e989714e8364ebe')">Human-activity calculation</el-button>
                                 </el-collapse-item>
                             </el-collapse>
                         </el-collapse-item>
                     </el-collapse>
+                    
                 </el-card>
        </el-col>
 
@@ -186,7 +190,7 @@ import Content from '@/views/Content';
 
           <!-- describe -->
           <el-form-item  label="Describe" prop="desc">
-            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
+            <el-input type="textarea" rows="3"  maxlength="100" show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
            <!-- 关联数据 -->
           <el-form-item label="Data">
