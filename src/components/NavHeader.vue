@@ -43,7 +43,7 @@
              
               <el-form :model="connectPortalUsr" status-icon   ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="Account:" prop="account">
-                <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off"></el-input>
+                <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off" :disabled="connectPortalUsr.email!=''?true:false"></el-input>
             </el-form-item>
               </el-form>
             <span slot="footer" class="dialog-footer">
@@ -58,6 +58,7 @@
 <script>
 import { mapMutations } from 'vuex';
 import ws from '../utils/websocket.js'
+import DecryptJS from '../utils/cycrypto.js';
 
   export default {
     data: () => ({
@@ -102,6 +103,12 @@ import ws from '../utils/websocket.js'
         this.$router.push('/Login')
       },
       Setting(){
+        
+        let connUsr=localStorage.getItem('relatedUsr')
+        if(connUsr){
+
+               this.connectPortalUsr.email = DecryptJS.Decrypt(connUsr.split(',')[1])
+        }
         this.settingDialog=true
       },
       connectPortal(){
@@ -119,7 +126,7 @@ import ws from '../utils/websocket.js'
                 });
                 //将登录用户信息存入vuex
                  _this.changerelatedUsr({relatedUsr:res.data.info.oid+','+res.data.info.email})
-
+                  this.$router.push('/Login') 
                 _this.settingDialog=false
            }else{//门户中找不到用户
              if(res.data.message=='no usr in portal'){
