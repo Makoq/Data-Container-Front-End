@@ -267,8 +267,30 @@
                     </el-tooltip>
 
                     <el-tooltip  effect="dark" content="Service migration" placement="top-start">
-                        <i v-if="it.type!='file'"   class="el-icon-goods"></i>
+                        <i v-if="it.type!='file'" @click="serviceMigrationDialog"   class="el-icon-goods"></i>
                     </el-tooltip>
+
+                    <el-dialog
+                            title="Service migration"
+                            :visible.sync="sceMigDialog"
+                            width="30%"
+                            >
+                             <el-form > 
+                            <!-- your token -->
+                            <el-form-item  label="Your token" >
+                                <el-input type="text" v-model="yourToken"  readonly></el-input>
+                            </el-form-item>
+
+                            <!-- migration target token -->
+                            <el-form-item  label="Service Migration target token"  >
+                            <el-input type="text" v-model="sceMigTargetTokent"    ></el-input>
+                            </el-form-item>
+                             </el-form>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="sceMigDialog = false;">Cancel</el-button>
+                                <el-button type="primary" @click="serviceMigration()">OK</el-button>
+                            </span>
+                        </el-dialog>
                      <!-- <i class="el-icon-more"></i> -->
                           
 
@@ -368,7 +390,13 @@ export default {
         ivkLcalPcs:false,
         chsIvkData:undefined,
         csDtNeRadio:'',
-        currentPcs:''
+        currentPcs:'',
+        //服务迁移
+        sceMigDialog:false,
+        sceMigTargetTokent:'',
+        yourToken:''
+
+
 
 
 
@@ -770,7 +798,7 @@ export default {
         },
         //监听路由变化
         watchrouter(){
-           console.log('ws', this.$root.$el.myWS )
+           
             let _this=this
             let initList={
             type: _this.$route.query.type,
@@ -862,7 +890,7 @@ export default {
                         for(let i=0;i<_this.instancesCont.list.length;i++){
                             if(_this.instancesCont.list[i].id===res.data.data.id){
                                 _this.instancesCont.list.splice(i,1)
-                                console.log("d", _this.instancesCont.list)
+                                
 
                                 break;
                             }
@@ -880,8 +908,7 @@ export default {
                         for(let i=0;i<_this.instancesCont.list.length;i++){
                             if(_this.instancesCont.list[i].id===res.data.data.id){
                                 _this.instancesCont.list.splice(i,1)
-                                console.log("d", _this.instancesCont.list)
-
+                                 
                                 break;
                             }
                         }
@@ -977,8 +1004,20 @@ export default {
            }
        },
        lcalPcsAxios(){
-        //TODO 本地处理方法调用，先把本地调用取消了
+        //TODO:本地处理方法调用，但是太麻烦先把本地调用取消了 
+       },
+       serviceMigrationDialog(){
+           this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
+           this.sceMigTargetTokent=''
+           this.sceMigDialog=true;
+       },
+       serviceMigration(){
+           //this.$root.$el.myWS
+
+           this.$axios.get('/api/')
+           
        }
+    
 
 
     }

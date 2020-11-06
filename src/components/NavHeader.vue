@@ -44,7 +44,7 @@
              
               <el-form :model="connectPortalUsr" status-icon   ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="Account:" prop="account">
-                <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off" :disabled="connectPortalUsr.email!=''?true:false"></el-input>
+                <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off" :readonly="connectPortalUsr.email!=''?true:false"></el-input>
             </el-form-item>
               </el-form>
             <span slot="footer" class="dialog-footer">
