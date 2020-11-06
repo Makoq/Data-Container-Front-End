@@ -214,30 +214,62 @@
 
                 </el-col>
 
-                <!-- <el-col :span="3" :offset="1"> 
-                    
-                    <span class="dataName"  v-if="it.type==='file'">{{it.size}}</span>
-                    <span v-else>&nbsp;</span>
-
-                </el-col> -->
+          
 
                 <el-col :span="4" :offset="2"> 
                     
                     <span class="dataName"   >{{it.date}}</span>
 
                 </el-col>
-
+                        <el-dialog
+                            title="Data choices"
+                            :visible.sync="ivkLcalPcs"
+                            width="30%"
+                            >
+                            
+                            <el-radio v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key">{{chsIvkData[key]}}</el-radio>
+                            
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
+                                <el-button type="primary" @click="ivkLcalPcsExcute()">OK</el-button>
+                            </span>
+                        </el-dialog>
                 <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
                     &nbsp;
-                     <i  v-if="it.type!='file'" class="el-icon-caret-right"></i>
+                     <!-- <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i> -->
+                       
                      <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
+                    <el-tooltip  effect="dark" content="Public data to OpenGMS Portal DataItem" placement="top-start">
+
                      <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
-                    <!-- <i class="el-icon-info"></i> -->
-                    <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
-                    <i   class="el-icon-info"></i>
+                    </el-tooltip>
                    
-                     <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
-                     <i class="el-icon-more"></i>
+                    <el-tooltip  effect="dark" content="Bind to data" placement="top-start">
+                    <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
+                     </el-tooltip>
+                      <el-popover
+                        placement="top-start"
+                        title="Information"
+                        width="100%"
+                        trigger="hover"
+                         >
+                         <div v-if="it.type==='file'">
+                            <p  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
+                         </div>
+                          <div v-else>
+                            <p   >{{ it.description}}</p>
+                         </div>
+                        <i  slot="reference" class="el-icon-info"  ></i>
+
+                    </el-popover>
+                    <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
+                     <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
+                    </el-tooltip>
+
+                    <el-tooltip  effect="dark" content="Service migration" placement="top-start">
+                        <i v-if="it.type!='file'"   class="el-icon-goods"></i>
+                    </el-tooltip>
+                     <!-- <i class="el-icon-more"></i> -->
                           
 
                 </el-col>
@@ -332,6 +364,12 @@ export default {
        GeoProjectsList:[],
        selectProject:'',
        selectProjectId:'',
+        //调用处理方法展示
+        ivkLcalPcs:false,
+        chsIvkData:undefined,
+        csDtNeRadio:'',
+        currentPcs:''
+
 
 
     }),
@@ -879,7 +917,70 @@ export default {
                     window.URL.revokeObjectURL(href); 
                 }
             })
-        }
+        },
+        //本地调用选择数据
+       invokeLocalPcs(it){
+           this.chsIvkData=undefined
+           this.currentPcs=it
+           let _this=this
+           let par=it.relatedData.join() 
+
+           this.$axios.get('/api/chsdtne',{params:{
+               dtNae:par
+           }})
+           .then(res=>{
+               if(res.data.code==0){
+                   _this.chsIvkData=res.data.message
+                    _this.ivkLcalPcs=true
+                    _this.csDtNeRadio==''
+                    console.log(_this.csDtNeRadio)
+                
+               }else if(res.data.code==-1){
+                   _this.$notify({
+                       type:'fail',
+                       message:'Invalid,Please create new!'
+                   })
+                   _this. shouwDelConfirm(it)
+               }else if(res.data.code==-2){
+
+
+               } 
+           })
+
+           
+       },
+       //调用本地处理方法
+       ivkLcalPcsExcute(){
+           console.log(this.chsIvkData,this.csDtNeRadio)
+           let _this=this
+           if(this.csDtNeRadio==''){
+               this.$notify({
+                   type:'fail',
+                   message:'Please choose one data at least!'
+               })
+           }else{
+               console.log(this.currentPcs)
+               let pcsId=this.currentPcs.id
+               let dataId=this.csDtNeRadio
+               let param=''
+               if(this.currentPcs.paramsCount!=0){
+                    this.$prompt('Please input parameters', 'Multiple parameters are split with +', {
+                        confirmButtonText: 'ok',
+                        cancelButtonText: 'cancel',
+                    }).then(({ value })=>{
+                        param=value.split('+').join(',')
+                    })
+               }else{
+
+
+               }
+           }
+       },
+       lcalPcsAxios(){
+        //TODO 本地处理方法调用，先把本地调用取消了
+       }
+
+
     }
      
   }

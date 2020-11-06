@@ -167,7 +167,7 @@ const websocket=function(it){
                         }
 
                    })
-               }                
+               }else if(0){}                
             }
 
         }else{

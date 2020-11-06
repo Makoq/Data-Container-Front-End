@@ -1,11 +1,11 @@
 <template>
 <el-row class="head-nav">
  
-  <el-col :span="8" class="logo"> 
+  <el-col :span="22" class="logo"> 
     &nbsp;<img src="../assets/dataServiceContainer3.png"  style="width:350px;margin-top: 10px">
   </el-col>
   
-  <el-col :span="16" class="eMenu">
+  <el-col :span="2" class="eMenu">
     <el-menu
       :default-active="activeIndex2"
       class="el-menu-demo"
@@ -20,8 +20,9 @@
 
       <el-submenu index="1" >
         <template slot="title">
-          <el-avatar v-if="this.$store.state.Authorization!=''"  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-         
+          
+            <el-avatar v-if="this.$store.state.Authorization!=''"  src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+          
           </template>
         <el-menu-item v-if="this.$store.state.Authorization==='' "   index="2-1" @click="Login" >login in</el-menu-item>
         

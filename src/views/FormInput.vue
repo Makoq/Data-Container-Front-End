@@ -190,7 +190,13 @@ import Content from '@/views/Content';
 
           <!-- describe -->
           <el-form-item  label="Describe" prop="desc">
-            <el-input type="textarea" rows="3"  maxlength="100" show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
+            <el-input type="textarea" rows="3" maxlength="200"   show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
+          </el-form-item>
+
+          <!-- params count -->
+          <el-form-item  label="Number of parameters"  >
+            <!-- <el-input style="margin-top:20px;width:100px"  show-word-limit v-model="processing.paramsCount" placeholder="The number of params.."></el-input> -->
+          <el-input-number style="margin-top:20px;" v-model="processing.paramsCount"    ></el-input-number>
           </el-form-item>
            <!-- 关联数据 -->
           <el-form-item label="Data">
@@ -328,6 +334,7 @@ export default {
         name:'',
         authority:true,
         desc:'',
+        paramsCount:0
       },
       workspaceList:[
         {
@@ -569,6 +576,7 @@ export default {
         'type':_this.$route.query.type,
         'relatedData':_this.connectedData,
         'authority':_this.processing.authority,
+        'paramsCount':_this.processing.paramsCount,
         'fileList':fileNameList,
         
         'description':_this.processing.desc,
