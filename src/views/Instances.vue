@@ -267,7 +267,7 @@
                     </el-tooltip>
 
                     <el-tooltip  effect="dark" content="Service migration" placement="top-start">
-                        <i v-if="it.type!='file'" @click="serviceMigrationDialog"   class="el-icon-goods"></i>
+                        <i v-if="it.type!='file'" @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
                     </el-tooltip>
 
                     <el-dialog
@@ -278,7 +278,9 @@
                              <el-form > 
                             <!-- your token -->
                             <el-form-item  label="Your token" >
-                                <el-input type="text" v-model="yourToken"  readonly></el-input>
+                                <el-input type="text" v-model="yourToken" ref="myToken"  readonly>
+                                 <el-button slot="append" icon="el-icon-document-copy" @click="copyMyToken()"></el-button>    
+                                </el-input> 
                             </el-form-item>
 
                             <!-- migration target token -->
@@ -394,7 +396,8 @@ export default {
         //服务迁移
         sceMigDialog:false,
         sceMigTargetTokent:'',
-        yourToken:''
+        yourToken:'',
+        currentServiceId:''
 
 
 
@@ -1006,15 +1009,41 @@ export default {
        lcalPcsAxios(){
         //TODO:本地处理方法调用，但是太麻烦先把本地调用取消了 
        },
-       serviceMigrationDialog(){
+       serviceMigrationDialog(it){
            this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
            this.sceMigTargetTokent=''
            this.sceMigDialog=true;
+
+           this.currentServiceId=it.id
+       },
+       //点击复制到粘贴板
+       copyMyToken(){
+           this.$refs.myToken[0].select()
+           if (document.execCommand("copy")) {
+                    document.execCommand("copy");
+           }
        },
        serviceMigration(){
            //this.$root.$el.myWS
-
-           this.$axios.get('/api/')
+           this.sceMigTargetTokent
+           let _this=this
+           this.$axios.get('/api/uploadpcs',{
+               params:{
+                   pcsId:_this.currentServiceId
+               }
+           })
+           .then(re=>{
+               if(re.data.code==0){
+                   let msg={
+                       msg:'Migration',
+                       serviceDownloadId:re.data.source_store_id,
+                       fromToken:_this.yourToken,
+                       targetToken:_this.sceMigTargetTokent
+                   }
+                   _this.$root.$el.myWS.send(msg)
+                    
+               }
+           })
            
        }
     

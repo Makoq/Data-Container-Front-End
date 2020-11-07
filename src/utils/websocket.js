@@ -167,7 +167,22 @@ const websocket=function(it){
                         }
 
                    })
-               }else if(0){}                
+               }else if(re.msg=='MigRcv'){
+
+                if(re.off!=undefined){
+                    _this.$message({
+                        message:'目标节点离线',
+                        type:'fail'
+                    })
+                }else{
+                    _this.$message({
+                        message:'收到服务迁移消息',
+                        type:'success'
+                    })
+                    window.location.href='http://111.229.14.128:8899/data?uid='+re.dataId
+                }
+
+               }                
             }
 
         }else{
