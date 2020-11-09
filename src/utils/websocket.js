@@ -177,7 +177,8 @@ const websocket=function(it){
                 }else{
                     _this.$message({
                         message:'收到服务迁移消息',
-                        type:'success'
+                        type:'success',
+                        duration:0
                     })
                     window.location.href='http://111.229.14.128:8899/data?uid='+re.dataId
                 }
