@@ -45,11 +45,16 @@
               <el-form :model="connectPortalUsr" status-icon   ref="ruleForm" label-width="100px" class="demo-ruleForm">
               <el-form-item label="Account:" prop="account">
                 <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off" :readonly="connectPortalUsr.email!=''?true:false"></el-input>
-            </el-form-item>
+              </el-form-item>
+              <el-form-item  label="Your token" >
+                                <el-input type="text" v-model="yourToken" ref="myOwnToken" readonly>
+                                 <el-button slot="append" icon="el-icon-document-copy" @click="copyMyToken()"></el-button>    
+                                </el-input> 
+                </el-form-item>
               </el-form>
             <span slot="footer" class="dialog-footer">
               <el-button @click="settingDialog = false">取 消</el-button>
-              <el-button type="primary" @click="connectPortal">确 定</el-button>
+              <el-button type="primary" @click="connectPortal" :disabled="connectPortal!=''?false:true">确 定</el-button>
             </span>
         </el-dialog>
  
@@ -71,6 +76,7 @@ import DecryptJS from '../utils/cycrypto.js';
         email:'',
 
       },
+      yourToken:''
       
       
       
@@ -109,6 +115,7 @@ import DecryptJS from '../utils/cycrypto.js';
         if(connUsr){
 
                this.connectPortalUsr.email = DecryptJS.Decrypt(connUsr.split(',')[1])
+                this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
         }
         this.settingDialog=true
       },
@@ -144,7 +151,16 @@ import DecryptJS from '../utils/cycrypto.js';
              }
            }
          })
-      }
+      },
+      //点击复制到粘贴板
+       copyMyToken(){
+          
+          // console.log(this.$refs.myOwnToken[0])
+           this.$refs.myOwnToken.select()
+           if (document.execCommand("copy")) {
+                    document.execCommand("copy");
+           }
+       },
 
     }
     

@@ -290,7 +290,7 @@
                              </el-form>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="sceMigDialog = false;">Cancel</el-button>
-                                <el-button type="primary" @click="serviceMigration()">OK</el-button>
+                                <el-button type="primary" @click="serviceMigration()">Migration</el-button>
                             </span>
                         </el-dialog>
                      <!-- <i class="el-icon-more"></i> -->
@@ -1036,11 +1036,12 @@ export default {
                if(re.data.code==0){
                    let msg={
                        msg:'Migration',
-                       serviceDownloadId:re.data.source_store_id,
+                       serviceDownloadId:re.data.uid,
                        fromToken:_this.yourToken,
                        targetToken:_this.sceMigTargetTokent
                    }
-                   _this.$root.$el.myWS.send(msg)
+                   _this.$root.$el.myWS.send(JSON.stringify(msg))
+                   this.sceMigDialog=false;
                     
                }
            })

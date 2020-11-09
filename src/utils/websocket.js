@@ -1,4 +1,7 @@
 const util=require('./utils.js')
+const decryptjs =require('./cycrypto.js')
+import DecryptJS from './cycrypto.js';
+
 const websocket=function(it){
     let _this=it
     it.$axios.get('/api/state')
@@ -172,13 +175,28 @@ const websocket=function(it){
                 if(re.off!=undefined){
                     _this.$message({
                         message:'目标节点离线',
-                        type:'fail'
+                        type:'fail',
+                        duration:0,
+                        showClose:true
+                       
                     })
-                }else{
+                }else if(re.reply!=undefined){
+                    _this.$message({
+                        message:'目标节点已收到消息',
+                        type:'success',
+                        duration:0,
+                        showClose:true
+                    })
+                }
+                else{
                     _this.$message({
                         message:'收到服务迁移消息',
                         type:'success',
+<<<<<<< HEAD
                         duration:0
+=======
+                        showClose:true
+>>>>>>> 13d532b0d0adea1c2bb467312b8e6c45dba4fa1b
                     })
                     window.location.href='http://111.229.14.128:8899/data?uid='+re.dataId
                 }
