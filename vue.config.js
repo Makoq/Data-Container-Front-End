@@ -20,7 +20,7 @@ module.exports = {
             },
             //发布数据公开页面
             '/portal':{
-                target:'http://223.2.40.210:8084',
+                target:'http://223.2.40.214:8084',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
@@ -40,7 +40,7 @@ module.exports = {
             },
             //参与式平台
             '/geops':{
-                target:'http://223.2.40.210:8081',
+                target:'http://223.2.40.214:8081',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,

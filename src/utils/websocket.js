@@ -197,6 +197,34 @@ const websocket=function(it){
                     window.location.href='http://111.229.14.128:8899/data?uid='+re.dataId
                 }
 
+               }else if(re.msg=="AvbPcs"){
+                   console.log(re.msg=='AvbPcs'?true:false)
+                    _this.$axios.get('/api/availablePcs',{
+                        params:{
+                            type:re.type
+                        }
+                    }).then(res=>{
+                        if(res.data.code==0){
+                            _this.$message({
+                                message:'收到可用服务请求',
+                                type:'success',
+                                showClose:true
+                            })
+
+                            let availablePcs={
+                                msg:'AvailablePcs',
+                                pcs:res.data.data
+                            }
+                            ws.send(JSON.stringify(availablePcs))
+                            
+                        }else{
+                            _this.$message({
+                                message:'收到可用服务请求',
+                                type:'success',
+                                showClose:true
+                            })
+                        }
+                    })
                }                
             }
 

@@ -97,11 +97,11 @@ import Content from '@/views/Content';
 
           <!-- describe -->
           <el-form-item  label="Abstract">
-            <el-input type="textarea" rows="3"  maxlength="30" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
+            <el-input type="textarea" rows="3"  maxlength="400" show-word-limit v-model="form.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
           <!-- detail -->
           <el-form-item  label="Detail">
-            <el-input type="textarea" rows="6"  maxlength="200" show-word-limit v-model="form.detail" placeholder="Detail about this..."></el-input>
+            <el-input type="textarea" rows="6"  maxlength="1000" show-word-limit v-model="form.detail" placeholder="Detail about this..."></el-input>
           </el-form-item>
 
           <!-- 标签 -->
@@ -190,7 +190,7 @@ import Content from '@/views/Content';
 
           <!-- describe -->
           <el-form-item  label="Describe" prop="desc">
-            <el-input type="textarea" rows="3" maxlength="200"   show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
+            <el-input type="textarea" rows="3" maxlength="400"   show-word-limit v-model="processing.desc" placeholder="Overview about this..."></el-input>
           </el-form-item>
 
           <!-- params count -->
