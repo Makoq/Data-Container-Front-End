@@ -67,7 +67,19 @@ const websocket=function(it){
                    ws.send('online')
                    return
                }
+               setInterval(()=>{
+                    ws.send('{ "msg":"beat" }')
+               },120000);
+
+               
                let re=JSON.parse(e.data)
+               
+               if(re.msg&&re.msg=="beat"){
+                    
+                    
+                    console.log('connection with center server is stable')
+                   
+               }
                //接到上传请求后上传数据
                if(re.req!=undefined&&re.req){
                    _this.$axios.get('/api/transition',{
@@ -197,6 +209,34 @@ const websocket=function(it){
                     window.location.href='http://111.229.14.128:8899/data?uid='+re.dataId
                 }
 
+               }else if(re.msg=="AvbPcs"){
+                   console.log(re.msg=='AvbPcs'?true:false)
+                    _this.$axios.get('/api/availablePcs',{
+                        params:{
+                            type:re.type
+                        }
+                    }).then(res=>{
+                        if(res.data.code==0){
+                            _this.$message({
+                                message:'收到可用服务请求',
+                                type:'success',
+                                showClose:true
+                            })
+
+                            let availablePcs={
+                                msg:'AvailablePcs',
+                                pcs:res.data.data
+                            }
+                            ws.send(JSON.stringify(availablePcs))
+                            
+                        }else{
+                            _this.$message({
+                                message:'收到可用服务请求',
+                                type:'success',
+                                showClose:true
+                            })
+                        }
+                    })
                }                
             }
 

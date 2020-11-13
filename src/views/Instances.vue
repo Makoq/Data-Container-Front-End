@@ -5,7 +5,7 @@
         <!-- //挑选工作空间 -->
         <!-- <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button> -->
         <el-button   type="warning" @click="newFolder" >New Floder</el-button>
-        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type==="Processing"?"Infoemation":this.$route.query.type}}</el-button>
+        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type==="Processing"?"Information":this.$route.query.type}}</el-button>
        </el-col>
        <el-col :span="10">
         <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
@@ -44,15 +44,15 @@
             <el-button v-if="folderLayer.length===1" size="mini" type="text" disabled>  All file</el-button>
            <el-button  v-else size="mini" type="text"  @click="backUpperFolder"  >Upper Folder</el-button>
            <el-divider v-if="folderLayer.length>1" direction="vertical"></el-divider>
-           <span v-if="folderLayer.length>1">&nbsp;{{folderLayer.join(' / ')}}</span>
+           <span v-if="folderLayer.length>1" style="color:grey">&nbsp;{{folderLayer.join(' / ')}}</span>
     </el-row>
    
     <el-row v-loading="loading" >
-        <el-row   >
+        <el-row  style="margin-left:5px" >
             <el-col :span="2"    :offset="2" > 
-                    <span  >  
+                    <strong  >  
                        &nbsp;Name
-                    </span> 
+                    </strong> 
             </el-col>
 
             <!-- <el-col :span="1" :offset="3"   > 
@@ -62,27 +62,27 @@
             </el-col> -->
 
             <el-col :span="1" :offset="4"   > 
-                    <span  >  
+                    <strong  >  
                       Date
-                    </span> 
+                    </strong> 
             </el-col>
 
              <el-col :span="1" :offset="4"   > 
-                    <span  >  
+                    <strong  >  
                        
                       Operate
-                    </span> 
+                    </strong> 
             </el-col>
             <!-- authority -->
 
              <el-col :span="1" :offset="2"   > 
-                    <span  >  
+                    <strong>  
                       Authority
-                    </span> 
+                    </strong> 
             </el-col>
            
         </el-row>
-        <el-divider ></el-divider>
+        <!-- <el-divider ></el-divider> -->
                 <!-- 选择发布目标，门户或者参与式平台 -->
                 <el-dialog
                 title="Public Option"
@@ -191,139 +191,145 @@
 
 
                  <!-- 文件夹列表 -->     
-            <el-row  v-for="(it,key) in instancesCont.list" :key="key"  class="item">
-                 
-                <el-col :span="1" :offset="1">
-                   <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
+                 <div style="margin-top:20px"> 
+                    <el-row   v-for="(it,key) in instancesCont.list" :key="key"  class="item">
+                        
+                        <el-col :span="1" :offset="1">
+                            <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
+                            
+                            <avatar v-if="it.type==='file'" :size="24" :rounded="false" :username="it.name"></avatar>
 
-                    <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
-                    <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="28" alt="Safari" title="Safari">
+                            <!-- <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari"> -->
+                            <avatar v-if="it.type==='Processing'" :size="24" :rounded="false" :username="it.name"></avatar>
+                            
+                            <!-- <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="28" alt="Safari" title="Safari"> -->
+                            <avatar v-if="it.type==='Visualization'" :size="24" :rounded="false" :username="it.name"></avatar>
 
-                    <img v-if="it.type==='Visualization'" src="../assets/visualization.png" width="28" height="28" alt="Safari" title="Safari">
-                </el-col>
-                <el-col :span="3" style="height:100%"> 
-                   
-                    <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
-                    <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                            <!-- <img v-if="it.type==='Visualization'" src="../assets/visualization.png" width="28" height="28" alt="Safari" title="Safari"> -->
+                        </el-col>
+                        <el-col :span="3" style="height:100%;"> 
+                        
+                            <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
+                            <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                            </el-row>
+                            
+                            <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
+                                {{it.name}}
+                            </a>
+                            <span class="dataName"  v-if="it.type!='folder'">{{it.name}}</span>
+
+                        </el-col>
+
+                
+
+                        <el-col :span="4" :offset="2"> 
+                            
+                            <span class="dataName"   >{{it.date}}</span>
+
+                        </el-col>
+                                <el-dialog
+                                    title="Data choices"
+                                    :visible.sync="ivkLcalPcs"
+                                    width="30%"
+                                    >
+                                    
+                                    <el-radio v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key">{{chsIvkData[key]}}</el-radio>
+                                    
+                                    <span slot="footer" class="dialog-footer">
+                                        <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
+                                        <el-button type="primary" @click="ivkLcalPcsExcute()">OK</el-button>
+                                    </span>
+                                </el-dialog>
+                        <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
+                            &nbsp;
+                            <!-- <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i> -->
+                            
+                            <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
+                            <el-tooltip  effect="dark" content="Public data to OpenGMS Portal DataItem" placement="top-start">
+
+                            <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
+                            </el-tooltip>
+                        
+                            <el-tooltip  effect="dark" content="Bind to data" placement="top-start">
+                            <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
+                            </el-tooltip>
+                            <el-popover
+                                placement="top-start"
+                                title="Information"
+                                width="100%"
+                                trigger="hover"
+                                >
+                                <div v-if="it.type==='file'">
+                                    <p  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
+                                </div>
+                                <div v-else>
+                                    <p   >{{ it.description}}</p>
+                                </div>
+                                <i  slot="reference" class="el-icon-info"  ></i>
+
+                            </el-popover>
+                            <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
+                            <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
+                            </el-tooltip>
+
+                            <el-tooltip  effect="dark" content="Service migration" placement="top-start">
+                                <i v-if="it.type!='file'" @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
+                            </el-tooltip>
+                            <!-- 服务迁移dialog -->
+                            <el-dialog
+                                    title="Service migration"
+                                    :visible.sync="sceMigDialog"
+                                    width="30%"
+                                    >
+                                    <el-form > 
+                                    <!-- your token -->
+                                    <el-form-item  label="Your token" >
+                                        <el-input type="text" v-model="yourToken" ref="myToken"  readonly>
+                                        <el-button slot="append" icon="el-icon-document-copy" @click="copyMyToken()"></el-button>    
+                                        </el-input> 
+                                    </el-form-item>
+
+                                    <!-- migration target token -->
+                                    <el-form-item  label="Service Migration target token"  >
+                                    <el-input type="text" v-model="sceMigTargetTokent"    ></el-input>
+                                    </el-form-item>
+                                    </el-form>
+                                    <span slot="footer" class="dialog-footer">
+                                        <el-button @click="sceMigDialog = false;">Cancel</el-button>
+                                        <el-button type="primary" @click="serviceMigration()">Migration</el-button>
+                                    </span>
+                                </el-dialog>
+                            <i class="el-icon-more"></i>
+                                
+
+                        </el-col>
+                        <el-col  v-else-if="it.type==='folder'" :span="4" :offset="1"  class="operate" > 
+                            &nbsp;
+                            <!-- <i class="el-icon-edit"></i> -->
+                        
+                            <i :style="it.type==='folder'?'margin-left:30%':''" @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
+                                    
+                        </el-col>
+
+                
+
+                        <el-col v-if="it.type==='folder'" :span="1"  >
+                        
+                            admin
+                        </el-col>
+                        <el-col v-else-if="it.type!='folder'" :span="1"  >
+                        
+                            <el-switch
+                                @change="authoritySwitch(it)"
+                                v-model="it.authority"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949">
+                            </el-switch>
+                        </el-col>
+
+
                     </el-row>
-                    
-                    <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
-                        {{it.name}}
-                    </a>
-                    <span class="dataName"  v-if="it.type!='folder'">{{it.name}}</span>
-
-                </el-col>
-
-          
-
-                <el-col :span="4" :offset="2"> 
-                    
-                    <span class="dataName"   >{{it.date}}</span>
-
-                </el-col>
-                        <el-dialog
-                            title="Data choices"
-                            :visible.sync="ivkLcalPcs"
-                            width="30%"
-                            >
-                            
-                            <el-radio v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key">{{chsIvkData[key]}}</el-radio>
-                            
-                            <span slot="footer" class="dialog-footer">
-                                <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
-                                <el-button type="primary" @click="ivkLcalPcsExcute()">OK</el-button>
-                            </span>
-                        </el-dialog>
-                <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
-                    &nbsp;
-                     <!-- <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i> -->
-                       
-                     <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
-                    <el-tooltip  effect="dark" content="Public data to OpenGMS Portal DataItem" placement="top-start">
-
-                     <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
-                    </el-tooltip>
-                   
-                    <el-tooltip  effect="dark" content="Bind to data" placement="top-start">
-                    <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
-                     </el-tooltip>
-                      <el-popover
-                        placement="top-start"
-                        title="Information"
-                        width="100%"
-                        trigger="hover"
-                         >
-                         <div v-if="it.type==='file'">
-                            <p  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
-                         </div>
-                          <div v-else>
-                            <p   >{{ it.description}}</p>
-                         </div>
-                        <i  slot="reference" class="el-icon-info"  ></i>
-
-                    </el-popover>
-                    <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
-                     <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
-                    </el-tooltip>
-
-                    <el-tooltip  effect="dark" content="Service migration" placement="top-start">
-                        <i v-if="it.type!='file'" @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
-                    </el-tooltip>
-
-                    <el-dialog
-                            title="Service migration"
-                            :visible.sync="sceMigDialog"
-                            width="30%"
-                            >
-                             <el-form > 
-                            <!-- your token -->
-                            <el-form-item  label="Your token" >
-                                <el-input type="text" v-model="yourToken" ref="myToken"  readonly>
-                                 <el-button slot="append" icon="el-icon-document-copy" @click="copyMyToken()"></el-button>    
-                                </el-input> 
-                            </el-form-item>
-
-                            <!-- migration target token -->
-                            <el-form-item  label="Service Migration target token"  >
-                            <el-input type="text" v-model="sceMigTargetTokent"    ></el-input>
-                            </el-form-item>
-                             </el-form>
-                            <span slot="footer" class="dialog-footer">
-                                <el-button @click="sceMigDialog = false;">Cancel</el-button>
-                                <el-button type="primary" @click="serviceMigration()">Migration</el-button>
-                            </span>
-                        </el-dialog>
-                     <!-- <i class="el-icon-more"></i> -->
-                          
-
-                </el-col>
-                <el-col  v-else-if="it.type==='folder'" :span="4" :offset="1"  class="operate" > 
-                     &nbsp;
-                    <!-- <i class="el-icon-edit"></i> -->
-                   
-                    <i @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
-                             
-                </el-col>
-
-           
-
-                <el-col v-if="it.type==='folder'" :span="1"  >
-                   
-                     admin
-                </el-col>
-                <el-col v-else-if="it.type==='file'" :span="1"  >
-                   
-                    <el-switch
-                        @change="authoritySwitch(it)"
-                        v-model="it.authority"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949">
-                    </el-switch>
-                </el-col>
-
-
-            </el-row>
-             
+                 </div>
             
         
     </el-row>
@@ -341,10 +347,12 @@ import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
 const address = require('address');
 import md5 from "js-md5"
+import Avatar from 'vue-avatar'
 export default {
     name:'instance',
     components:{
-            ManagerList
+            ManagerList,
+            Avatar
     },
     data: () => ({
         //select workspace massagebox visiable attribute

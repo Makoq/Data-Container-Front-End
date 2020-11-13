@@ -87,6 +87,13 @@ import DecryptJS from '../utils/cycrypto.js';
       //   return this.$root.$el.myWS?'Online':'Offline'
       // }
     },
+    mounted(){
+        let connUsr=localStorage.getItem('relatedUsr')
+        if(connUsr){
+           this.connectPortalUsr.email = DecryptJS.Decrypt(connUsr.split(',')[1])
+           this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
+        }
+    },
     methods: {
        ...mapMutations(['changerelatedUsr']),
       OnlineWithCenterServer(){
