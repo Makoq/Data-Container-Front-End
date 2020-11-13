@@ -67,7 +67,19 @@ const websocket=function(it){
                    ws.send('online')
                    return
                }
+               setInterval(()=>{
+                    ws.send('{ "msg":"beat" }')
+               },120000);
+
+               
                let re=JSON.parse(e.data)
+               
+               if(re.msg&&re.msg=="beat"){
+                    
+                    
+                    console.log('connection with center server is stable')
+                   
+               }
                //接到上传请求后上传数据
                if(re.req!=undefined&&re.req){
                    _this.$axios.get('/api/transition',{
