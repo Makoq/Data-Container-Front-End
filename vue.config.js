@@ -1,3 +1,4 @@
+const reomte_url=require('./src/utils/config.js')
 module.exports = {
     baseUrl:'/',//根路径
     lintOnSave:false,//关闭ESLint代码检验
@@ -20,7 +21,7 @@ module.exports = {
             },
             //发布数据公开页面
             '/portal':{
-                target:'http://223.2.40.210:8084',
+                target:reomte_url.remote_test_url,
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
@@ -40,7 +41,7 @@ module.exports = {
             },
             //参与式平台
             '/geops':{
-                target:'http://223.2.40.210:8081',
+                target:reomte_url.remote_test_url,
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
