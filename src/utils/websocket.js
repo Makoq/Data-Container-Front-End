@@ -52,6 +52,9 @@ const websocket=function(it){
 
 
             }
+            setInterval(()=>{
+                ws.send('{ "msg":"beat" }')
+           },120000);
              ws.onmessage = function(e){
                 //中转服务器发来success，证明建立websocket通信成功
                if(e.data==='success'){
@@ -64,12 +67,10 @@ const websocket=function(it){
                    return
                } 
                if(e.data==='beat'){
-                   ws.send('online')
+                   console.log('connect with center server stable',new Date().toLocaleString())
                    return
                }
-               setInterval(()=>{
-                    ws.send('{ "msg":"beat" }')
-               },120000);
+          
 
                
                let re=JSON.parse(e.data)
@@ -231,12 +232,49 @@ const websocket=function(it){
                             
                         }else{
                             _this.$message({
-                                message:'收到可用服务请求',
-                                type:'success',
+                                message:'收到可用服务请求失败',
+                                type:'fail',
                                 showClose:true
                             })
                         }
                     })
+               }else if(re.msg=="ivkDPcs"){
+                   _this.$axios.get('/api/exewithotherdata',{
+                       params:{
+                           contDtId:re.contDtId,
+                           pcsId:re.pcsId,
+                           params:re.params,
+                           token:re.token
+                       }
+                   }).then(res=>{
+                       if(res.data.code==0){
+                        let availablePcs={
+                            msg:'invokDisPcs',
+                            uid:res.data.uid,
+                            stout:res.data.stout,
+                        }
+                        ws.send(JSON.stringify(availablePcs))
+                       }else if(res.data.code==-2){
+                        let executeError={
+                            "msg":"invokDisPcs",
+                            "uid":'processing method error',
+                            'stout':resp.data.message,
+                            
+                        }
+
+                        ws.send(JSON.stringify(executeError))
+
+                       }
+                       else{
+                        _this.$message({
+                            message:'失败',
+                            type:'fail',
+                            showClose:true
+                        })
+                       }
+
+                   })
+
                }                
             }
 
