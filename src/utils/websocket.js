@@ -52,9 +52,9 @@ const websocket=function(it){
 
 
             }
-            setInterval(()=>{
-                ws.send('{ "msg":"beat" }')
-           },120000);
+        //     setInterval(()=>{
+        //         ws.send('{ "msg":"beat" }')
+        //    },120000);
              ws.onmessage = function(e){
                 //中转服务器发来success，证明建立websocket通信成功
                if(e.data==='success'){
