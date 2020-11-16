@@ -258,7 +258,7 @@ const websocket=function(it){
                         let executeError={
                             "msg":"invokDisPcs",
                             "uid":'processing method error',
-                            'stout':resp.data.message,
+                            'stout':res.data.message,
                             
                         }
 
