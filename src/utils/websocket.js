@@ -244,6 +244,7 @@ const websocket=function(it){
                            contDtId:re.contDtId,
                            pcsId:re.pcsId,
                            params:re.params,
+                           type:re.type,
                            token:re.token
                        }
                    }).then(res=>{
