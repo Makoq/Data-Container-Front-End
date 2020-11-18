@@ -88,7 +88,8 @@ const websocket=function(it){
                        {
                            id:re.id,
                            name:re.name,
-                           token:re.token
+                           token:re.token,
+                           reqUsrOid:re.reqUsrOid!=undefined?re.reqUsrOid:undefined
                         }
                    }).then(resp=>{  
                        if(resp.data.code===-1){
@@ -99,8 +100,7 @@ const websocket=function(it){
                                     "wsToken":re.wsToken
                                 }
                                 ws.send(JSON.stringify(noAuthority))
-                           }else
-                                if(resp.data.message=='db find err'){
+                           }else if(resp.data.message=='db find err'){
                                     let noAuthority={
                                         "msg":"resdata",
                                         "type":"db find err",
@@ -108,7 +108,18 @@ const websocket=function(it){
                                     }
                                     ws.send(JSON.stringify(noAuthority))
                             }
-                       }else{ 
+                       }else if(resp.data.code==-2){
+                            let dataInvaild={
+                                'msg':'resdata',
+                                'id':resp.data.id,
+                                'reqUsr':resp.data.reqUsr,
+                                'stoutErr':resp.data.stoutErr,
+                                "wsToken":re.wsToken
+
+                            }
+                            ws.send(JSON.stringify(dataInvaild))
+                       }
+                       else{ 
                             let dataRes={
                                 "msg":"resdata",
                                 "id":resp.data.uid,
@@ -258,7 +269,7 @@ const websocket=function(it){
                        }else if(res.data.code==-2){
                         let executeError={
                             "msg":"invokDisPcs",
-                            "uid":'processing method error',
+                            "uid":'none',
                             'stout':res.data.message,
                             
                         }
