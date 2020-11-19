@@ -264,7 +264,7 @@
 
 
 
-                        <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
+                        <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate"  > 
                             &nbsp;
                             <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i>
                             
@@ -924,7 +924,7 @@ export default {
                     _this.loading=false
 
                      _this.$message({
-                        message:'Authority change success!!',
+                        message:'Authority change fail!!',
                         type:'success'
                     })
                 }
@@ -1094,6 +1094,12 @@ export default {
                      window.location.href='http://111.229.14.128:8899/data?uid=' +res.data.uid
 
                 }
+            }else{
+                _this.$notify({
+                               message:'本地方法调用失败\n'+res.data.message,
+                                type:'fail',
+                                duration: 0
+                })
             }
         })
 
@@ -1172,6 +1178,10 @@ export default {
 }
 .operate i{
     margin-left: 10px;
+   
+}
+.operate{
+ min-width: 135px;
 }
 .el-icon-bottom:hover,.el-icon-share:hover,.el-icon-more:hover{
     
