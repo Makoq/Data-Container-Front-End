@@ -88,6 +88,15 @@
 .home{
   height: 1000px;
    
+ /* background-image: url('../../public/img/bk.png'); */
+    height: 100%;
+    background-image: url(../../public/img/bk.svg);
+    background-size:100% 100%;
+    /* -o-background-size: 100% 100%;
+    -webkit-background-size:90% 90%; */
+    background-size:center;
+ 
+   
 }
  
 .el-button{
@@ -96,8 +105,11 @@
 .el-card{
 margin-left: 20px;
 margin-right: 20px;
-
+opacity:0.9;
  height:260px;
  background-color: #c1cfda;
+}
+p{
+  color: black;
 }
 </style>>

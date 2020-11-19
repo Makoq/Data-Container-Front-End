@@ -1202,5 +1202,9 @@ export default {
     color:red;
     font-weight: bolder;
 }
+.instances{
+    
+     
+}
 
 </style>
