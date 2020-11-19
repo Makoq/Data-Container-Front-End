@@ -228,7 +228,7 @@
 
                         </el-col>
                                 <el-dialog
-                                    title="Data choices"
+                                    title="Select Data"
                                     :visible.sync="ivkLcalPcs"
                                     width="30%"
                                     >
@@ -240,11 +240,38 @@
                                         <el-button type="primary" @click="ivkLcalPcsExcute()">OK</el-button>
                                     </span>
                                 </el-dialog>
+                                  <el-dialog
+                                    title="Basic info and parameters "
+                                    :visible.sync="infoAndParsDialog"
+                                    
+                                    >
+                                    
+                                    <el-row v-loading="localPcsLoading">
+                                        <el-col :span="currentPcs.paramsCount==0?24:12">
+                                            <xmp>{{metaDesc}}</xmp>
+                                        </el-col>
+                                        <el-col v-if="currentPcs.paramsCount!=0" :span="12">
+                                            <el-input v-model="pcsParms[key]" v-for="(it,key) in currentPcs.paramsCount" :key="key"></el-input>
+                                        </el-col>
+
+                                    </el-row>
+                                    <span slot="footer" class="dialog-footer">
+                                        <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
+                                        <el-button type="primary" @click="lcalPcsAxios()">OK</el-button>
+                                    </span>
+                                </el-dialog>
+ 
+
+
+
                         <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate" > 
                             &nbsp;
-                            <!-- <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i> -->
+                            <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i>
                             
                             <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
+
+           
+
                             <el-tooltip  effect="dark" content="Public data to OpenGMS Portal DataItem" placement="top-start">
 
                             <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
@@ -255,15 +282,18 @@
                             </el-tooltip>
                             <el-popover
                                 placement="top-start"
-                                title="Information"
-                                width="100%"
+                                title="Metadata Description"
+                                width="400px"
                                 trigger="hover"
+                                style=""
                                 >
-                                <div v-if="it.type==='file'">
-                                    <p  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
+                                <div v-if="it.type==='file'" style="border:1px black solid">
+                                    <p style="color:blue"  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
                                 </div>
-                                <div v-else>
-                                    <p   >{{ it.description}}</p>
+                                <div v-else-if="it.metaDetail!=undefined" style="border:1px black solid">
+                                    <xmp style="color:blue">{{metaInfo(it)}}</xmp>
+                                     
+                                    <!-- <p   ></p> -->
                                 </div>
                                 <i  slot="reference" class="el-icon-info"  ></i>
 
@@ -299,7 +329,7 @@
                                         <el-button type="primary" @click="serviceMigration()">Migration</el-button>
                                     </span>
                                 </el-dialog>
-                            <i class="el-icon-more"></i>
+                            <!-- <i class="el-icon-more"></i> -->
                                 
 
                         </el-col>
@@ -348,6 +378,9 @@ import myUrl from '../utils/config.js'
 const address = require('address');
 import md5 from "js-md5"
 import Avatar from 'vue-avatar'
+import xml2js from 'xml2js';
+const builder=new xml2js.Builder();
+
 export default {
     name:'instance',
     components:{
@@ -401,11 +434,19 @@ export default {
         chsIvkData:undefined,
         csDtNeRadio:'',
         currentPcs:'',
+        infoAndParsDialog:false,
+        metaDesc:'',
+        pcsParms:[],
         //服务迁移
         sceMigDialog:false,
         sceMigTargetTokent:'',
         yourToken:'',
-        currentServiceId:''
+        currentServiceId:'',
+        // 本地展示xml
+        pcsMetaInfo:'',
+        imgVisualizationDialog:false,//可视化展示dialog,
+        localPcsLoading:false
+
 
 
 
@@ -418,18 +459,7 @@ export default {
         
         console.log('createa')
     },
-    computed:{
-        connectPortalUsr(){
-            let connUsr=localStorage.getItem('relatedUsr')
-            if(connUsr){
-
-                return DecryptJS.Decrypt(connUsr.split(',')[1])
-            }else{
-                return 'no usr'
-            }
-            
-        }
-    },
+    
     watch:{
          $route: 'watchrouter'//路由变化时，执行的方法
     },
@@ -472,8 +502,40 @@ export default {
             
         })
     },
-    methods:{
+    computed:{
+        connectPortalUsr(){
+            let connUsr=localStorage.getItem('relatedUsr')
+            if(connUsr){
+
+                return DecryptJS.Decrypt(connUsr.split(',')[1])
+            }else{
+                return 'no usr'
+            }
+        },
         
+        metaInfo(){
+            let _this=this
+            return function (v){
+                return _this.pcsMeta(v)
+            }
+        }
+
+        
+    },
+    methods:{
+        imgVisualization(id){
+            // this.imgVisualizationDialog=true
+            this.$axios.get('/api/visualresult',{
+                params:{
+                    id:id
+                }
+            })
+
+
+        },
+        pcsMeta(it){
+             return builder.buildObject(JSON.parse(it.metaDetail)) 
+        },
         newFolder(){
             let _this=this
             let newFolder={
@@ -989,6 +1051,10 @@ export default {
        },
        //调用本地处理方法
        ivkLcalPcsExcute(){
+           this.ivkLcalPcs=false
+           
+           this.metaDesc=builder.buildObject(JSON.parse(this.currentPcs.metaDetail))
+            
            console.log(this.chsIvkData,this.csDtNeRadio)
            let _this=this
            if(this.csDtNeRadio==''){
@@ -997,25 +1063,41 @@ export default {
                    message:'Please choose one data at least!'
                })
            }else{
-               console.log(this.currentPcs)
-               let pcsId=this.currentPcs.id
-               let dataId=this.csDtNeRadio
-               let param=''
-               if(this.currentPcs.paramsCount!=0){
-                    this.$prompt('Please input parameters', 'Multiple parameters are split with +', {
-                        confirmButtonText: 'ok',
-                        cancelButtonText: 'cancel',
-                    }).then(({ value })=>{
-                        param=value.split('+').join(',')
-                    })
-               }else{
+              this.infoAndParsDialog=true
+               
 
-
-               }
            }
        },
        lcalPcsAxios(){
         //TODO:本地处理方法调用，但是太麻烦先把本地调用取消了 
+        let _this=this
+        this.localPcsLoading=true
+        this.$axios.get('/api/executeprcs',{
+            params:{
+                name:_this.currentPcs.name,
+                token:'localpcs',
+                pcsId:_this.currentPcs.id,
+                dataId:_this.csDtNeRadio,
+                params:_this.pcsParms.join(','),
+
+            }
+        }).then(res=>{
+            if(res.data.code==0){
+                _this.infoAndParsDialog=false
+                _this.localPcsLoading=false
+                if(_this.currentPcs.type=='Visualization'){
+                     this.$alert('<img src='+'http://111.229.14.128:8899/data?uid=' +res.data.uid+' width="100%" height="100%" alt="Visualization Result" />', 'Visualization Result', {
+                        dangerouslyUseHTMLString: true,
+                        confirmButtonText: 'ok',
+                        });
+                }else{
+                     window.location.href='http://111.229.14.128:8899/data?uid=' +res.data.uid
+
+                }
+            }
+        })
+
+
        },
        serviceMigrationDialog(it){
            this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
