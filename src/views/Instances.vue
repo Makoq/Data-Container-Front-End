@@ -233,7 +233,7 @@
                                     width="30%"
                                     >
                                     
-                                    <el-radio v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key">{{chsIvkData[key]}}</el-radio>
+                                    <el-radio style="color:green;" v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key"><strong>{{chsIvkData[key]}}</strong></el-radio>
                                     
                                     <span slot="footer" class="dialog-footer">
                                         <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
@@ -243,16 +243,21 @@
                                   <el-dialog
                                     title="Basic info and parameters "
                                     :visible.sync="infoAndParsDialog"
-                                    
+                                    width="fit-content"
                                     >
                                     
                                     <el-row v-loading="localPcsLoading">
-                                        <el-col :span="currentPcs.paramsCount==0?24:12">
-                                            <xmp>{{metaDesc}}</xmp>
-                                        </el-col>
-                                        <el-col v-if="currentPcs.paramsCount!=0" :span="12">
+                                        <h3>Description:</h3><br>
+                                      <div style="border: 1px solid black;color:blue " >
+                                       <xmp >{{metaDesc}}</xmp>
+                                      </div>
+                                    </el-row>
+                                    <el-divider></el-divider>
+                                    <el-row>
+                                        <h3>Parameters:</h3><br>
+
                                             <el-input v-model="pcsParms[key]" v-for="(it,key) in currentPcs.paramsCount" :key="key"></el-input>
-                                        </el-col>
+
 
                                     </el-row>
                                     <span slot="footer" class="dialog-footer">

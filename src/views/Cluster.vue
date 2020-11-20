@@ -6,9 +6,12 @@
     style="display:flex;flex-wrap:wrap"
     >
         
-          <div class="nodes" v-for="(o, index) in onlineNodes" :key="index">
+          <div  class="nodes" v-for="(o, index) in onlineNodes" :key="index">
             <div style="margin-left:-20px;margin-top:20px">
-            <strong style="color:blue" >{{o.node[0]}}</strong>
+            <!-- @mouseover="nodeInfo(o)" -->
+
+            <strong style="color:blue"  
+            >{{o.node[0]}}</strong>
             </div>
           </div>
           
@@ -37,6 +40,20 @@ const parser= new xml2js.Parser();
             _this.onlineNodes=result.serviceNodes.onlineServiceNodes
         })
       })
+    },
+    methods:{
+      nodeInfo(node){
+          console.log(node)
+          this.$alert(node.token,'title',{
+            confirmButtonText: '确定',
+            callback: action => {
+             
+          }
+
+          }
+          )
+          
+      }
     }
      
   }
@@ -65,6 +82,7 @@ const parser= new xml2js.Parser();
     border:2px solid black;
  
 }
+ 
 .nodes:before {
             content: '';
             display: block;
