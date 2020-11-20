@@ -145,8 +145,8 @@ export default {
       // 开始轮询获取数据
       window.setInterval(() => {
         setTimeout(() => {
-          const urlHash = window.location.hash;
-          if (urlHash === '#/console/state') {
+          const urlHash = window.location.pathname ;
+          if (urlHash === '/state') {
             this.addData(true);
             myChart.setOption({
               xAxis: { data: this.time },
@@ -168,9 +168,10 @@ export default {
 </script>
 <style >
   #systemChart {
-    margin-top: 100px;
+    /* margin-top: 100px; */
     width: 100%;
     height: 500px;
+
   }
   span {
     margin-right: 30px;
