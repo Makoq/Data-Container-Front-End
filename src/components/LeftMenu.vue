@@ -52,6 +52,8 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
+            <el-menu-item index="3-2"><span>Thematic</span></el-menu-item>
+
         
        </el-submenu>
 
@@ -76,9 +78,11 @@
           <span>Clusters</span>
         </template>
 
-        <el-menu-item index="5-1"><span>Clusters</span></el-menu-item>
+        <el-menu-item index="5-1"><span>Nodes</span></el-menu-item>
         
       </el-submenu>
+
+      
 
       <el-menu-item index="6">
           <i  style="color:white" class="el-icon-info"></i>
@@ -139,6 +143,9 @@ import { mapMutations } from 'vuex';
 
           }else if(index==='3-1'){
             this.$router.push({path:'/instance',query:{type:'Visualization'}})
+            
+          }else if(index==='3-2'){
+            this.$router.push({path:'/thematic',})
             
           }else if(index==='4-1'){
             this.$router.push({path:'/state'})

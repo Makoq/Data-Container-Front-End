@@ -1,5 +1,24 @@
 <template>
    <div >
+    
+
+<el-card class="box-card">
+       <div slot="header" class="clearfix">
+         
+         <h2>CPU and memory usage</h2>
+      </div>
+     <!--     系统状态显示-->
+     <div id="systemChart" ref="chart"></div>
+ </el-card>
+
+ <el-card class="box-card">
+      <div slot="header" class="clearfix">
+         <h2>Browser</h2>
+      </div>
+     <span><b>Type:</b> {{broInfo.type}}</span>
+     <span><b>Version:</b> {{broInfo.version}}</span>
+     
+</el-card>
      <el-card class="box-card">
       <div slot="header" class="clearfix">
          
@@ -13,22 +32,7 @@
      <span><b>Temporary directory:</b> {{sysInfo.tmpdir}}</span>
      </el-card>
      
-<el-card class="box-card">
-      <div slot="header" class="clearfix">
-         <h2>Browser</h2>
-      </div>
-     <span><b>Type:</b> {{broInfo.type}}</span>
-     <span><b>Version:</b> {{broInfo.version}}</span>
-     
-</el-card>
-<el-card class="box-card">
-       <div slot="header" class="clearfix">
-         
-         <h2>cpu及内存占用率</h2>
-      </div>
-     <!--     系统状态显示-->
-     <div id="systemChart" ref="chart"></div>
- </el-card>
+
    </div>
 </template>
 <script>
@@ -92,7 +96,7 @@ export default {
         // title: { text: 'cpu及内存占用率' },
         tooltip: { trigger: 'axis' },
         legend: {
-          data: ['内存使用率', 'CPU使用率'],
+          data: ['Memory usage', 'CPU utilization'],
         },
         xAxis: [{
           boundaryGap: false,
@@ -103,7 +107,7 @@ export default {
         yAxis: {},
         series: [
           {
-            name: '内存使用率',
+            name: 'Memory usage',
             type: 'line',
             data: this.mem,
             smooth: true,
@@ -120,7 +124,7 @@ export default {
             },
           },
           {
-            name: 'CPU使用率',
+            name: 'CPU utilization',
             type: 'line',
             data: this.cpu,
             smooth: true,

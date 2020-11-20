@@ -58,7 +58,14 @@ const router= new Router({
         },
 
 
-
+        {//cluster
+          path: '/thematic',
+          name: 'Online Service Nodes',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import(/* webpackChunkName: "about" */ './views/Thematic.vue')
+        },
         {//about页面
           path: '/about',
           name: 'About',
