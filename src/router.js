@@ -31,7 +31,7 @@ const router= new Router({
         },
         {
           path:'/state',
-          name:'Workspace List: Manage your workspace',
+          name:'Service State',
           // 路由懒加载
           component:resolve=>require(['./views/State.vue'],resolve)
         },
@@ -60,7 +60,7 @@ const router= new Router({
 
         {//cluster
           path: '/thematic',
-          name: 'Online Service Nodes',
+          name: 'Thematic visualization',
           // route level code-splitting
           // this generates a separate chunk (about.[hash].js) for this route
           // which is lazy-loaded when the route is visited.

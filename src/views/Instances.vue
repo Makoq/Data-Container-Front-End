@@ -252,8 +252,8 @@
                                        <xmp >{{metaDesc}}</xmp>
                                       </div>
                                     </el-row>
-                                    <el-divider></el-divider>
-                                    <el-row>
+                                    <el-divider v-if="currentPcs.paramsCount!=0"></el-divider>
+                                    <el-row v-if="currentPcs.paramsCount!=0">
                                         <h3>Parameters:</h3><br>
 
                                             <el-input v-model="pcsParms[key]" v-for="(it,key) in currentPcs.paramsCount" :key="key"></el-input>
@@ -261,7 +261,7 @@
 
                                     </el-row>
                                     <span slot="footer" class="dialog-footer">
-                                        <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
+                                        <el-button @click="infoAndParsDialog = false;">Cancel</el-button>
                                         <el-button type="primary" @click="lcalPcsAxios()">OK</el-button>
                                     </span>
                                 </el-dialog>
@@ -1100,6 +1100,7 @@ export default {
 
                 }
             }else{
+                this.localPcsLoading=false
                 _this.$notify({
                                message:'本地方法调用失败\n'+res.data.message,
                                 type:'fail',

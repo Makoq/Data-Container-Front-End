@@ -139,7 +139,76 @@ const websocket=function(it){
                             ws.send(JSON.stringify(dataRes))
                        }
                    })
-               }else if(re.reqPcs!=undefined&&re.reqPcs){
+               }else if(re.capability!=undefined&&re.capability){//数据元数信息 capability
+                        _this.$axios.get('/api/capability',{
+                            params:
+                            {
+                                id:re.id,
+                                type:re.type
+                            }
+                        }).then(resp=>{  
+                            if(resp.data.code===-1){
+                                if(resp.data.message=='no authority'){
+                                    let noAuthority={
+                                        "msg":"resdata",
+                                        "capability":true,
+                                        "type":"noAuthority",
+                                        "wsToken":re.wsToken
+                                    }
+                                    ws.send(JSON.stringify(noAuthority))
+                                }else if(resp.data.message=='db find err'){
+                                        let noAuthority={
+                                            "msg":"resdata",
+                                            "capability":true,
+                                            "type":"db find err",
+                                            "wsToken":re.wsToken
+                                        }
+                                        ws.send(JSON.stringify(noAuthority))
+                                }else{
+                                    let err={
+                                        "msg":"resdata",
+                                        "stout":"find err",
+                                        "capability":true,
+                                        "wsToken":re.wsToken
+                                    }
+                                    ws.send(JSON.stringify(err))
+                                }
+                            }else if(resp.data.code==-2){
+                                let dataInvaild={
+                                    'msg':'resdata',
+                                    'id':resp.data.id,
+                                    
+                                    'stoutErr':resp.data.stoutErr,
+                                    "wsToken":re.wsToken
+
+                                }
+                                ws.send(JSON.stringify(dataInvaild))
+                            }
+                            else{ 
+                                let dataRes={
+                                    "msg":"resdata",
+                                    "data":resp.data.data,
+                                    "capability":true,
+                                    "wsToken":re.wsToken
+                                }
+
+                                
+                                _this.$notify({
+                                    message:'In situ share in file level: '+re.name,
+                                    type: 'success',
+                                    duration: 0
+                                })
+
+                                
+                                //数据下载信息发送回中转服务器
+                                ws.send(JSON.stringify(dataRes))
+                            }
+                        })
+
+
+               }
+               
+               else if(re.reqPcs!=undefined&&re.reqPcs){
                    _this.$axios.get("/api/executeprcs",{
                        params:
                        {                     
@@ -250,43 +319,88 @@ const websocket=function(it){
                         }
                     })
                }else if(re.msg=="ivkDPcs"){
-                   _this.$axios.get('/api/exewithotherdata',{
-                       params:{
-                           contDtId:re.contDtId,
-                           pcsId:re.pcsId,
-                           params:re.params,
-                           type:re.type,
-                           token:re.token
-                       }
-                   }).then(res=>{
-                       if(res.data.code==0){
-                        let availablePcs={
-                            msg:'invokDisPcs',
-                            uid:res.data.uid,
-                            stout:res.data.stout,
-                        }
-                        ws.send(JSON.stringify(availablePcs))
-                       }else if(res.data.code==-2){
-                        let executeError={
-                            "msg":"invokDisPcs",
-                            "uid":'none',
-                            'stout':res.data.message,
-                            
-                        }
+                    //  两种情况，一种是拿着数据容器的下载id过来，另一种情况是拿着外部可下载数据的url过来（目前值兼容了模型容器输出的url）
+                    if(re.contDtId!=undefined){
+                                            
+                        _this.$axios.get('/api/exewithotherdata',{
+                            params:{
+                                contDtId:re.contDtId,
+                                pcsId:re.pcsId,
+                                params:re.params,
+                                type:re.type,
+                                token:re.token
+                            }
+                        }).then(res=>{
+                            if(res.data.code==0){
+                                let availablePcs={
+                                    msg:'invokDisPcs',
+                                    uid:res.data.uid,
+                                    stout:res.data.stout,
+                                }
+                                ws.send(JSON.stringify(availablePcs))
+                            }else if(res.data.code==-2){
+                                let executeError={
+                                    "msg":"invokDisPcs",
+                                    "uid":'none',
+                                    'stout':res.data.message,
+                                    
+                                }
 
-                        ws.send(JSON.stringify(executeError))
+                                ws.send(JSON.stringify(executeError))
 
-                       }
-                       else{
-                        _this.$message({
-                            message:'失败',
-                            type:'fail',
-                            showClose:true
+                            }
+                            else{
+                                _this.$message({
+                                    message:'失败',
+                                    type:'fail',
+                                    showClose:true
+                                })
+                            }
                         })
-                       }
+                    }else if(re.url!=undefined){
+                        
+                       
+                        const params = new URLSearchParams();
+                        params.append("pcsId",re.pcsId)
+                        params.append("token",re.token)
+                        params.append("url",re.url)
 
-                   })
+                        params.append("params",re.params)
 
+                         
+                        _this.$axios.post('/api/invokeProUrl',params,{
+                            headers:{
+                                'Content-Type':'application/x-www-form-urlencoded'
+                            }
+                        }
+                        ).then(res=>{
+                            if(res.data.code==0){
+                                let availablePcs={
+                                    msg:'invokDisPcs',
+                                    uid:res.data.uid,
+                                    stout:res.data.stout,
+                                }
+                                ws.send(JSON.stringify(availablePcs))
+                            }else if(res.data.code==-2){
+                                let executeError={
+                                    "msg":"invokDisPcs",
+                                    "uid":'none',
+                                    'stout':res.data.message,
+                                    
+                                }
+
+                                ws.send(JSON.stringify(executeError))
+
+                            }
+                            else{
+                                _this.$message({
+                                    message:'失败',
+                                    type:'fail',
+                                    showClose:true
+                                })
+                            }
+                        })
+                    }
                }                
             }
 
