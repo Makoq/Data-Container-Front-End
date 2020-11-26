@@ -67,8 +67,21 @@ import Content from '@/views/Content';
                 </el-option>
             </el-select>
           </el-form-item> -->
-         
+           <el-collapse v-model="autoActiveDescPart" >
+              <el-collapse-item title="Basic Information :" name="1">
           <!-- 名称 -->
+            <!-- 链接参数 -->
+              <el-form-item  v-if="this.$route.query.type!='FileWorkSpace'" label="Local URL" prop="Url">
+                <el-popover
+                  placement="top-start"
+                  title="Attention"
+                  width="200"
+                  trigger="hover"
+                  content="Specific to a file or a folder(for multi files)">
+                </el-popover>
+                <el-input v-model="form.LocalURL" placeholder="file://" style="width:100%;"></el-input>
+                
+              </el-form-item>
           <el-form-item  label="Name" prop="name">
             <el-input v-model="form.name" style="width:40%" maxlength="25" show-word-limit placeholder="Name of the data" ></el-input>
           </el-form-item>
@@ -82,6 +95,7 @@ import Content from '@/views/Content';
               closable
               @close="delCate(tag)"
               :type="tag.type">
+                
               {{tag.cateId}}
             </el-tag>
           </el-form-item>
@@ -92,7 +106,7 @@ import Content from '@/views/Content';
             v-model="form.authority"
             active-text="public"
             inactive-text="private">
-           </el-switch>
+            </el-switch>
           </el-form-item>
 
           <!-- describe -->
@@ -124,29 +138,102 @@ import Content from '@/views/Content';
             ></el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ add Tags</el-button>
           </el-form-item>
-          <!-- data format -->
-          <el-form-item  label="Format">
-            <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.format" placeholder="Data Format about this..."></el-input>
+          <!-- unique identification -->
+          <el-form-item  label="UID">
+            <!-- <el-input type="text" style="width:40%"  maxlength="100" show-word-limit v-model="form.doi" placeholder="Data doi about this..." disabled></el-input> -->
+            <span style="color:gray">{{form.uid}}</span>
           </el-form-item>
+          <!-- file type -->
+          <el-form-item label="File Type">
+            <el-radio-group v-model="form.fileDataType">
+            <el-radio-button label="File"></el-radio-button>
+            <el-radio-button label="DataBase"></el-radio-button>
+            <el-radio-button label="Memory"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+              </el-collapse-item>
+              <el-collapse-item title="Basic metadata :" name="2">
+              <!-- data format -->
+              <el-form-item  label="Format">
+                <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.format" placeholder="The format of the main file..."></el-input>
+              </el-form-item>
+              <!-- Size -->
+              <el-form-item  label="Size">
+                <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.size" placeholder="The approximate storage size of the file...">
+                  <template slot="append">MB</template>
+                </el-input>
+              </el-form-item>
+              <!-- time -->
+              <el-form-item  label="Time">
+                <el-date-picker
+                  v-model="form.dataTime"
+                  type="datetime"
+                  placeholder="choose time">
+                </el-date-picker>
+              </el-form-item>
+              <!--  Quality-->
+              <el-form-item  label="Quality">
+                <el-rate
+                v-model="form.quality"
+                show-text
+                :texts="texts"
+                >
+              </el-rate>
+              </el-form-item>
+              <!-- security classification  -->
+              <el-form-item  label="Security">
+                <el-radio-group v-model="form.security">
+                          <el-radio-button label="Public"></el-radio-button>
+                          <el-radio-button label="Secrecy"></el-radio-button>
+                
+                </el-radio-group>
+              </el-form-item>
+              <!-- law info -->
+              <el-form-item  label="Law Info">
+                <el-input type="textarea" style="width:40%"  maxlength="150" show-word-limit v-model="form.lawInfo" placeholder="law Information about this..."></el-input>
+              </el-form-item>
+              <!-- reference -->
+              <el-form-item  label="Reference">
+                <el-input type="textarea" style="width:40%"  maxlength="150" show-word-limit v-model="form.references" placeholder="References about this..."></el-input>
+              </el-form-item>
+              <!-- reference -->
+              <el-form-item  label="Owner">
+                <el-input type="textarea" style="width:40%"  maxlength="150" show-word-limit v-model="form.owner" placeholder="References about this..."></el-input>
+              </el-form-item>
+              <!-- email -->
+              <el-form-item  label="Email">
+                <el-input type="text" style="width:40%"  maxlength="30" show-word-limit v-model="form.email" placeholder="Email about this..."></el-input>
+              </el-form-item>
 
-           <!-- email -->
-          <el-form-item  label="Email">
-            <el-input type="text" style="width:40%"  maxlength="50" show-word-limit v-model="form.email" placeholder="Data Format about this..."></el-input>
-          </el-form-item>
+              </el-collapse-item>
+              <el-collapse-item title="Semantic Description :" name="3">
+                      <!-- semantic -->
+                      <el-form-item  label="Semantic">
+                        <el-input type="textarea" style="width:80%" rows="4"   show-word-limit v-model="form.semanticDescription.email" placeholder="Email about this..."></el-input>
+                      </el-form-item>
 
-          <!-- 链接参数 -->
-           <el-form-item  v-if="this.$route.query.type!='FileWorkSpace'" label="Local URL" prop="Url">
-            <el-popover
-              placement="top-start"
-              title="Attention"
-              width="200"
-              trigger="hover"
-              content="Specific to a file or a folder(for multi files)">
-            </el-popover>
-            <el-input v-model="form.LocalURL" placeholder="file://" style="width:100%;"></el-input>
-             
-          </el-form-item>
-           
+                      <!-- spatialReference -->
+                      <el-form-item  label="Spatial Reference">
+                        <el-input type="textarea" style="width:80%" rows="4"  show-word-limit v-model="form.semanticDescription.spatialReference" placeholder="Email about this..."></el-input>
+                      </el-form-item>
+
+                      <!-- unitDimension -->
+                      <el-form-item  label="Unit Dimension">
+                        <el-input type="textarea" style="width:80%"  rows="4"   show-word-limit v-model="form.semanticDescription.unitDimension" placeholder="Email about this..."></el-input>
+                      </el-form-item>
+                      <!-- dataTemplate -->
+                      <el-form-item  label="Data Template">
+                        <el-input type="textarea" style="width:80%" rows="4"    show-word-limit v-model="form.semanticDescription.dataTemplate" placeholder="Email about this..."></el-input>
+                      </el-form-item>
+              </el-collapse-item>
+              <el-collapse-item title="Model Realted :" name="4">
+              <!-- model  Recommend model-->
+              <el-form-item  label="Recommend Geo-models">
+                <el-input type="textarea" style="width:80%" rows="4"    show-word-limit v-model="form.modelRelated.recommendMdoel" placeholder="Email about this..."></el-input>
+              </el-form-item>
+            
+              </el-collapse-item>
+           </el-collapse>
           <!-- 提交或编辑  -->
           <el-form-item
             label="Submit"
@@ -321,6 +408,8 @@ export default {
         workspace:"",
         name: "",
         categories:[],
+        uid:'',
+        fileDataType:'File',
         // tag
         dynamicTags: ["gis",'地理学'],
         desc: "",
@@ -328,8 +417,27 @@ export default {
         authority:true,
         LocalURL:'D:\\Projects\\testData\\china_admin_shp',
         format:'',
-        email:''
+        quality:null,
+        security:'Public',
+        size:null,
+        dataTime:null,
+        lawInfo:null,
+        references:null,
+        owner:null,
+        email:'',
+        semanticDescription:{
+          semanticConcept:null,
+          spatialReference:null,
+          unitDimension:null,
+          dataTemplate:null
+
+        },
+        modelRelated:{
+          recommendMdoel:null
+        }
       },
+    autoActiveDescPart:['1','2'],
+      texts:['Very bad ',' disappointed ', 'just so so ',' satisfied ', 'surprised'],
       processing:{
         name:'',
         authority:true,
@@ -353,15 +461,7 @@ export default {
       // udx_source_upload_url: urlUtils.udx_source_upload
       LocalURLDialogVisible:false,
       
-      localDiskList:[
-          {
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, 
-      ],
+      
       processingList:[],
       localDisk:'',
       selectDialogVisible:false,
@@ -371,15 +471,7 @@ export default {
       instanceLayer:[],
       chooseDataArray:[],
       connectedData:[],
-       rules: {
-          name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 25, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ],
-          desc: [
-            { required: true, message: '请填写描述', trigger: 'blur' }
-          ]
-       },
+       
        createProcessConfirm:false,
        programming_template_visable:false,
 
@@ -397,6 +489,7 @@ export default {
   mounted() {
     console.log("init",this.$route.query)
     this.isEdit();
+    this.form.uid=localStorage.getItem('relatedUsr').split(',')[1]+uuidv4()
   },
   
   methods: {
@@ -462,14 +555,30 @@ export default {
         type:'file',
         authority:_this.form.authority,
         meta:{
+          uid:_this.form.uid,
           workSpace:_this.form.workspace,
           description:_this.form.desc,
           detail:_this.form.detail,
           tags:[],
           keywords:_this.form.dynamicTags,
           dataPath:_this.form.LocalURL,
+
+          fileDataType:_this.form.fileDataType,
+          quality:_this.form.quality,
+
+          security:_this.form.security,
+          size:_this.form.size+'MB',
+          dataTime:new Date(_this.form.dataTime).toLocaleString(),
+          lawInfo:_this.form.lawInfo,
+          references:_this.form.references,
+          owner:_this.form.owner,
+
           email:_this.form.email,
-          format:_this.form.format
+          format:_this.form.format,
+          semanticDescription:_this.form.semanticDescription,
+          modelRelated:_this.form.modelRelated
+
+
         }
 
         
@@ -806,5 +915,12 @@ export default {
    color: rgb(209, 111, 31);
    font-weight: bolder;
  }
-
+.el-form .el-collapse-item__header{
+  color: #163d5e;
+  font-size: larger;
+    font-weight: bold;
+}
+.el-form .el-collapse-item__wrap{
+  background-color:#f8fafb;
+}
 </style>

@@ -233,7 +233,7 @@
                                     width="30%"
                                     >
                                     
-                                    <el-radio style="color:green;" v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key"><strong>{{chsIvkData[key]}}</strong></el-radio>
+                                    <el-radio style="color:green;border:green 1px solid" v-for="(it,key) in chsIvkData" :key="key" v-model="csDtNeRadio" :label="key" border><strong>{{chsIvkData[key]}}</strong></el-radio>
                                     
                                     <span slot="footer" class="dialog-footer">
                                         <el-button @click="ivkLcalPcs = false;">Cancel</el-button>
@@ -248,7 +248,7 @@
                                     
                                     <el-row v-loading="localPcsLoading">
                                         <h3>Description:</h3><br>
-                                      <div style="border: 1px solid black;color:blue " >
+                                      <div style="background-color:#f8fafb; color: #163d5e; " >
                                        <xmp >{{metaDesc}}</xmp>
                                       </div>
                                     </el-row>
@@ -271,7 +271,7 @@
 
                         <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate"  > 
                             &nbsp;
-                            <i  v-if="it.type!='file'" class="el-icon-caret-right" @click="invokeLocalPcs(it)"></i>
+                            <i  v-if="it.type!='file'" :class="it.type=='Visualization'?'el-icon-view':'el-icon-caret-right'" @click="invokeLocalPcs(it)"></i>
                             
                             <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
 
@@ -292,8 +292,8 @@
                                 trigger="hover"
                                 style=""
                                 >
-                                <div v-if="it.type==='file'" style="border:1px black solid">
-                                    <p style="color:blue"  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'?k+' : '+i:''}}</p>
+                                <div v-if="it.type==='file'" style="">
+                                    <p style="color: #163d5e;"  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'&&typeof(i)!='object'?k+' : '+i:''}}</p>
                                 </div>
                                 <div v-else-if="it.metaDetail!=undefined" style="border:1px black solid">
                                     <xmp style="color:blue">{{metaInfo(it)}}</xmp>
@@ -1208,9 +1208,5 @@ export default {
     color:red;
     font-weight: bolder;
 }
-.instances{
-    
-     
-}
-
+  
 </style>
