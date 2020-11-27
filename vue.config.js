@@ -49,6 +49,15 @@ module.exports = {
                     '^/geops':'',
                 }
             },
+            '/amap':{
+                target:reomte_url.remote_test_url,
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/geops':'',
+                }
+            },
 
             '/th':{
                 target:'http://223.2.47.247:1708',

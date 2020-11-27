@@ -79,6 +79,8 @@
         </template>
 
         <el-menu-item index="5-1"><span>Nodes</span></el-menu-item>
+        <el-menu-item index="5-2"><span>World</span></el-menu-item>
+
         
       </el-submenu>
 
@@ -151,6 +153,8 @@ import { mapMutations } from 'vuex';
             this.$router.push({path:'/state'})
           }else if(index==='5-1'){
             this.$router.push({path:'/cluster',query:{type:'Cluster'}})
+          }else if(index==='5-2'){
+            this.$router.push({path:'/worldCluster',query:{type:'worldCluster'}})
           }else if(index==='6'){
             this.$router.push({path:'/about',query:{type:'About'}})
           }

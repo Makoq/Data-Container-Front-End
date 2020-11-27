@@ -1,7 +1,7 @@
 const util=require('./utils.js')
 const decryptjs =require('./cycrypto.js')
 import DecryptJS from './cycrypto.js';
-
+const ip = require('ip');
 const websocket=function(it){
     let _this=it
     it.$axios.get('/api/state')
@@ -12,12 +12,12 @@ const websocket=function(it){
           type:'success'
         })
 
-        _this.$root.$el.insitu_ip=res.data.ip
+        _this.$root.$el.insitu_ip=DecryptJS.Encrypt(res.data.ip)
 
         //连接中转服务器websocket
         
         if(_this.$root.$el.myWS==undefined){
-           var ws = new WebSocket('ws://111.229.14.128:1708');
+           var ws = new WebSocket('ws://111.229.14.128:1709');
            
           _this.$root.$el.myWS=ws
            ws.onopen = function(e){
@@ -26,6 +26,7 @@ const websocket=function(it){
                 let cont={
                     msg:'regist',
                     token:token.split(',')[1],
+                    nodeIp:_this.$root.$el.insitu_ip,
                     date:new Date()
                 }
                 let msg= JSON.stringify(cont)
@@ -52,9 +53,9 @@ const websocket=function(it){
 
 
             }
-        //     setInterval(()=>{
-        //         ws.send('{ "msg":"beat" }')
-        //    },120000);
+            setInterval(()=>{
+                ws.send('{ "msg":"beat" }')
+           },60000);
              ws.onmessage = function(e){
                 //中转服务器发来success，证明建立websocket通信成功
                if(e.data==='success'){
@@ -78,7 +79,7 @@ const websocket=function(it){
                if(re.msg&&re.msg=="beat"){
                     
                     
-                    console.log('connection with center server is stable')
+                    console.log('connection with center server is stable',new Date().toLocaleString())
                    
                }
                //接到上传请求后上传数据
@@ -167,7 +168,8 @@ const websocket=function(it){
                                 }else{
                                     let err={
                                         "msg":"resdata",
-                                        "stout":"find err",
+                                        "stoutErr":"find err",
+                                        'id':re.id,
                                         "capability":true,
                                         "wsToken":re.wsToken
                                     }
