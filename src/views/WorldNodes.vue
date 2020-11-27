@@ -15,10 +15,13 @@ import request from 'request';
 const parser=new xml2js.Parser()
   export default {
     data: () => ({
-      loading:false
+      loading:false,
+      center:[]
     }),
      mounted () {
-    this.init()
+         let _this=this
+                    this.init()
+
    
      
    
@@ -39,7 +42,7 @@ const parser=new xml2js.Parser()
             //   console.log(map)
             let _this=this
             let onlineNodes=[]
-            _this.$axios.get('http://localhost:8898/onlineNodes')
+            _this.$axios.get('http://111.229.14.128:8898/onlineNodes')
             .then(res=>{
                 let re=parser.parseString(res.data, function (err, result) {
                     if(result.serviceNodes.onlineServiceNodes==undefined) return
@@ -55,14 +58,15 @@ const parser=new xml2js.Parser()
 
         }, 
         async adddNodesMaker(map,nodes){
-
+            this.center=[]
             for(let n of nodes){
                 await this.markerToMap(map,n.ip)
             }
              this.loading=false
+             map.setCenter(this.center);
         },
         markerToMap(map,ip){
-
+            let _this=this
            return new Promise((reslve,rej)=>{
                request('https://restapi.amap.com/v3/ip?key=5c10ac9bf0d8d4a7481547e1e8bb461b&ip='+ip[0],(err,res,data)=>{
                    let r=JSON.parse(data)
@@ -72,7 +76,9 @@ const parser=new xml2js.Parser()
                             let c2=coors[1].split(',')
 
                             let CityCoor=[Number(c1[0])+(Number(c2[0])-Number(c1[0]))/2,Number(c1[1])+(Number(c2[1])-Number(c1[1]))/2]
-
+                            if(_this.center.length=0){
+                                _this.center=CityCoor
+                            }
                             new mapboxgl.Marker({color:'red'})
                             .setLngLat(CityCoor)
                             .addTo(map);

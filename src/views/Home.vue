@@ -1,7 +1,12 @@
 <template>
   <div class="home">
     <!-- <p>&nbsp;&nbsp;In situ sharing of data in file, information, visualzation level.</p> -->
+    <!-- <el-row>
+      <world-node style="height:200px"></world-node>
+    </el-row> -->
+    <br>
   <el-row  >
+
     <el-col :span="12">
       <el-card>
       
@@ -81,9 +86,10 @@
 </template>
 
 <script>
-   
+  
 
   export default {
+    
      methods:{
        check(type){
          if(type=='data'){
