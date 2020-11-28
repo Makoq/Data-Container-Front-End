@@ -49,11 +49,29 @@ module.exports = {
                     '^/geops':'',
                 }
             },
+            '/amap':{
+                target:reomte_url.remote_test_url,
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/geops':'',
+                }
+            },
 
+            '/th':{
+                target:'http://223.2.47.247:1708',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/th':'',
+                }
+            },
             //测试
             //参与式平台
             '/test':{
-                target:'http://223.2.47.177:8081/',
+                target:'http://223.2.47.247:1708',
                 ws:true,
                 timeout:600000,
                 changOrigin:true,
@@ -61,6 +79,7 @@ module.exports = {
                     '^/test':'',
                 }
             },
+            
             
 
 

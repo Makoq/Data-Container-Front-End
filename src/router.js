@@ -30,6 +30,12 @@ const router= new Router({
           component:resolve=>require(['./views/WorkSpace.vue'],resolve)
         },
         {
+          path:'/state',
+          name:'Service State',
+          // 路由懒加载
+          component:resolve=>require(['./views/State.vue'],resolve)
+        },
+        {
           path:'/instance',
           name:'Instances List: Manage your service instances',
           //路由懒加载
@@ -42,9 +48,32 @@ const router= new Router({
           component: () => import(/* webpackChunkName: "about" */ './views/FormInput.vue')
         },
 
+        {//cluster
+          path: '/cluster',
+          name: 'Online Service Nodes',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import(/* webpackChunkName: "about" */ './views/Cluster.vue')
+        },
+        {//about页面
+          path: '/worldCluster',
+          name: 'worldCluster',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import(/* webpackChunkName: "about" */ './views/WorldNodes.vue')
+        },
 
 
-
+        {//cluster
+          path: '/thematic',
+          name: 'Thematic visualization',
+          // route level code-splitting
+          // this generates a separate chunk (about.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import(/* webpackChunkName: "about" */ './views/Thematic.vue')
+        },
         {//about页面
           path: '/about',
           name: 'About',

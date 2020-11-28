@@ -52,6 +52,8 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
+            <el-menu-item index="3-2"><span>Thematic</span></el-menu-item>
+
         
        </el-submenu>
 
@@ -61,9 +63,9 @@
           <i style="color:white"  class="el-icon-setting"></i>
           <span>Manage</span>
         </template>
-       <el-menu-item index="4-1"><span>Workspace</span></el-menu-item>
-        <el-menu-item index="4-3"><span>State</span></el-menu-item>
-         <el-menu-item index="4-2"><span>Functions</span></el-menu-item>
+       <!-- <el-menu-item index="4-1"><span>Workspace</span></el-menu-item> -->
+        <el-menu-item index="4-1"><span>State</span></el-menu-item>
+         <!-- <el-menu-item index="4-2"><span>Functions</span></el-menu-item> -->
          
          
       </el-submenu>
@@ -76,9 +78,13 @@
           <span>Clusters</span>
         </template>
 
-        <el-menu-item index="5-1"><span>Clusters</span></el-menu-item>
+        <el-menu-item index="5-1"><span>Nodes</span></el-menu-item>
+        <el-menu-item index="5-2"><span>World</span></el-menu-item>
+
         
       </el-submenu>
+
+      
 
       <el-menu-item index="6">
           <i  style="color:white" class="el-icon-info"></i>
@@ -140,8 +146,17 @@ import { mapMutations } from 'vuex';
           }else if(index==='3-1'){
             this.$router.push({path:'/instance',query:{type:'Visualization'}})
             
+          }else if(index==='3-2'){
+            this.$router.push({path:'/thematic',})
+            
           }else if(index==='4-1'){
-            this.$router.push({path:'/workSpace',query:{type:'WorkSpace'}})
+            this.$router.push({path:'/state'})
+          }else if(index==='5-1'){
+            this.$router.push({path:'/cluster',query:{type:'Cluster'}})
+          }else if(index==='5-2'){
+            this.$router.push({path:'/worldCluster',query:{type:'worldCluster'}})
+          }else if(index==='6'){
+            this.$router.push({path:'/about',query:{type:'About'}})
           }
         
         
