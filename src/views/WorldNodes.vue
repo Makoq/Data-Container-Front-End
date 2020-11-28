@@ -1,5 +1,9 @@
 <template>
-  <div class="worldcluster">
+
+  <div class="worldcluster" >
+      <div class="title"> 
+       <h1 style="z-index:999">Worldwide Insitu Data Service Nodes</h1>
+      </div>
     <div 
     v-loading="loading"
     id="map" ref="mapcontainer"  >    
@@ -37,7 +41,7 @@ const parser=new xml2js.Parser()
                 center: [96.95, 36.78], 
                 zoom: 1,
             })
-
+           
              
             //   console.log(map)
             let _this=this
@@ -95,5 +99,10 @@ const parser=new xml2js.Parser()
 </script>
 
 <style scoped>
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%;z-index: 0; }
+.title{
+    position: absolute;
+     
+    z-index: 999;
+}
 </style>
