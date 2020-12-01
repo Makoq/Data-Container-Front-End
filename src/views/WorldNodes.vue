@@ -74,7 +74,7 @@ const parser=new xml2js.Parser()
            return new Promise((reslve,rej)=>{
                request('https://restapi.amap.com/v3/ip?key=5c10ac9bf0d8d4a7481547e1e8bb461b&ip='+ip[0],(err,res,data)=>{
                    let r=JSON.parse(data)
-                   if(r.rectangle!=undefined){
+                   if(r.rectangle!=undefined&&r.rectangle.length!=0){
                             let coors=r.rectangle.split(';')
                             let c1=coors[0].split(',')
                             let c2=coors[1].split(',')
@@ -87,6 +87,8 @@ const parser=new xml2js.Parser()
                             .setLngLat(CityCoor)
                             .addTo(map);
                             reslve(CityCoor)
+                    }else{
+                        reslve()
                     }
                })
               
