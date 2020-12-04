@@ -48,12 +48,8 @@ import ManagerList from '../components/ManagerList'
     },
     methods:{
       createWorkspace(){
-        if(this.$route.query.type==='File'){
-          this.$router.push({path:'/form/workspace',query:{type:'FileWorkSpace'}})
-        }else if(this.$route.query.type==='Udx'){
-          this.$router.push({path:'/form/workspace',query:{type:'UdxWorkSpace'}})
-
-        }
+        this.$router.push({path:'/form/workspace',query:{type:'WorkSpace'}})
+       
         
       }
     }

@@ -38,10 +38,10 @@
       </el-table> 
       <div class="block">
         
-        <el-pagination
+        <!-- <el-pagination
           layout="prev, pager, next"
           :total="1000">
-        </el-pagination>
+        </el-pagination> -->
       </div>
 
 
