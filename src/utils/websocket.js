@@ -11,7 +11,10 @@ const websocket=function(it){
           message:'本地服务正常',
           type:'success'
         })
+        // 注释获取本地ip,写死一个北京ip作为测试
+        // _this.$root.$el.insitu_ip=DecryptJS.Encrypt(res.data.ip)
 
+        //例子114.247.50.2
         _this.$root.$el.insitu_ip=DecryptJS.Encrypt(res.data.ip)
 
         //连接中转服务器websocket
