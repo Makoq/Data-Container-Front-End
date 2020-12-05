@@ -410,6 +410,7 @@ export default {
        allFolderLayer:[],
        //类型
        instnaceType:"",
+       
        //组件初始化时的列表id
        listUid:0,
        //删除提示框
@@ -459,6 +460,7 @@ export default {
 
     }),
     created(){
+
         //初始化组件时，初始化内容列表id为0
         this.listUid=0,
         
@@ -484,6 +486,11 @@ export default {
             userToken:localStorage.getItem('Authorization')
         }
         //获取初始列表，最上层列表
+
+        if(this.$store.currentWorkSpace!=undefined&&parentLevel==-1){
+            initList['workSpace']=this.$store.currentWorkspace.uid
+        }
+
         this.$axios.get('/api/instances',{
             params:initList
         })

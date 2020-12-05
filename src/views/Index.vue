@@ -30,7 +30,8 @@ const LeftMenu =()=>import('@/components/LeftMenu')
 const BottomFooter =()=>import('@/components/BottomFooter')
 
 
-import { mapGetters,mapState } from 'vuex'
+import { mapMutations } from 'vuex';
+import { mapGetters,mapState, } from 'vuex'
  
 export default {
   name: 'index',
@@ -67,7 +68,18 @@ export default {
       return this.$store.state.menuCollapse
     }
   },
+  mounted(){
+    let _this=this
+    this.$axios.get('/initWorkSpace')
+    .then(res=>{
+      if(res.data.code==0){
+          //将关联用户信息包村到vuex中
+          _this.changerelatedUsr({current:res.data.message})
+      }
+    })
+  },
   methods:{
+    ...mapMutations(['changeCurrentWorkSpace']),
     breadLoad(){
       let bread=this.$route.name.split('/')
       let _this=this

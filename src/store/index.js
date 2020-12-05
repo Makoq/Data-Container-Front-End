@@ -15,7 +15,10 @@ const store = new Vuex.Store({
     relatedUsr:localStorage.getItem('relatedUsr') ? localStorage.getItem('relatedUsr') : '',
 
     //当前列表id
-    currentListId:''
+    currentListId:'',
+
+    // 当前工作空间
+    currentWorkSpace:undefined
 
   },
  //更改store的状态
@@ -37,6 +40,9 @@ const store = new Vuex.Store({
       state.relatedUsr = user.relatedUsr;
       localStorage.setItem('relatedUsr', user.relatedUsr);
     },
+    changeCurrentWorkSpace(state,workSpace){
+      state.currentWorkSpace=workSpace.current
+    }
 
   },
 
