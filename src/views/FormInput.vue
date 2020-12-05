@@ -903,6 +903,12 @@ export default {
             .then(res=>{
               if(res.status.code==200){
 
+                this.$message({
+                  type:'success',
+                  message:'ok'
+                })
+                _this.$router.push('/workSpace')
+
               }
             })
 
