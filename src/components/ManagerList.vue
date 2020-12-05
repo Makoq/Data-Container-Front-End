@@ -16,11 +16,7 @@
           width="180">
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>住址: {{ scope.row.address }}</p>
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
-              </div>
+              <p>name: {{ scope.row.name }}</p>
             </el-popover>
           </template>
         </el-table-column>
@@ -28,7 +24,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+              @click="handleSelect(scope.$index, scope.row)">Select</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -62,7 +58,7 @@
 
     },
     methods:{
-       handleEdit(index, row) {
+       handleSelect(index, row) {
         console.log(index, row);
       },
       handleDelete(index, row) {

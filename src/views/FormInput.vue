@@ -900,6 +900,11 @@ export default {
             let _this=this
             this.workSpace['date']=utils.formatDate(new Date())
             this.$axios.post('/workspace',_this.workSpace)
+            .then(res=>{
+              if(res.status.code==200){
+
+              }
+            })
 
           }
 
