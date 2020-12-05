@@ -24,6 +24,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
+              :style="selectedWorkspace(scope.$index, scope.row)"
               @click="handleSelect(scope.$index, scope.row)">Select</el-button>
             <el-button
               size="mini"
@@ -58,8 +59,18 @@
 
     },
     methods:{
+      selectedWorkspace(index, row){
+        if(row.uid==this.$store.currentWorkspace.uid){
+          return 'rgb(0, 174, 255)'
+        }
+      },
        handleSelect(index, row) {
+        //  TODO: 选择工作空间
         console.log(index, row);
+
+
+
+        
       },
       handleDelete(index, row) {
         console.log(index, row);
