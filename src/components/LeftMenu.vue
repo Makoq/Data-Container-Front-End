@@ -63,7 +63,7 @@
           <i style="color:white"  class="el-icon-setting"></i>
           <span>Manage</span>
         </template>
-       <!-- <el-menu-item index="4-1"><span>Workspace</span></el-menu-item> -->
+       <el-menu-item index="4-2"><span>Workspace</span></el-menu-item>
         <el-menu-item index="4-1"><span>State</span></el-menu-item>
          <!-- <el-menu-item index="4-2"><span>Functions</span></el-menu-item> -->
          
@@ -151,6 +151,8 @@ import { mapMutations } from 'vuex';
             
           }else if(index==='4-1'){
             this.$router.push({path:'/state'})
+          }else if(index==='4-2'){
+            this.$router.push({path:'/workSpace'})
           }else if(index==='5-1'){
             this.$router.push({path:'/cluster',query:{type:'Cluster'}})
           }else if(index==='5-2'){

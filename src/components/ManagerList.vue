@@ -16,11 +16,7 @@
           width="180">
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>住址: {{ scope.row.address }}</p>
-              <div slot="reference" class="name-wrapper">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
-              </div>
+              <p>name: {{ scope.row.name }}</p>
             </el-popover>
           </template>
         </el-table-column>
@@ -28,7 +24,8 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+              :style="selectedWorkspace(scope.$index, scope.row)"
+              @click="handleSelect(scope.$index, scope.row)">Select</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -38,10 +35,10 @@
       </el-table> 
       <div class="block">
         
-        <el-pagination
+        <!-- <el-pagination
           layout="prev, pager, next"
           :total="1000">
-        </el-pagination>
+        </el-pagination> -->
       </div>
 
 
@@ -62,8 +59,18 @@
 
     },
     methods:{
-       handleEdit(index, row) {
+      selectedWorkspace(index, row){
+        if(row.uid==this.$store.currentWorkspace.uid){
+          return 'rgb(0, 174, 255)'
+        }
+      },
+       handleSelect(index, row) {
+        //  TODO: 选择工作空间
         console.log(index, row);
+
+
+
+        
       },
       handleDelete(index, row) {
         console.log(index, row);

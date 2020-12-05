@@ -390,6 +390,24 @@ import Content from '@/views/Content';
          
 
         </el-form>
+      </el-col >
+
+      <el-col :span="this.$route.query.type==='WorkSpace'?18:12">
+         <el-form v-if="this.$route.query.type==='WorkSpace'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+          <!-- name -->
+          <el-form-item  label="Name"  >
+            <el-input v-model="workSpace.name"   show-word-limit placeholder="Name of the workspace" ></el-input>
+          </el-form-item>
+          <!-- desc -->
+          <el-form-item  label="Description" >
+            <el-input v-model="workSpace.description" type="textarea" rows="5"  show-word-limit placeholder="Name of the workspace" ></el-input>
+          </el-form-item>
+
+          <el-form-item    >
+               <el-button    type="success" @click="showWorkSpaceInfoConfirm"  style="width:200px">Create WorkSpace</el-button>
+
+          </el-form-item>
+         </el-form>
       </el-col>
     </el-row>
   </div>
@@ -443,6 +461,11 @@ export default {
         authority:true,
         desc:'',
         paramsCount:0
+      },
+      workSpace:{
+        name:'',
+        description:''
+        
       },
       workspaceList:[
         {
@@ -793,42 +816,42 @@ export default {
     },
     
     intoFolder(Folder){
-      let _this=this
-      let info={
-          uid:Folder.subContentId,
-          userToken:localStorage.getItem('Authorization'),
-          type:'Data',
-          parentLevel:_this.instancesCont.parentLevel,
-          subContConnect:{
-              uid:_this.instancesCont.uid,
-              id:Folder.id
-          }//关联文件下的子instances
-      }
-
-      this.$axios.get('/api/instances',{
-          params:info
-      }).then((res)=>{
-          if(res.code===-1){
-              _this.$message({
-                      message: 'instances request failed ',
-                      type: 'fail'
-                  });
-          }else{
-              _this.instancesCont=res.data.data
-              //面包屑层次
-              _this.folderLayer.push(Folder.name)
-              _this.instanceLayer.push({
-                  type: _this.instancesCont.type,
+          let _this=this
+          let info={
+              uid:Folder.subContentId,
+              userToken:localStorage.getItem('Authorization'),
+              type:'Data',
+              parentLevel:_this.instancesCont.parentLevel,
+              subContConnect:{
                   uid:_this.instancesCont.uid,
-                  parentLevel:_this.instancesCont.parentLevel,
-                  userToken:_this.instancesCont.userToken
-              })
-              
+                  id:Folder.id
+              }//关联文件下的子instances
           }
-      });
-    
-},
-    backUpperFolder(){
+
+          this.$axios.get('/api/instances',{
+              params:info
+          }).then((res)=>{
+              if(res.code===-1){
+                  _this.$message({
+                          message: 'instances request failed ',
+                          type: 'fail'
+                      });
+              }else{
+                  _this.instancesCont=res.data.data
+                  //面包屑层次
+                  _this.folderLayer.push(Folder.name)
+                  _this.instanceLayer.push({
+                      type: _this.instancesCont.type,
+                      uid:_this.instancesCont.uid,
+                      parentLevel:_this.instancesCont.parentLevel,
+                      userToken:_this.instancesCont.userToken
+                  })
+                  
+              }
+          });
+        
+        },
+          backUpperFolder(){
               //面包屑层次
               this.folderLayer.pop()
               this.instanceLayer.pop()
@@ -852,6 +875,38 @@ export default {
               })
 
           },
+          showWorkSpaceInfoConfirm(){
+            let _this=this
+            if(this.workSpace.name.length!=0){
+              this.$alert(this.workSpace.name,'Create Workspace:',  {
+                  confirmButtonText: 'ok',
+                  callback: action => {
+                      _this.createWorkspace()
+                  },
+                  
+              });
+            }else{
+
+              this.$message({
+                message:'Please input name at least',
+                type:'fail'
+              })
+
+            }
+            
+          },
+          createWorkspace(){
+            console.log('create workspace')
+            let _this=this
+            this.workSpace['date']=utils.formatDate(new Date())
+            this.$axios.post('/workspace',_this.workSpace)
+            .then(res=>{
+              if(res.status.code==200){
+
+              }
+            })
+
+          }
 
 
 

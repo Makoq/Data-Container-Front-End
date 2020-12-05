@@ -29,31 +29,21 @@ import ManagerList from '../components/ManagerList'
     },
     data: () => ({
        
-      list:[{
-          name: '2016-05-02',
-         
-        }, {
-          name: '2016-05-04',
-       
-        }, {
-          name: '2016-05-01',
-          
-        }, {
-          name: '2016-05-03',
-          
-        }]
+      list:[]
     }),
     mounted(){
-      console.log(this.$route)
+      let _this=this
+      this.$axios.get('/workspace')
+      .then(res=>{
+          if(res.status.code==200){
+            _this.list=res.data.list
+          }
+      })
     },
     methods:{
       createWorkspace(){
-        if(this.$route.query.type==='File'){
-          this.$router.push({path:'/form/workspace',query:{type:'FileWorkSpace'}})
-        }else if(this.$route.query.type==='Udx'){
-          this.$router.push({path:'/form/workspace',query:{type:'UdxWorkSpace'}})
-
-        }
+        this.$router.push({path:'/form/workspace',query:{type:'WorkSpace'}})
+       
         
       }
     }

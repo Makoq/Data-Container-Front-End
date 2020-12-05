@@ -219,7 +219,7 @@ const websocket=function(it){
                        {                     
                            dataId:re.dataId,
                            pcsId:re.pcsId,
-                           param:re.params,
+                           params:re.params!=undefined?re.params:undefined,
                            token:re.token,
                            name:re.name
                        }
@@ -331,7 +331,7 @@ const websocket=function(it){
                             params:{
                                 contDtId:re.contDtId,
                                 pcsId:re.pcsId,
-                                params:re.params,
+                                params:re.params!=undefined?re.params:undefined,
                                 type:re.type,
                                 token:re.token
                             }
@@ -370,7 +370,7 @@ const websocket=function(it){
                         params.append("token",re.token)
                         params.append("url",re.url)
 
-                        params.append("params",re.params)
+                        params.append("params",re.params!=undefined?re.params:undefined)
 
                          
                         _this.$axios.post('/api/invokeProUrl',params,{
