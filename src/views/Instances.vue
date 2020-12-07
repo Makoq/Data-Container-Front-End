@@ -487,8 +487,8 @@ export default {
         }
         //获取初始列表，最上层列表
 
-        if(this.$store.currentWorkSpace!=undefined&&parentLevel==-1){
-            initList['workSpace']=this.$store.currentWorkspace.uid
+        if(this.$store.state.currentWorkSpace!=undefined&&initList.parentLevel=='-1'){
+            initList['workSpace']=this.$store.state.currentWorkSpace.uid
         }
 
         this.$axios.get('/api/instances',{
@@ -886,11 +886,14 @@ export default {
            
             let _this=this
             let initList={
-            type: _this.$route.query.type,
-            uid:0,
-            parentLevel:'-1',
-            userToken:localStorage.getItem('Authorization')
+                type: _this.$route.query.type,
+                uid:0,
+                parentLevel:'-1',
+                userToken:localStorage.getItem('Authorization')
             }
+            if(this.$store.state.currentWorkSpace!=undefined&&initList.parentLevel=='-1'){
+            initList['workSpace']=this.$store.state.currentWorkSpace.uid
+        }
             this.instnaceType=this.$route.query.type
             //获取初始列表，最上层列表
             this.$axios.get('/api/instances',{

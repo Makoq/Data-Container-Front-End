@@ -69,14 +69,7 @@ export default {
     }
   },
   mounted(){
-    let _this=this
-    this.$axios.get('/initWorkSpace')
-    .then(res=>{
-      if(res.data.code==0){
-          //将关联用户信息包村到vuex中
-          _this.changeCurrentWorkSpace({current:res.data.message})
-      }
-    })
+ 
   },
   methods:{
     ...mapMutations(['changeCurrentWorkSpace']),
@@ -119,6 +112,19 @@ export default {
       console.log(this.$refs)
       //初始化时依据vuex中数据初始化菜单项状态
       this.menuColState()
+
+
+         let _this=this
+      if(this.$store.state.currentWorkSpace==undefined){
+         this.$axios.get('/api/initWorkSpace')
+        .then(res=>{
+          if(res.data.code==0){
+              //将关联用户信息包村到vuex中
+              _this.changeCurrentWorkSpace({current:res.data.data})
+          }
+        })
+      }
+     
 
   }
 
