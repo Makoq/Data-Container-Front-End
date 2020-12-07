@@ -18,7 +18,8 @@ const store = new Vuex.Store({
     currentListId:'',
 
     // 当前工作空间
-    currentWorkSpace:undefined
+    currentWorkSpace:undefined,
+    workSpaceIndex : 0
 
   },
  //更改store的状态
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
     },
     changeCurrentWorkSpace(state,workSpace){
       state.currentWorkSpace=workSpace.current
+    },
+    changeWorkSpaceIndex(state, index){
+      state.workSpaceIndex = index;
     }
 
   },

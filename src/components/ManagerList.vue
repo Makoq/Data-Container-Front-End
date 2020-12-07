@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-for="(item, index) in listData"
+      v-for="(item, index) in listDataInt"
       :key="index"
       class="contentCard_w100 flexCol flexColCenter"
     >
@@ -49,7 +49,7 @@
             </div>
           </div>
           <div
-            class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"  v-if="index!=0"
+            class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"  v-if="index!=0" @click="handleDelete(index,item)"
           >
             <i class="fa fa-trash-o"></i>
             <p>Delete</p>
@@ -104,11 +104,14 @@ export default {
   data() {
     return {
       active:0,
+      listDataInt:this.listData,
     };
   },
-  mounted() {},
+  mounted() {
+    this.active = this.$store.state.workSpaceIndex.index;
+  },
   methods: {
-     ...mapMutations(['changeCurrentWorkSpace']),
+     ...mapMutations(['changeCurrentWorkSpace','changeWorkSpaceIndex']),
     selectedWorkspace(index, row) {
       console.log(row);
       // if(row.uid==this.$store.currentWorkspace.uid){
@@ -119,14 +122,39 @@ export default {
       //  TODO: 选择工作空间
       console.log(index, row);
       
-      this.active = index;
-      this.changeCurrentWorkSpace({current:row})
-
-
-
-    },
+      // this.active = index;
+      this.changeCurrentWorkSpace({current:row});
+      this.changeWorkSpaceIndex({index:index});
+      this.active = this.$store.state.workSpaceIndex.index;
+    },    
     handleDelete(index, row) {
       console.log(index, row);
+
+      console.log(this.listDataInt);
+
+      let _this = this;
+
+      console.log(this.listDataInt);
+      this.$axios.delete('/api/workspace',{
+        params:{
+          uid:row.uid
+        }
+      })
+      .then(res=>{
+        if(res.status==200){
+          _this.$message({
+            message:"delete success",
+            type:"success"
+          })
+        //listData值删除
+        this.listDataInt.splice(index,1);
+        }else{
+          _this.message({
+            message:"delete failed",
+            type:"fail"
+          })
+        }
+      })
     },
     gernerateId(index){
       return "selectBtn" + index;
@@ -135,6 +163,11 @@ export default {
       return "selectBtnOk" + index;
     },
   },
+  watch:{
+    listData(val){
+      this.listDataInt = val;
+    }
+  }
 };
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
