@@ -1,0 +1,151 @@
+.contentCard_w100{
+    background-color: white;
+    border-radius: 3px;
+    border: 1px solid #dadce0;
+    /*border-bottom: 8px solid #64b0ff;*/
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    /*margin-left: 12px;*/
+    /*margin-right: 12px;*/
+    margin-top: 24px;
+    min-width: 0;
+    height: 180px;
+
+}
+.content_h32{
+    width: 100%;
+    height: 32%;
+    padding: 10px 10px 5px 10px;
+}
+.content_w68 {
+    width: 68%;
+    height: 100%;
+    padding: 15px;
+    /*color: whitesmoke;*/
+    /*background-image: url("/static/img/carousels/example6_press.jpeg");*/
+}
+.flexJustStart{
+    display: flex;
+    justify-content: flex-start;
+}
+.flexJustAround{
+    display: flex;
+    justify-content: space-around;
+}
+.flexColCenter {
+    display: flex;
+    align-items: center;
+}
+.flexRowCenter {
+    display: flex;
+    justify-content: center;
+}
+
+.flexCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.flexRow {
+    display: flex;
+    /*flex-direction: column;*/
+}
+
+.flexAlignStart{
+    display: flex;
+    align-items: flex-start;
+}
+
+.flexAlignEnd{
+    display: flex;
+    align-items: flex-End;
+}
+
+.flexAlignStrench{
+    display: flex;
+    align-items: stretch;
+}
+
+.flexAlignCenter{
+    display: flex;
+    align-items: center;
+}
+
+.flexJustStart{
+    display: flex;
+    justify-content: flex-start;
+}
+
+.flexJustEnd{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flexJustCenter{
+    display: flex;
+    justify-content: center;
+}
+
+.flexJustAround{
+    display: flex;
+    justify-content: space-around;
+}
+
+.flexJustBetween{
+    display: flex;
+    justify-content: space-between;
+}
+
+.flexCenter{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.flexRowReverse{
+    flex-direction: row-reverse;
+}
+
+.flexColReverse{
+    flex-direction: column-reverse;
+}
+
+.flexWrap{
+    flex-wrap: wrap;
+}
+
+.lineButton {
+    color: #05a6ff;
+    cursor: pointer;
+}
+
+.itemTitle{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
+.itemTitle:hover{
+    text-decoration: underline;
+
+}
+.btn {
+    font-size: 12px;
+    padding: 4px 15px;
+    line-height: 20px;
+    font-weight: 400;
+}
+.btn .fa,
+.btn .glyphicon {
+    font-size: 14px;
+    margin-right: 5px;
+}
+body {
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 500; }
+p{
+    margin-bottom: 0px;
+}
