@@ -899,7 +899,7 @@ export default {
             console.log('create workspace')
             let _this=this
             this.workSpace['date']=utils.formatDate(new Date())
-            this.$axios.post('/workspace',_this.workSpace)
+            this.$axios.post('/api/workspace',_this.workSpace)
             .then(res=>{
               if(res.status.code==200){
 

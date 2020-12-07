@@ -60,9 +60,10 @@
     },
     methods:{
       selectedWorkspace(index, row){
-        if(row.uid==this.$store.currentWorkspace.uid){
-          return 'rgb(0, 174, 255)'
-        }
+        console.log(row)
+        // if(row.uid==this.$store.currentWorkspace.uid){
+        //   return 'rgb(0, 174, 255)'
+        // }
       },
        handleSelect(index, row) {
         //  TODO: 选择工作空间

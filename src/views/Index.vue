@@ -74,7 +74,7 @@ export default {
     .then(res=>{
       if(res.data.code==0){
           //将关联用户信息包村到vuex中
-          _this.changerelatedUsr({current:res.data.message})
+          _this.changeCurrentWorkSpace({current:res.data.message})
       }
     })
   },

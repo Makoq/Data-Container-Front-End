@@ -29,14 +29,18 @@ import ManagerList from '../components/ManagerList'
     },
     data: () => ({
        
-      list:[]
+      list:[],
+      workspaceSearch:''
     }),
     mounted(){
       let _this=this
-      this.$axios.get('/workspace')
+      this.$axios.get('/api/workspace')
       .then(res=>{
-          if(res.status.code==200){
-            _this.list=res.data.list
+          if(res.status==200){
+            if(res.data.code==0){
+            _this.list=res.data.data
+
+            }
           }
       })
     },
