@@ -97,6 +97,8 @@
 
 <script>
 import $ from "jquery";
+import { mapMutations } from 'vuex';
+
 export default {
   props: ["listData"],
   data() {
@@ -106,6 +108,7 @@ export default {
   },
   mounted() {},
   methods: {
+     ...mapMutations(['changeCurrentWorkSpace']),
     selectedWorkspace(index, row) {
       console.log(row);
       // if(row.uid==this.$store.currentWorkspace.uid){
@@ -115,14 +118,10 @@ export default {
     handleSelect(index, row) {
       //  TODO: 选择工作空间
       console.log(index, row);
+      
       this.active = index;
-      //所有的先初始化为btn展示
-      // $(".selectOk").hide();
-      // $(".select").show();
+      this.changeCurrentWorkSpace({current:row})
 
-      //具体的btn显示与隐藏操作
-      // $("#selectBtn"+index).hide();
-      // $("#selectBtnOk" + index).show();
 
 
     },

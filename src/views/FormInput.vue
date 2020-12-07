@@ -896,20 +896,36 @@ export default {
             
           },
           createWorkspace(){
-            console.log('create workspace')
+           
             let _this=this
-            this.workSpace['date']=utils.formatDate(new Date())
-            this.$axios.post('/api/workspace',_this.workSpace)
+              const params = new URLSearchParams();
+               params.append('uid',uuidv4())
+              params.append('name',_this.workSpace.name)
+              params.append('description',_this.workSpace.description)
+
+              params.append('date',utils.formatDate(new Date()))
+
+             
+
+         
+
+            this.$axios.post('/api/workspace',params)
+
             .then(res=>{
-              if(res.status.code==200){
-
-                this.$message({
-                  type:'success',
-                  message:'ok'
-                })
-                _this.$router.push('/workSpace')
-
-              }
+                  if(res.status==200){
+                    if(res.data.code==0){
+                      _this.$message({
+                          message:'create success',
+                          type:'success'
+                      })
+                      _this.$router.push('/workSpace')
+                    }else if(res.data.code==-2){
+                      _this.$message({
+                          message:'workspace name should not repeat',
+                          type:'fail'
+                      })
+                    }
+                  }
             })
 
           }
