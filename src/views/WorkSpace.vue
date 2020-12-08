@@ -244,11 +244,15 @@
     //   }
   }
   import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.min.js";
+import "bootstrap/dist/js/bootstrap.min.js";
 </script>
 
 <style scoped>
+@import "../assets/css/manageList.css";
 
+.contentCard_w100.flexCol.flexColCenter{
+  
+} 
 .workspace{
   padding: 20px
 }

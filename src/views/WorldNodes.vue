@@ -67,10 +67,7 @@ const parser=new xml2js.Parser()
                 await this.markerToMap(map,n.ip)
             }
              this.loading=false
-             console.log('ltct',this.center)
-             if(this.center.length!=0){
-                 map.setCenter(this.center);
-             }
+             map.setCenter(this.center);
         },
         markerToMap(map,ip){
             let _this=this
