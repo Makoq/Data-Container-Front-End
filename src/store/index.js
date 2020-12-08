@@ -45,7 +45,7 @@ const store = new Vuex.Store({
       state.currentWorkSpace=workSpace.current
     },
     changeWorkSpaceIndex(state, index){
-      state.workSpaceIndex = index;
+      state.workSpaceIndex = index.index;
     }
 
   },

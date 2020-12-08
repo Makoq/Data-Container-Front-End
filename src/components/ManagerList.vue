@@ -1,91 +1,6 @@
 <template>
   <div>
-    <div
-      v-for="(item, index) in listDataInt"
-      :key="index"
-      class="contentCard_w100 flexCol flexColCenter"
-    >
-      <div class="content_h32 flexRow noPadding" style="margin-top: 10px;">
-        <div class="content_w68 flexJustStart" style="margin-left: 1%;">
-          <div class="flexColCenter w100">
-            <a class="w100">
-              <h4 class="itemTitle">{{ item.name }}</h4>
-            </a>
-          </div>
-        </div>
-        <div
-          class="content_w32 flexJustAround flexColCenter buttonZone"
-          style="text-align: right; margin: 0 auto 0 auto;"
-        >
-          <div v-if="active!=index" style="margin-right:25px" class="select" :id="gernerateId(index)">
-            <el-button
-              type="info"
-              class="selectBtn"
-              style="display:inline-block;padding:5px;margin-right: 5px;"
-              @click="handleSelect(index,item)"
-              icon="el-icon-star-off"
-              circle
-            ></el-button>
-            <p style="display:inline-block">Select</p>
-          </div>
-          <div v-if="active==index" style="margin-right:25px" class="selectOk" :id="gernerateIdOk(index)">
-            <el-button
-              type="primary"
-              class="selectBtn"
-              style="display:inline-block;padding:5px;margin-right: 5px;"
-              icon="el-icon-check"
-              circle
-            ></el-button>
-            <p style="display:inline-block">Selected</p>
-          </div>
-          <div
-            class="lineButton flexJustStart flexColCenter"
-            style="margin-right:30px"
-          >
-            <i class="fa fa-edit" style="margin-right: 5px"></i>
-            <div class="lineButton flexCol">
-              <p style="margin-block-end: 0">Edit</p>
-              <div class="hoverLine"></div>
-            </div>
-          </div>
-          <div
-            class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"  v-if="index!=0" @click="handleDelete(index,item)"
-          >
-            <i class="fa fa-trash-o"></i>
-            <p>Delete</p>
-          </div>
-        </div>
-      </div>
-      <!--                            <div class="innerBorderGrey89"></div>-->
-      <div
-        class="content_h68 flexCol noPadding"
-        style="width: 100%;
-                            background-image: linear-gradient(to right, #fdf9f4 0%, #ebf6f8 100%);height: 100%;"
-      >
-        <div
-          class="flexRow"
-          style="width: 100%;height: 100%;background-color: rgba(255, 255, 255, 0.2)"
-        >
-          <div class="flexRow " style="width: 100%;">
-            <div class="content_w100" style="padding-top: 21px;margin-left:3%">
-              <div class="flexJustStart flexAlignStrench overviewContainer">
-                <div style="padding-bottom: 15px;">
-                  <b style="margin-right: 25px;">Overview:</b>
-                </div>
-                <div>
-                  <p class="threeLine" style="">{{ item.description }}</p>
-                </div>
-              </div>
-              <p>
-                <b style="margin-right: 3px">Create Time:</b> {{ item.date }}
-              </p>
-            </div>
-            <!-- <div class="btn btn-info btn-round btn-noShadow" style="text-align: right;margin: auto;" @click="creatItem(1)">create new <span><i
-                                                    class="fa fa-arrow-right"></i></span></div> -->
-          </div>
-        </div>
-      </div>
-    </div>
+    
     <div class="block">
       <!-- <el-pagination
           layout="prev, pager, next"
@@ -96,16 +11,34 @@
 </template>
 
 <script>
-import $ from "jquery";
+ 
 import { mapMutations } from 'vuex';
 
 export default {
-  props: ["listData"],
+  props: {
+    listData:{
+      type:Object,
+      default:{
+         
+      }
+    }
+
+  },
   data() {
     return {
-      active:0,
-      listDataInt:this.listData,
+      active: 0,
+      listDataInt:this.listData.list,
+
     };
+  },
+
+  created(){
+    console.log('creative',this.active)
+    
+  },
+  beforeMount(){
+     this.active=0
+     console.log('nefore mounted',this.active)
   },
   mounted() {
     this.active = this.$store.state.workSpaceIndex.index;
@@ -114,26 +47,17 @@ export default {
      ...mapMutations(['changeCurrentWorkSpace','changeWorkSpaceIndex']),
     selectedWorkspace(index, row) {
       console.log(row);
-      // if(row.uid==this.$store.currentWorkspace.uid){
-      //   return 'rgb(0, 174, 255)'
-      // }
+      
     },
     handleSelect(index, row) {
-      //  TODO: 选择工作空间
-      console.log(index, row);
-      
-      // this.active = index;
+      // 选择工作空间
+   
       this.changeCurrentWorkSpace({current:row});
       this.changeWorkSpaceIndex({index:index});
       this.active = this.$store.state.workSpaceIndex.index;
     },    
     handleDelete(index, row) {
-      console.log(index, row);
-
-      console.log(this.listDataInt);
-
       let _this = this;
-
       console.log(this.listDataInt);
       this.$axios.delete('/api/workspace',{
         params:{
@@ -166,6 +90,9 @@ export default {
   watch:{
     listData(val){
       this.listDataInt = val;
+    },
+    active(val){
+      this.active = val
     }
   }
 };
