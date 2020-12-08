@@ -276,44 +276,22 @@
                             <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
 
            
-
+                            <!-- 共享 -->
                             <el-tooltip  effect="dark" content="Public data to OpenGMS Portal DataItem" placement="top-start">
-
                             <i v-if="it.type==='file'" class="el-icon-share" style="color: #cd7100" @click="public_data_item_to_portal(it)"></i>
                             </el-tooltip>
-                        
+                             <!-- 绑定 -->
                             <el-tooltip  effect="dark" content="Bind to data" placement="top-start">
                             <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
                             </el-tooltip>
+                            <!-- 删除 -->
                             <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
                             <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
                             </el-tooltip>
-
-
-
-                            <el-popover
-                                placement="top-start"
-                                title="Metadata Description"
-                                width="400px"
-                                trigger="hover"
-                                style=""
-                                >
-                                <div v-if="it.type==='file'" style="">
-                                    <p style="color: #163d5e;"  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'&&typeof(i)!='object'?k+' : '+i:''}}</p>
-                                </div>
-                                <div v-else-if="it.metaDetail!=undefined" style="border:1px black solid">
-                                    <xmp style="color:blue">{{metaInfo(it)}}</xmp>
-                           
-                                </div>
-                                <i  slot="reference" class="el-icon-info"  ></i>
-
-                            </el-popover>
-                            
-
+                            <!-- 服务迁移dialog -->
                             <el-tooltip  effect="dark" content="Service migration" placement="top-start">
                                 <i   @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
                             </el-tooltip>
-                            <!-- 服务迁移dialog -->
                             <el-dialog
                                     title="Service migration"
                                     :visible.sync="sceMigDialog"
@@ -337,7 +315,25 @@
                                         <el-button type="primary" @click="serviceMigration()">Migration</el-button>
                                     </span>
                                 </el-dialog>
-                            <!-- <i class="el-icon-more"></i> -->
+                            <!--  -->
+                            <el-popover
+                                placement="top-start"
+                                title="Metadata Description"
+                                width="400px"
+                                trigger="hover"
+                                style=""
+                                >
+                                <div v-if="it.type==='file'" style="">
+                                    <p style="color: #163d5e;"  v-for="(i,k) in it.meta" :key="k">{{i!=''&&k!='tags'&&typeof(i)!='object'?k+' : '+i:''}}</p>
+                                </div>
+                                <div v-else-if="it.metaDetail!=undefined" style="border:1px black solid">
+                                    <xmp style="color:blue">{{metaInfo(it)}}</xmp>
+                           
+                                </div>
+                                <i  slot="reference" class="el-icon-info"  ></i>
+
+                            </el-popover>
+                           
                                 
 
                         </el-col>
