@@ -131,7 +131,7 @@
       listDataInt:[],
       // defaultActive:0,
       workspaceSearch:'',
-       active: '',
+       active: 0,
       firstUid:''
 
     }},
@@ -157,7 +157,9 @@
             if(res.data.code==0){
             _this.list=res.data.data
             _this.listDataInt=res.data.data
-            _this.active = res.data.data[0].uid;
+            if(_this.active === 0){
+              _this.active = res.data.data[0].uid;
+            }            
             _this.firstUid = res.data.data[0].uid;
             }
           }
@@ -245,7 +247,7 @@
 import "bootstrap/dist/js/bootstrap.min.js";
 </script>
 
-<style   scoped>
+<style scoped>
 @import "../assets/css/manageList.css";
 
 .contentCard_w100.flexCol.flexColCenter{
