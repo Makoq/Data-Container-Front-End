@@ -290,7 +290,7 @@
                             </el-tooltip>
                             <!-- 服务迁移dialog -->
                             <el-tooltip  effect="dark" content="Service migration" placement="top-start">
-                                <i   @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
+                                <i   @click="serviceMigrationDialog(it)"   class="el-icon-truck"></i>
                             </el-tooltip>
                             <el-dialog
                                     title="Service migration"
@@ -1104,6 +1104,8 @@ export default {
                      this.$alert('<img src='+'http://111.229.14.128:8899/data?uid=' +res.data.uid+' width="100%" height="100%" alt="Visualization Result" />', 'Visualization Result', {
                         dangerouslyUseHTMLString: true,
                         confirmButtonText: 'ok',
+                         
+
                         });
                 }else{
                      window.location.href='http://111.229.14.128:8899/data?uid=' +res.data.uid
