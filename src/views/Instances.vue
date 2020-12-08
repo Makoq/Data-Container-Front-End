@@ -285,6 +285,12 @@
                             <el-tooltip  effect="dark" content="Bind to data" placement="top-start">
                             <i v-if="it.type!='file'" class=" el-icon-paperclip" @click="public_processing_item_to_portal(it)"></i>
                             </el-tooltip>
+                            <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
+                            <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
+                            </el-tooltip>
+
+
+
                             <el-popover
                                 placement="top-start"
                                 title="Metadata Description"
@@ -297,18 +303,15 @@
                                 </div>
                                 <div v-else-if="it.metaDetail!=undefined" style="border:1px black solid">
                                     <xmp style="color:blue">{{metaInfo(it)}}</xmp>
-                                     
-                                    <!-- <p   ></p> -->
+                           
                                 </div>
                                 <i  slot="reference" class="el-icon-info"  ></i>
 
                             </el-popover>
-                            <el-tooltip  effect="dark" content="Delete instance" placement="top-start">
-                            <i  @click="shouwDelConfirm(it)" class="el-icon-delete"></i>
-                            </el-tooltip>
+                            
 
                             <el-tooltip  effect="dark" content="Service migration" placement="top-start">
-                                <i v-if="it.type!='file'" @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
+                                <i   @click="serviceMigrationDialog(it)"   class="el-icon-goods"></i>
                             </el-tooltip>
                             <!-- 服务迁移dialog -->
                             <el-dialog
@@ -447,7 +450,8 @@ export default {
         sceMigDialog:false,
         sceMigTargetTokent:'',
         yourToken:'',
-        currentServiceId:'',
+        currentService:undefined,
+        
         // 本地展示xml
         pcsMetaInfo:'',
         imgVisualizationDialog:false,//可视化展示dialog,
@@ -1126,7 +1130,7 @@ export default {
            this.sceMigTargetTokent=''
            this.sceMigDialog=true;
 
-           this.currentServiceId=it.id
+           this.currentService=it
        },
        //点击复制到粘贴板
        copyMyToken(){
@@ -1141,7 +1145,8 @@ export default {
            let _this=this
            this.$axios.get('/api/uploadpcs',{
                params:{
-                   pcsId:_this.currentServiceId
+                   type:_this.instnaceType,
+                   id:_this.currentService.id
                }
            })
            .then(re=>{
@@ -1155,6 +1160,11 @@ export default {
                    _this.$root.$el.myWS.send(JSON.stringify(msg))
                    this.sceMigDialog=false;
                     
+               }else if(re.data.code==-1){
+                   this.$message({
+                       type:'fail',
+                       message:'mirgation failed'
+                   })
                }
            })
            
@@ -1168,6 +1178,7 @@ export default {
 </script>
 
 <style scoped>
+
 .instanceBtn{
     margin-top: 20px;
     margin-left: 20PX;
