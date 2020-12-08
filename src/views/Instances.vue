@@ -373,22 +373,24 @@
 </template>
 
 <script>
+import Avatar from 'vue-avatar'
+
 import utils from '../utils/utils.js'
 import DecryptJS from '../utils/cycrypto.js';
-const ManagerList =()=>import( '../components/ManagerList')
+ 
 import uuidv4 from 'uuid/v4' 
 import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
 const address = require('address');
 import md5 from "js-md5"
-import Avatar from 'vue-avatar'
+
 import xml2js from 'xml2js';
 const builder=new xml2js.Builder();
 
 export default {
     name:'instance',
     components:{
-            ManagerList,
+            
             Avatar
     },
     data: () => ({
