@@ -375,7 +375,7 @@
 <script>
 import utils from '../utils/utils.js'
 import DecryptJS from '../utils/cycrypto.js';
-const ManagerList =()=>import( '../components/ManagerList')
+ 
 import uuidv4 from 'uuid/v4' 
 import cycrypto from '../utils/cycrypto.js';
 import myUrl from '../utils/config.js'
@@ -388,7 +388,7 @@ const builder=new xml2js.Builder();
 export default {
     name:'instance',
     components:{
-            ManagerList,
+         
             Avatar
     },
     data: () => ({

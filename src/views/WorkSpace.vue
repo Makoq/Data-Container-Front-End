@@ -250,9 +250,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 <style scoped>
 @import "../assets/css/manageList.css";
 
-.contentCard_w100.flexCol.flexColCenter{
-  
-} 
+ 
 .workspace{
   padding: 20px
 }

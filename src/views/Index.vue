@@ -133,7 +133,7 @@ export default {
 <style scoped>
 .index{
   height: 100%;
-  min-width: 990px;
+  min-width: 1190px;
 }
 span{
  font-family: 'Times New Roman', Times, serif;
