@@ -7,7 +7,7 @@
       </el-col>
       <el-col :span="10">
          <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
-        <el-button   style="position:fixed;float:left"><i class="el-icon-search"></i></el-button>    
+        <el-button   style="text-align: right;margin: 0 auto;" @click="search()"><i class="el-icon-search"></i></el-button>    
       </el-col>
     </el-row>
      
@@ -33,7 +33,7 @@
               style="text-align: right; margin: 0 auto 0 auto;"
             >
             
-              <div v-if="active!=index" style="margin-right:25px" class="select" :id="gernerateId(index)">
+              <div v-if="active!=item.uid" style="margin-right:25px" class="select" :id="gernerateId(index)">
                 <el-button
                   type="info"
                   class="selectBtn"
@@ -44,7 +44,7 @@
                 ></el-button>
                 <p style="display:inline-block">Select</p>
               </div>
-              <div v-if="active==index" style="margin-right:25px" class="selectOk" :id="gernerateIdOk(index)">
+              <div v-if="active==item.uid" style="margin-right:25px" class="selectOk" :id="gernerateIdOk(index)">
                 <el-button
                   type="primary"
                   class="selectBtn"
@@ -66,7 +66,7 @@
                 </div>
               </div> -->
               <div
-              v-if="active!=index&&index!=0"
+              v-if="active!=item.uid&&item.uid!=firstUid"
                 class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter"  @click="handleDelete(index,item)"
               >
                 <i class="fa fa-trash-o"></i>
@@ -74,7 +74,7 @@
               </div>
               <!-- 选中时不能删除工作空间 -->
               <div
-              v-if="active==index&&index!=0"
+              v-if="active==item.uid&&item.uid!=firstUid"
                 class="btn btn-danger btn-round btn-noShadow waves-effect waves-light flexCenter  disabled"   
               >
                 <i class="fa fa-trash-o"></i>
@@ -129,10 +129,10 @@
        
       list:[],
       listDataInt:[],
-      defaultActive:0,
+      // defaultActive:0,
       workspaceSearch:'',
        active: 0,
-
+      firstUid:''
 
     }},
     beforeCreate(){
@@ -157,10 +157,15 @@
             if(res.data.code==0){
             _this.list=res.data.data
             _this.listDataInt=res.data.data
-
+            if(_this.active === 0){
+              _this.active = res.data.data[0].uid;
+            }            
+            _this.firstUid = res.data.data[0].uid;
             }
           }
-      })
+      });
+
+      
     },
     methods:{
      ...mapMutations(['changeCurrentWorkSpace','changeWorkSpaceIndex']),
@@ -176,10 +181,10 @@
           // 选择工作空间
       
           this.changeCurrentWorkSpace({current:row});
-          this.changeWorkSpaceIndex({index:index});
+          this.changeWorkSpaceIndex({uid:row.uid});
           this.active = this.$store.state.workSpaceIndex;
 
-          this.$refs.del.style
+          // this.$refs.del.style
 
 
         },    
@@ -199,6 +204,7 @@
               })
             //listData值删除
             this.listDataInt.splice(index,1);
+            this.list.splice(index,1);
             }else{
               _this.message({
                 message:"delete failed",
@@ -213,21 +219,35 @@
         gernerateIdOk(index){
           return "selectBtnOk" + index;
         },
-
+      search(){
+        //先将数据重置
+        this.listDataInt = this.list;
+        let _this = this;
+        console.log(this.workspaceSearch);
+        console.log(this.listDataInt);
+        //无数据搜索为展示原始数据
+        if(this.workspaceSearch === ''||this.workspaceSearch == null){
+          this.listDataInt = this.list;
+          return;
+        }
+        //模糊搜索
+        let list = this.listDataInt.filter(item=>item.name.indexOf(_this.workspaceSearch)>=0);
+        this.listDataInt = list;
+      },
     },
 
-    watch:{
-        listData(val){
-          this.listDataInt = val;
-        },
+    // watch:{
+    //     listData(val){
+    //       this.listDataInt = val;
+    //     },
         
-      }
+    //   }
   }
   import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 </script>
 
-<style   scoped>
+<style scoped>
 @import "../assets/css/manageList.css";
 
 .contentCard_w100.flexCol.flexColCenter{
