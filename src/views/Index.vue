@@ -10,7 +10,7 @@
       <div   style="height:100%;" ref="content">
         <el-row style="height:30px" > 
         <el-breadcrumb separator="/" style=" margin: 10px;" v-for="(it,k) in breadLoadName" :key="k">
-          <el-breadcrumb-item    ><h2 >{{it}}</h2></el-breadcrumb-item>          
+          <el-breadcrumb-item    ><strong>{{it}}</strong></el-breadcrumb-item>          
         </el-breadcrumb>
         </el-row>
         <router-view style="height:calc(100% - 30px);overflow-y:  scroll;width:100%"> </router-view>

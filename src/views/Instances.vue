@@ -8,8 +8,8 @@
         <el-button   type="success"  @click="newFileData">New {{this.$route.query.type==="Processing"?"Information":this.$route.query.type}}</el-button>
        </el-col>
        <el-col :span="10">
-        <el-input style="width:60%"  v-model="workspaceSearch" placeholder="workspace search"></el-input>
-        <el-button   style="position:fixed;float:left"><i class="el-icon-search"></i></el-button>       
+        <el-input style="width:60%"  v-model="instanceSearch" placeholder="instance search"></el-input>
+        <el-button   style="position:fixed;float:left"  @click="search()" ><i class="el-icon-search"></i></el-button>       
        </el-col>
       <el-dialog
         title="Workspace Select"
@@ -18,7 +18,7 @@
          >
         <el-row>
                 <el-col :span="24">
-                    <el-input v-model="workspaceSearch" style="width:300px" placeholder="workspace search"></el-input>
+                    <el-input v-model="instanceSearch" style="width:300px" placeholder="workspace search"></el-input>
                     <el-button   style="position:fixed;float:left"><i class="el-icon-search"></i></el-button>
                 </el-col>
         </el-row>
@@ -402,9 +402,13 @@ export default {
        folderLayer:['All File'],
        instanceLayer:[],
        //搜索工作空间
-       workspaceSearch:'',
+       instanceSearch:undefined,
       //instances列表数据结构
        instancesCont:{},
+       //暂时的列表存储
+       tpmList:undefined, 
+        //原始
+        originList:undefined,   
       //存取同一级下的所有文件夹目录
        allFolderLayer:[],
        //类型
@@ -468,7 +472,12 @@ export default {
     },
     
     watch:{
-         $route: 'watchrouter'//路由变化时，执行的方法
+         $route: 'watchrouter',//路由变化时，执行的方法
+         instanceSearch:function(val){
+             if(val!=undefined&& val.length==0){
+                 this.instancesCont.list=this.originList
+             }
+         }   
     },
     mounted(){
 
@@ -509,6 +518,7 @@ export default {
                 
                 
                 _this.instancesCont=res.data.data
+                _this.originList=res.data.data.list
                 _this.instanceLayer=[initList] 
             }
             
@@ -547,6 +557,30 @@ export default {
         },
         pcsMeta(it){
              return builder.buildObject(JSON.parse(it.metaDetail)) 
+        },
+        search(){
+             
+            let keyword=new RegExp(this.instanceSearch ,'i')
+             
+            this.tpmList=[...this.instancesCont.list]
+            
+            if(this.instanceSearch==undefined){
+                this.$message({
+                    message:'empty search',
+                    type:'fail'
+                })
+                return
+            }
+            this.instancesCont.list=[]
+            if(this.instanceSearch!=undefined&&this.instanceSearch.length!=0){
+                for(let i of this.tpmList){
+                    if(i.name.match(keyword)){
+                         this.instancesCont.list.push(i)
+                    }
+                }
+            }else if(this.instanceSearch.length==0){
+                this.instancesCont.list=this.originList
+            }
         },
         newFolder(){
             let _this=this
@@ -908,6 +942,7 @@ export default {
                 }else{
                      
                     _this.instancesCont=res.data.data
+                    _this.originList=res.data.data.list
                 }
                 
             })
