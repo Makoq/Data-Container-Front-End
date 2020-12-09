@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <br>
-   <div style="position: fixed">
+   <div style="position: fixed;z-index: 999">
       <el-row  >
 
         <el-col :span="12">
@@ -10,7 +10,7 @@
             <div slot="header" class="clearfix">
               <strong style="color:white"> <i class="el-icon-s-cooperation"> </i>   File Level In Situ Share</strong>
               <el-button style="float: right; padding: 3px 0" @click=" check('data')" type="text"><strong>
-                <!-- <strong>Check</strong> -->
+                <strong style="color:#24fff5">Check</strong>
                 </strong></el-button>
             </div>
           <el-col :span="12" >
@@ -29,7 +29,7 @@
             <div slot="header" class="clearfix">
               <strong style="color:white">   <i class="el-icon-info"> </i> Information Level In Situ Share</strong>
               <el-button style="float: right; padding: 3px 0" @click="check('pcs')" type="text">
-                <!-- <strong>Check</strong> -->
+                <strong style="color:#24fff5">Check</strong>
                 </el-button>
 
             </div>
@@ -44,48 +44,48 @@
         </el-col>
 
       </el-row>
-  <el-row   style="margin-top:20px;">
-    <el-col :span="12" >
-      <el-card  >
-       
-        <div slot="header" class="clearfix">
-          <strong style="color:white"> <i class="el-icon-picture"> </i>  Visualzation Level In Situ Share</strong>
-           <el-button style="float: right; padding: 3px 0" @click=" check('vis')" type="text">
-             <!-- <strong>Check</strong> -->
-             </el-button>
-
-        </div>
+      <el-row   style="margin-top:20px;">
         <el-col :span="12" >
-        <p>In situ sharing of data in Visualzation level for collaborative modeling.</p>
-<p>A series of data visualzation scripts based designed programming templates in Python language are contributed to the sharing of data visualzation, such as snapshot of data.
+          <el-card  >
+          
+            <div slot="header" class="clearfix">
+              <strong style="color:white"> <i class="el-icon-picture"> </i>  Visualzation Level In Situ Share</strong>
+              <el-button style="float: right; padding: 3px 0" @click=" check('vis')" type="text">
+                <strong style="color:#24fff5">Check</strong>
+                </el-button>
 
-        </p>
-        </el-col>
-        <div class="homeImg">
-        <img width="200px" height="180px" src="../../public/img/visual.gif">
-        </div>
-        </el-card>
-    </el-col>
-    <el-col :span="12">
-      <el-card>
-       
-         <div slot="header" class="clearfix">
-          <strong style="color:white"> <i class="el-icon-s-order"> </i> Public Data Item List</strong>
-           <el-button style="float: right; padding: 3px 0" @click="check('list')" type="text">
-             <!-- <strong >Check</strong> -->
-             </el-button>
+            </div>
+            <el-col :span="12" >
+            <p>In situ sharing of data in Visualzation level for collaborative modeling.</p>
+    <p>A series of data visualzation scripts based designed programming templates in Python language are contributed to the sharing of data visualzation, such as snapshot of data.
 
-        </div>
-        <el-col :span="12" >
-         <p>A public data item list with corresponding callable processing and visualization methods for data insitu sharing in<a href="https://geomodeling.njnu.edu.cn/" target="_blank" slot="color:white"> OpenGMS Portal Website.</a></p>
+            </p>
+            </el-col>
+            <div class="homeImg">
+            <img width="200px" height="180px" src="../../public/img/visual.gif">
+            </div>
+            </el-card>
         </el-col>
+        <el-col :span="12">
+          <el-card>
+          
+            <div slot="header" class="clearfix">
+              <strong style="color:white"> <i class="el-icon-s-order"> </i> Public Data Item List</strong>
+              <el-button style="float: right; padding: 3px 0" @click="check('list')" type="text">
+                <strong style="color:#24fff5">Check</strong>
+                </el-button>
 
-        <el-col :span="12" class="homeImg">
-        <img width="200px" height="190px" src="../../public/img/ogms.jpg">
+            </div>
+            <el-col :span="12" >
+            <p>A public data item list with corresponding callable processing and visualization methods for data insitu sharing in<a href="https://geomodeling.njnu.edu.cn/" target="_blank" style="color:white"> OpenGMS Portal Website.</a></p>
+            </el-col>
+
+            <el-col :span="12" class="homeImg">
+            <img width="200px" height="190px" src="../../public/img/ogms.jpg">
+            </el-col>
+            </el-card>
         </el-col>
-        </el-card>
-    </el-col>
-  </el-row>
+      </el-row>
    </div>
 
   <video class="" 
@@ -93,7 +93,7 @@
     tabindex="2" 
     mediatype="video" 
     
-    style="position: inherit;width: -webkit-fill-available; height: inherit;z-index:-11">
+    style="position: inherit;width: -webkit-fill-available; height: inherit;z-index:-9999">
           <source src="../assets/video/earth.mp4"  type="video/mp4"  />
     </video>
   </div> 
@@ -152,8 +152,9 @@ opacity:0.6;
  background-color: #222525;
 }
 .el-card:hover{
-  background-color: azure;
+  opacity: 1;
 }
+
 p{
   color:#8bfb7d;
 }
