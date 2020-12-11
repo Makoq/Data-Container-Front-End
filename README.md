@@ -24,7 +24,11 @@ Ka3TsrKQGvgEikobDs8+PBcFg621lTGddu7oL0M/rZk=
 
 模型的两个例子
 fvcom
-http://223.2.47.247:8084/task/322dcfb0-6a79-48a2-9b80-bb105f1bb36d
+http://172.21.213.4:8084/task/322dcfb0-6a79-48a2-9b80-bb105f1bb36d
 
 stars
-http://223.2.47.247:8084/task/f71ee90c-8907-431f-a85f-e172a4a47db6
+http://172.21.213.4:8084/task/f71ee90c-8907-431f-a85f-e172a4a47db6
+
+
+
+:1708/#/console/chart:1 Access to XMLHttpRequest at '' from origin '' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' 

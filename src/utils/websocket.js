@@ -60,6 +60,7 @@ const websocket=function(it){
                 ws.send('{ "msg":"beat" }')
            },60000);
              ws.onmessage = function(e){
+               
                 //中转服务器发来success，证明建立websocket通信成功
                if(e.data==='success'){
                     console.log("连接中转服务器成功");
