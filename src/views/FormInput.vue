@@ -1,7 +1,7 @@
 import Content from '@/views/Content';
 <template>
   <div class="form" >
-    <el-row :gutter="20">
+    <el-row :gutter="20" v-loading="this.$loading">
        <el-col :span="this.$route.query.type==='Data'?6:0" class="category">
               <el-card class="box-card categoryList" style="margin-left:20px">
                     <div slot="header" class="clearfix text-center">
@@ -611,7 +611,7 @@ export default {
       })
       
       console.log("file",newFile)
-
+      this.$loading=true
       this.$axios.put('/api/newFile',newFile,{timeout:600000})//请求超时10分钟
       .then((res)=>{
        
@@ -623,8 +623,8 @@ export default {
           }else{
 
             if(_this.$route.query.type==='Data'){
-                 
-                 this.$router.push({path:'/instance',query:{type:'Data'}})
+                 _this.$loading=false
+                 _this.$router.push({path:'/instance',query:{type:'Data'}})
                   _this.$message({
                         message: 'create success ',
                         type: 'success'

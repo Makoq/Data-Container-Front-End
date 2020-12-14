@@ -65,6 +65,8 @@
         </template>
        <el-menu-item index="4-2"><span>Workspace</span></el-menu-item>
         <el-menu-item index="4-1"><span>State</span></el-menu-item>
+       <el-menu-item index="4-3"><span>Addition</span></el-menu-item>
+
          <!-- <el-menu-item index="4-2"><span>Functions</span></el-menu-item> -->
          
          
@@ -153,7 +155,10 @@ import { mapMutations } from 'vuex';
             this.$router.push({path:'/state'})
           }else if(index==='4-2'){
             this.$router.push({path:'/workSpace'})
-          }else if(index==='5-1'){
+          }else if(index==='4-3'){
+            this.$router.push({path:'/upload'})
+          }
+          else if(index==='5-1'){
             this.$router.push({path:'/cluster',query:{type:'Cluster'}})
           }else if(index==='5-2'){
             this.$router.push({path:'/worldCluster',query:{type:'worldCluster'}})

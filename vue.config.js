@@ -19,6 +19,15 @@ module.exports = {
                     '^/api':'',
                 }
             },
+            '/pub':{
+                target:'http://111.229.14.128:8899',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/pub':'',
+                }
+            },
             //发布数据公开页面
             '/portal':{
                 target:reomte_url.remote_test_url,
@@ -79,6 +88,16 @@ module.exports = {
                     '^/test':'',
                 }
             },
+            '/uploadLarge':{
+                target:'http://localhost:8898',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/uploadLarge':'',
+                }
+            },
+            
             
             
 

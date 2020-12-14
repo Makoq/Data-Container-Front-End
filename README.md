@@ -32,3 +32,11 @@ http://172.21.213.4:8084/task/f71ee90c-8907-431f-a85f-e172a4a47db6
 
 
 :1708/#/console/chart:1 Access to XMLHttpRequest at '' from origin '' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' 
+
+
+
+可视化测试数据
+线状图、饼状图、散点图
+
+http://111.229.14.128:8899/data?uid=07e48438-e5f7-4543-b578-b9de49cafa77
+
