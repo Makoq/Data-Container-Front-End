@@ -384,6 +384,7 @@ import md5 from "js-md5"
 import Avatar from 'vue-avatar'
 import xml2js from 'xml2js';
 const builder=new xml2js.Builder();
+import request from 'request';
 
 export default {
     name:'instance',
@@ -1136,12 +1137,25 @@ export default {
                 _this.infoAndParsDialog=false
                 _this.localPcsLoading=false
                 if(_this.currentPcs.type=='Visualization'){
-                     this.$alert('<img src='+'http://111.229.14.128:8899/data?uid=' +res.data.uid+' width="100%" height="100%" alt="Visualization Result" />', 'Visualization Result', {
+                    if(res.data.html){
+                        request('http://111.229.14.128:8899/data?uid=' +res.data.uid,(err,res,body)=>{
+                             res
+                            console.log(res.body)
+                            var el = document.createElement( 'html' );
+                            el.innerHTML =res.body
+
+                             this.$alert(el, 'Visualization Result', {
+                                dangerouslyUseHTMLString: true,
+                                confirmButtonText: 'ok',
+                            });
+                        })
+                    }else{
+                        this.$alert('<img src='+'http://111.229.14.128:8899/data?uid=' +res.data.uid+' width="100%" height="100%" alt="Visualization Result" />', 'Visualization Result', {
                         dangerouslyUseHTMLString: true,
                         confirmButtonText: 'ok',
-                         
-
                         });
+                    }
+
                 }else{
                      window.location.href='http://111.229.14.128:8899/data?uid=' +res.data.uid
 
