@@ -315,6 +315,7 @@
                                         <el-button type="primary" @click="serviceMigration()">Migration</el-button>
                                     </span>
                                 </el-dialog>
+                              
                             <!--  -->
                             <el-popover
                                 placement="top-start"
@@ -456,7 +457,8 @@ export default {
         // 本地展示xml
         pcsMetaInfo:'',
         imgVisualizationDialog:false,//可视化展示dialog,
-        localPcsLoading:false
+        localPcsLoading:false,
+       
 
 
 
@@ -1138,17 +1140,10 @@ export default {
                 _this.localPcsLoading=false
                 if(_this.currentPcs.type=='Visualization'){
                     if(res.data.html){
-                        request('http://111.229.14.128:8899/data?uid=' +res.data.uid,(err,res,body)=>{
-                             res
-                            console.log(res.body)
-                            var el = document.createElement( 'html' );
-                            el.innerHTML =res.body
-
-                             this.$alert(el, 'Visualization Result', {
-                                dangerouslyUseHTMLString: true,
-                                confirmButtonText: 'ok',
-                            });
-                        })
+                         
+                        // window.open('/api/visualResultHtml?path='+encodeURIComponent(res.data.html))
+                        window.open('http://111.229.14.128:8899/data?uid=' +res.data.uid)
+                        
                     }else{
                         this.$alert('<img src='+'http://111.229.14.128:8899/data?uid=' +res.data.uid+' width="100%" height="100%" alt="Visualization Result" />', 'Visualization Result', {
                         dangerouslyUseHTMLString: true,
