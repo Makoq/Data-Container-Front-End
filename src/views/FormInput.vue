@@ -370,14 +370,26 @@ import Content from '@/views/Content';
 
           </el-form-item>
           <el-dialog
-          title="确认"
+          title="Confirm:"
               :visible.sync="createProcessConfirm"
               width="60%"
               height="280px"
           >
-          <div>Name: {{processing.name}}</div>
-          <div>File List: {{fileList}}</div>
-          Related Data:<div v-for="(it,key) in chooseDataArray" :key="key">{{it.name}}</div>
+
+          <div><strong>Name: </strong><span style="color:blue"> {{processing.name}}</span></div><br>
+
+          <div><strong>File List: </strong>  
+            <el-tag type="danger" v-for="(it,k) in fileList" :key="k">{{it}}</el-tag>
+             
+           
+ 
+          </div><br>
+
+          <strong>Related Data: </strong> 
+
+            <el-tag v-for="(it,key) in chooseDataArray" :key="key" type="warning" >{{it.name}}</el-tag>
+
+           
 
 
             <span slot="footer" class="dialog-footer">
@@ -454,7 +466,7 @@ export default {
           recommendMdoel:null
         }
       },
-    autoActiveDescPart:['1','2'],
+    autoActiveDescPart:['1','2','11','21'],
       texts:['Very bad ',' disappointed ', 'just so so ',' satisfied ', 'surprised'],
       processing:{
         name:'',
@@ -500,8 +512,8 @@ export default {
 
        //分类
        categories:{
-         activeNames:['1'],
-         activeNames1:['11'],
+         activeNames:['1','2'],
+         activeNames1:['11','12'],
          cateId:undefined
        }
     };
@@ -929,6 +941,13 @@ export default {
                   }
             })
 
+          },
+          fileListSrc(it){
+              if(it.split('.')[1]=='py'){
+                return "../assets/py.jpg"
+              }else{
+                return "../assets/xml.png"
+              }
           }
 
 

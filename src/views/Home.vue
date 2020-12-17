@@ -2,7 +2,7 @@
   <div class="home">
     <br>
    <div style="position: fixed;z-index: 999">
-      <el-row  >
+      <el-row style="min-width:965px" >
 
         <el-col :span="12">
           <el-card>
