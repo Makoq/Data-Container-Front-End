@@ -111,9 +111,18 @@ import async from 'async'
                                  _this.$message({
                                    type:'success',
                                    message:'upload finish'+file.name,
-                                   showClose:true
-                                   
+                                   showClose:true,
+                                   duration:0,
                                })
+                                
+                                _this.$notify({
+                                    title: 'download:'+file.name,
+                                    dangerouslyUseHTMLString: true,
+                                    message: '<a href='+'http://111.229.14.128:8899/data?uid='+res.data.data.source_store_id+'>'+file.name+'</a>',
+                                    duration: 0
+                                });
+
+
                             }else if(res.data.code==1){
 
                                 console.log(res.data.msg);

@@ -349,8 +349,10 @@ import Content from '@/views/Content';
           <el-form-item  label="Scripts">
              
             <el-button     type="primary" @click="upload_pro" style="width:200px">Choose Scripts</el-button>
-            <div   class="el-upload__tip">*Upload custom processing files based on <el-button type="text" @click="programming_template_visable=true">the programming templates</el-button></div>
-           
+            <div   class="el-upload__tip">*Upload custom processing files based on template 
+              <!-- <el-button type="text" @click="programming_template_visable=true">the programming templates</el-button> -->
+            <el-button type="danger" size="small" icon="el-icon-download" @c  lick="downProgramTemplate" circle></el-button>
+            </div>
           </el-form-item>
           <el-dialog
             title="Programing Template"
@@ -942,12 +944,9 @@ export default {
             })
 
           },
-          fileListSrc(it){
-              if(it.split('.')[1]=='py'){
-                return "../assets/py.jpg"
-              }else{
-                return "../assets/xml.png"
-              }
+          downProgramTemplate(){
+                     window.location.href='http://111.229.14.128:8899/data?uid=f394eb7c-bea9-462d-9b61-4cf8090cc893' 
+
           }
 
 
