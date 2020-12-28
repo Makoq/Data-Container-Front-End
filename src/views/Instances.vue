@@ -296,6 +296,7 @@
                                     title="Service migration"
                                     :visible.sync="sceMigDialog"
                                     width="30%"
+                                    v-loading="migLoading"
                                     >
                                     <el-form > 
                                     <!-- your token -->
@@ -453,6 +454,7 @@ export default {
         sceMigTargetTokent:'',
         yourToken:'',
         currentService:undefined,
+        migLoading:false,
         
         // 本地展示xml
         pcsMetaInfo:'',
@@ -1184,14 +1186,18 @@ export default {
        serviceMigration(){
            //this.$root.$el.myWS
            this.sceMigTargetTokent
+           this.migLoading=true
            let _this=this
            this.$axios.get('/api/uploadpcs',{
                params:{
                    type:_this.instnaceType,
                    id:_this.currentService.id
-               }
+               },
+               timeout:1000*60*60
+                
            })
            .then(re=>{
+                _this.migLoading=false
                if(re.data.code==0){
                    let msg={
                        msg:'Migration',
@@ -1200,10 +1206,11 @@ export default {
                        targetToken:_this.sceMigTargetTokent
                    }
                    _this.$root.$el.myWS.send(JSON.stringify(msg))
-                   this.sceMigDialog=false;
+                   _this.sceMigDialog=false;
+                   
                     
                }else if(re.data.code==-1){
-                   this.$message({
+                   _this.$message({
                        type:'fail',
                        message:'mirgation failed'
                    })

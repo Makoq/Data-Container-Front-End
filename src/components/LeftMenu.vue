@@ -65,7 +65,7 @@
         </template>
        <el-menu-item index="4-2"><span>Workspace</span></el-menu-item>
         <el-menu-item index="4-1"><span>State</span></el-menu-item>
-       <el-menu-item index="4-3"><span>Addition</span></el-menu-item>
+       <el-menu-item index="4-3"><span>Large File</span></el-menu-item>
 
          <!-- <el-menu-item index="4-2"><span>Functions</span></el-menu-item> -->
          
