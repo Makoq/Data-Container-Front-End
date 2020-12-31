@@ -406,6 +406,49 @@ const websocket=function(it){
                                 })
                             }
                         })
+                    }else if(re.urls!=undefined){
+                        
+                       
+                        const params = new URLSearchParams();
+                        params.append("pcsId",re.pcsId)
+                        params.append("token",re.token)
+                        params.append("url",re.url)
+
+                        params.append("params",re.params!=undefined?re.params:undefined)
+
+                         
+                        _this.$axios.post('/api/invokeProUrls',params,{
+                            headers:{
+                                'Content-Type':'application/x-www-form-urlencoded'
+                            }
+                        }
+                        ).then(res=>{
+                            if(res.data.code==0){
+                                let availablePcs={
+                                    msg:'invokDisPcs',
+                                    uid:res.data.uid,
+                                    stout:res.data.stout,
+                                }
+                                ws.send(JSON.stringify(availablePcs))
+                            }else if(res.data.code==-2){
+                                let executeError={
+                                    "msg":"invokDisPcs",
+                                    "uid":'none',
+                                    'stout':res.data.message,
+                                    
+                                }
+
+                                ws.send(JSON.stringify(executeError))
+
+                            }
+                            else{
+                                _this.$message({
+                                    message:'失败',
+                                    type:'fail',
+                                    showClose:true
+                                })
+                            }
+                        })
                     }
                }                
             }

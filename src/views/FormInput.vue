@@ -1,7 +1,8 @@
 import Content from '@/views/Content';
 <template>
-  <div class="form" >
+  <div class="form" v-loading.fullscreen.lock="submitUploadLoading">
     <el-row :gutter="20" >
+      
        <el-col :span="this.$route.query.type==='Data'?6:0" class="category">
               <el-card class="box-card categoryList" style="margin-left:20px">
                     <div slot="header" class="clearfix text-center">
@@ -50,10 +51,9 @@ import Content from '@/views/Content';
                     </el-collapse>
                     
                 </el-card>
-       </el-col>
-
-      <el-col :span="this.$route.query.type==='Data'?18:12"  >
-        <el-form v-if="this.$route.query.type==='Data'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+       </el-col>      
+       <el-col :span="this.$route.query.type==='Data'?18:12"  >
+        <el-form  v-if="this.$route.query.type==='Data'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
           <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
@@ -405,7 +405,7 @@ import Content from '@/views/Content';
 
         </el-form>
       </el-col >
-
+      
       <el-col :span="this.$route.query.type==='WorkSpace'?18:12">
          <el-form v-if="this.$route.query.type==='WorkSpace'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
           <!-- name -->
@@ -468,6 +468,7 @@ export default {
           recommendMdoel:null
         }
       },
+      submitUploadLoading:false,
     autoActiveDescPart:['1','2','11','21'],
       texts:['Very bad ',' disappointed ', 'just so so ',' satisfied ', 'surprised'],
       processing:{
@@ -626,16 +627,17 @@ export default {
       })
       
       console.log("file",newFile)
-      
+      this.submitUploadLoading=true
       this.$axios.put('/api/newFile',newFile,{timeout:600000})//请求超时10分钟
       .then((res)=>{
+        _this.submitUploadLoading=false
        
         if(res.data.code===-1){
             _this.$message({
                 message: 'failed ',
                 type: 'fail'
             });
-          }else{
+          }else if(res.data.code===0){
 
             if(_this.$route.query.type==='Data'){
                  

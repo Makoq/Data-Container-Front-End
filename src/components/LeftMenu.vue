@@ -52,7 +52,7 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
-            <el-menu-item index="3-2"><span>Thematic</span></el-menu-item>
+            <!-- <el-menu-item index="3-2"><span>Thematic</span></el-menu-item> -->
 
         
        </el-submenu>
@@ -65,7 +65,7 @@
         </template>
        <el-menu-item index="4-2"><span>Workspace</span></el-menu-item>
         <el-menu-item index="4-1"><span>State</span></el-menu-item>
-       <el-menu-item index="4-3"><span>Addition</span></el-menu-item>
+       <el-menu-item index="4-3"><span>Large File</span></el-menu-item>
 
          <!-- <el-menu-item index="4-2"><span>Functions</span></el-menu-item> -->
          

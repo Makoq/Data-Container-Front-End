@@ -296,6 +296,7 @@
                                     title="Service migration"
                                     :visible.sync="sceMigDialog"
                                     width="30%"
+                                    v-loading="migLoading"
                                     >
                                     <el-form > 
                                     <!-- your token -->
@@ -453,6 +454,7 @@ export default {
         sceMigTargetTokent:'',
         yourToken:'',
         currentService:undefined,
+        migLoading:false,
         
         // 本地展示xml
         pcsMetaInfo:'',
@@ -1182,34 +1184,49 @@ export default {
            }
        },
        serviceMigration(){
-           //this.$root.$el.myWS
-           this.sceMigTargetTokent
-           let _this=this
-           this.$axios.get('/api/uploadpcs',{
-               params:{
-                   type:_this.instnaceType,
-                   id:_this.currentService.id
-               }
-           })
-           .then(re=>{
-               if(re.data.code==0){
-                   let msg={
-                       msg:'Migration',
-                       serviceDownloadId:re.data.uid,
-                       fromToken:_this.yourToken,
-                       targetToken:_this.sceMigTargetTokent
-                   }
-                   _this.$root.$el.myWS.send(JSON.stringify(msg))
-                   this.sceMigDialog=false;
-                    
-               }else if(re.data.code==-1){
-                   this.$message({
-                       type:'fail',
-                       message:'mirgation failed'
-                   })
-               }
-           })
-           
+                //this.$root.$el.myWS
+                this.sceMigTargetTokent
+                this.migLoading=true
+                let _this=this
+                this.$axios.get('/api/uploadpcs',{
+                    params:{
+                        type:_this.instnaceType,
+                        id:_this.currentService.id,
+                        token:_this.yourToken,
+                         targetToken:_this.sceMigTargetTokent
+                    },
+                })
+                .then(re=>{
+                        _this.migLoading=false
+                    if(re.data.code==0){
+                        let msg={
+                            msg:'Migration',
+                            serviceDownloadId:re.data.uid,
+                            fromToken:_this.yourToken,
+                            targetToken:_this.sceMigTargetTokent
+                        }
+                        _this.$root.$el.myWS.send(JSON.stringify(msg))
+                        _this.sceMigDialog=false;
+                        
+                            
+                    }else if(re.data.code==-1){
+                        _this.$message({
+                            type:'fail',
+                            message:'mirgation failed'
+                        })
+                    }else if(re.data.code==1){
+                        // 大文件迁移，由于数据较大，时间较长，所以会在后台显示进度，
+                        // 前台可以做其他事情，接受节点收到消息后会在前台显示消息，类似于异步
+                        // 
+                        console.log(re.data.progress)
+                         _this.$message({
+                            type:'success',
+                            message:'Migrating Large File，A message is responded to when the migration is successful',
+                            duration:0,
+                            showClose:true
+                        })
+                    }
+                })
        }
     
 

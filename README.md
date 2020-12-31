@@ -4,10 +4,42 @@
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Compiles and hot-reloads for development
 ```
 npm run serve
 ```
+
+## Basic Framework
+
+ ![在这里插入图片描述](/src/assets/markdown/framework.JPG)
+
+
+ ## Dependencies
+
+
+ ```
+    "@vue/ui": "^0.11.4",
+    "async": "^3.2.0",
+    "core-js": "^2.6.5",
+    "crypto-js": "^4.0.0",
+    "echarts": "^4.9.0",
+    "element-ui": "^2.12.0",
+    "font-awesome": "^4.7.0",
+    "inspector": "^0.5.0",
+    "ip": "^1.1.5",
+    "js-md5": "^0.7.3",
+    "mapbox-gl": "^1.13.0",
+    "request": "^2.88.2",
+    "vue": "^2.6.10",
+    "vue-avatar": "^2.3.3",
+    "vue-router": "^3.0.3",
+    "vuetify": "^1.5.5",
+    "vuex": "^3.1.1",
+    "xml2js": "^0.4.23"
+
+ ```
+
+## Others
 
 1.19
 搭载基本功能
