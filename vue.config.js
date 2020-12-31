@@ -5,7 +5,7 @@ module.exports = {
     devServer:{
         open:true,//run启动的时候是否弹出页面
         host:'0.0.0.0',//本机地址
-        port:'8080',//端口号
+        port:'8081',//端口号
         https:false,
         hotOnly:false,
         proxy:{
