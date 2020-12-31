@@ -52,7 +52,7 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
-            <el-menu-item index="3-2"><span>Thematic</span></el-menu-item>
+            <!-- <el-menu-item index="3-2"><span>Thematic</span></el-menu-item> -->
 
         
        </el-submenu>
