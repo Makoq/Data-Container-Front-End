@@ -412,7 +412,7 @@ const websocket=function(it){
                         const params = new URLSearchParams();
                         params.append("pcsId",re.pcsId)
                         params.append("token",re.token)
-                        params.append("url",re.url)
+                        params.append("url",re.urls)
 
                         params.append("params",re.params!=undefined?re.params:undefined)
 
