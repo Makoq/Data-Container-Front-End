@@ -92,7 +92,7 @@ const websocket=function(it){
                        params:
                        {
                            id:re.id,
-                           name:re.name,
+                           name:re.name!=undefined?re.name:undefined,
                            token:re.token,
                            reqUsrOid:re.reqUsrOid!=undefined?re.reqUsrOid:undefined
                         }
@@ -144,7 +144,67 @@ const websocket=function(it){
                             ws.send(JSON.stringify(dataRes))
                        }
                    })
-               }else if(re.capability!=undefined&&re.capability){//数据元数信息 capability
+               }else if(re.reqUrls!=undefined&&re.reqUrls){
+
+                _this.$axios.get('/api/multiFiles',{
+                    params:
+                    {
+                       
+                        id:re.id,
+                        name:re.name!=undefined?re.name:undefined,
+                        token:re.token,
+                        reqUsrOid:re.reqUsrOid!=undefined?re.reqUsrOid:undefined
+                     }
+                }).then(resp=>{  
+                    if(resp.data.code===-1){
+                        if(resp.data.message=='no authority'){
+                             let noAuthority={
+                                 "msg":"resdata",
+                                 "type":"noAuthority",
+                                 "wsToken":re.wsToken
+                             }
+                             ws.send(JSON.stringify(noAuthority))
+                        }else if(resp.data.message=='db find err'){
+                                 let noAuthority={
+                                     "msg":"resdata",
+                                     "type":"db find err",
+                                     "wsToken":re.wsToken
+                                 }
+                                 ws.send(JSON.stringify(noAuthority))
+                         }
+                    }else if(resp.data.code==-2){
+                         let dataInvaild={
+                             'msg':'resdata',
+                            
+                             'stoutErr':resp.data.stoutErr,
+                             "wsToken":re.wsToken
+
+                         }
+                         ws.send(JSON.stringify(dataInvaild))
+                    }
+                    else{ 
+                         let dataRes={
+                             "msg":"resdata",
+                             "id":resp.data.data,
+                             "reqUsr":re.reqUsrOid,
+                             "wsToken":re.wsToken
+                         }
+
+                         re.name
+                         _this.$notify({
+                             message:'In situ share in file level: '+re.name,
+                             type: 'success',
+                             duration: 0
+                         })
+
+                         
+                         //数据下载信息发送回中转服务器
+                         ws.send(JSON.stringify(dataRes))
+                    }
+                })
+
+               }
+               else if(re.capability!=undefined&&re.capability){//数据元数信息 capability
                         _this.$axios.get('/api/capability',{
                             params:
                             {
@@ -412,7 +472,7 @@ const websocket=function(it){
                         const params = new URLSearchParams();
                         params.append("pcsId",re.pcsId)
                         params.append("token",re.token)
-                        params.append("url",re.urls)
+                        params.append("urls",re.urls)
 
                         params.append("params",re.params!=undefined?re.params:undefined)
 
