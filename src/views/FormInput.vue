@@ -710,6 +710,13 @@ export default {
         })
         return
       }
+      if(_this.processing.name.length<1){
+         this.$message({
+          message:'you have to give a name',
+          type:'fail'
+        })
+        return
+      }
       let upObj={
         //instance基本信息
         'uid':_this.$route.query.instance_uid,
