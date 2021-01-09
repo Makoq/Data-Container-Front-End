@@ -326,6 +326,27 @@ const websocket=function(it){
                                 type:'fail',
                                 duration: 0
                             })
+                        }else if(resp.data.code===-1){
+
+                            
+                            let executeError={
+                                "msg":"resdata",
+                                "id":resp.data.uid,
+                                'stoutErr':resp.data.message,
+                                "reqUsr":re.reqUsrOid,
+                                "wsToken":re.wsToken
+                            }
+
+                            
+                            
+                            ws.send(JSON.stringify(executeError))
+
+                           
+                            _this.$notify({
+                                message:'本地方法调用失败\n'+resp.data.message,
+                                type:'fail',
+                                duration: 0
+                            })
                         }
 
                    })
@@ -509,6 +530,51 @@ const websocket=function(it){
                                 })
                             }
                         })
+                    }else if(re.ExternalUrls){
+                        const params = new URLSearchParams();
+                        params.append("pcsId",re.pcsId)
+                        params.append("token",re.token)
+
+                        params.append("ExternalUrls",JSON.stringify(re.ExternalUrls))
+
+                        params.append("params",re.params!=undefined?re.params:undefined)
+
+                         
+                        _this.$axios.post('/api/invokeExternalUrlsDataPcs',params,{
+                            headers:{
+                                'Content-Type':'application/x-www-form-urlencoded'
+                            }
+                        }
+                        ).then(res=>{
+                            if(res.data.code==0){
+                                let availablePcs={
+                                    msg:'invokDisPcs',
+                                    uid:res.data.uid,
+                                    stout:res.data.stout,
+                                }
+                                ws.send(JSON.stringify(availablePcs))
+                            }else if(res.data.code==-2){
+                                let executeError={
+                                    "msg":"invokDisPcs",
+                                    "uid":'none',
+                                    'stout':res.data.message,
+                                    
+                                }
+
+                                ws.send(JSON.stringify(executeError))
+
+                            }
+                            else{
+                                _this.$message({
+                                    message:'失败',
+                                    type:'fail',
+                                    showClose:true
+                                })
+                            }
+                        })
+
+
+
                     }
                }                
             }
