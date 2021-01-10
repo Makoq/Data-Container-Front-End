@@ -20,10 +20,12 @@ export default {
   },
   beforeDestroy(){
     console.log("destroyed")
+    
 
   },
   destroyed(){
     console.log("destroyed")
+    
   }
 }
 </script>

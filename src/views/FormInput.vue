@@ -601,23 +601,18 @@ export default {
           tags:[],
           keywords:_this.form.dynamicTags,
           dataPath:_this.form.LocalURL,
-
           fileDataType:_this.form.fileDataType,
           quality:_this.form.quality,
-
           security:_this.form.security,
           size:_this.form.size+'MB',
           dataTime:new Date(_this.form.dataTime).toLocaleString(),
           lawInfo:_this.form.lawInfo,
           references:_this.form.references,
           owner:_this.form.owner,
-
           email:_this.form.email,
           format:_this.form.format,
           semanticDescription:_this.form.semanticDescription,
           modelRelated:_this.form.modelRelated
-
-
         }
 
         
@@ -708,7 +703,20 @@ export default {
       console.log(document.getElementById('procesing_up').files)
 
       let fileNameList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
-       
+      if(_this.connectedData<1){
+         this.$message({
+          message:'you have to choose a file',
+          type:'fail'
+        })
+        return
+      }
+      if(_this.processing.name.length<1){
+         this.$message({
+          message:'you have to give a name',
+          type:'fail'
+        })
+        return
+      }
       let upObj={
         //instance基本信息
         'uid':_this.$route.query.instance_uid,
