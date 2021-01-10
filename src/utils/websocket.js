@@ -35,6 +35,10 @@ const websocket=function(it){
                 let msg= JSON.stringify(cont)
                  
                 ws.send(msg);
+
+                
+
+
             }
             ws.onclose = function(e){
                  _this.$message({
@@ -56,9 +60,7 @@ const websocket=function(it){
 
 
             }
-            setInterval(()=>{
-                ws.send('{ "msg":"beat" }')
-           },60000);
+           
              ws.onmessage = function(e){
                
                 //中转服务器发来success，证明建立websocket通信成功
@@ -68,7 +70,9 @@ const websocket=function(it){
                         message:'连接中转服务器成功',
                         type:'success'
                     })
-                     
+                    setInterval(()=>{
+                        ws.send('{ "msg":"beat" }')
+                    },20000);
                    return
                } 
                if(e.data==='beat'){
@@ -530,7 +534,7 @@ const websocket=function(it){
                                 })
                             }
                         })
-                    }else if(re.ExternalUrls){
+                    }else if(re.ExternalUrls!=undefined){
                         const params = new URLSearchParams();
                         params.append("pcsId",re.pcsId)
                         params.append("token",re.token)
@@ -575,6 +579,54 @@ const websocket=function(it){
 
 
 
+        
+                    }else if(re.urlsWithKeys!=undefined){
+                        // const params = new URLSearchParams();
+                        // params.append("pcsId",re.pcsId)
+                        // params.append("token",re.token)
+
+                        // params.append("urlsWithKeys",JSON.stringify(re.urlsWithKeys))
+
+                        // params.append("params",re.params!=undefined?re.params:undefined)
+
+                        let json={
+                            "pcsId":re.pcsId,
+                            "token":re.token,
+                            "urlsWithKeys":re.urlsWithKeys,
+                            "params":re.params!=undefined?re.params:undefined
+                        } 
+                        _this.$axios.post('/api/invokeExternalUrlsDataPcsWithKeys',json,{
+                            headers:{
+                                'Content-Type':'application/json'
+                            }
+                        }
+                        ).then(res=>{
+                            if(res.data.code==0){
+                                let availablePcs={
+                                    msg:'invokDisPcs',
+                                    uid:res.data.uid,
+                                    stout:res.data.stout,
+                                }
+                                ws.send(JSON.stringify(availablePcs))
+                            }else if(res.data.code==-2){
+                                let executeError={
+                                    "msg":"invokDisPcs",
+                                    "uid":'none',
+                                    'stout':res.data.message,
+                                    
+                                }
+
+                                ws.send(JSON.stringify(executeError))
+
+                            }
+                            else{
+                                _this.$message({
+                                    message:'失败',
+                                    type:'fail',
+                                    showClose:true
+                                })
+                            }
+                        })
                     }
                }                
             }

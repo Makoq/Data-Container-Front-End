@@ -20,11 +20,12 @@ export default {
   },
   beforeDestroy(){
     console.log("destroyed")
-    _this.$root.$el.myWS.close()
+    
 
   },
   destroyed(){
     console.log("destroyed")
+    
   }
 }
 </script>
