@@ -97,7 +97,15 @@ module.exports = {
                     '^/uploadLarge':'',
                 }
             },
-            
+            '/template':{
+                target:'https://geomodeling.njnu.edu.cn/repository',
+                ws:true,
+                timeout:600000,
+                changOrigin:true,
+                pathRewrite:{
+                    '^/template':'',
+                }
+            },
             
             
 
