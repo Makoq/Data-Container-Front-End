@@ -266,6 +266,65 @@ import Content from '@/views/Content';
           <el-form-item  label="Name" prop="name">
             <el-input v-model="processing.name"  maxlength="25" show-word-limit placeholder="input name.." style="width:220px;"></el-input>
           </el-form-item>
+           <!-- 数据模板 -->
+          <el-form-item  label="Template" prop="Template">
+            <el-button type="text" @click="telmplateDialogVisable">Select</el-button>
+          </el-form-item>
+
+          <el-dialog
+            title="Data Template Select"
+            :visible.sync="templateDialog"
+            width="60%"
+            :show-close="true"
+            :before-close="handleClose">
+            <h3>You have selected data template:  </h3><br>
+            <el-alert
+              :title="choosedTemplate.name!=undefined?choosedTemplate.name:'not select'"
+
+              type="success">
+            </el-alert>
+            <el-divider></el-divider>
+            <el-row>
+
+              <el-col :span="8">
+                <!-- <div @click="telmplate('f7fbecf6-9d28-405e-b7d2-07ef9d924ca6')">Raster Data Format</div> -->
+                <el-tree 
+                  :data="templateTreeData"
+                  @node-click="telmplate"
+                 :default-checked-keys="[100]"
+                  :default-expand-all="true"
+                  style="width:100%"
+                  ></el-tree>
+              </el-col>
+
+              <el-col :span="16"> 
+                <div class="dataTemplate" v-for="(v,k) in templateList" :key="k">
+                  <div class="dataTemplateName" >
+                   <span @click="choosedTemplate=v">{{v.name}}</span><i class="el-icon-info"  @click="templateInfo(v)"></i>
+                 
+                  </div>
+                  <div style="font-size: smaller;">{{v.description}}</div>                  
+                  </div>
+                
+                <div class="block">
+                  <el-pagination
+                    layout="prev, pager, next"
+                    :total="currentTemplatePageTotal"
+                    :current-page="currentTemplatePage"
+                    @current-change="currentChangeTemplate"
+                    >
+                  </el-pagination>
+                </div>
+              
+              </el-col>
+            </el-row>
+ 
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="templateDialog = false">取 消</el-button>
+              <el-button type="primary" @click="templateDialog = false">确 定</el-button>
+            </span>
+          </el-dialog>
+
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
             <el-switch
@@ -477,6 +536,61 @@ export default {
         desc:'',
         paramsCount:0
       },
+      templateDialog:false,
+      templateList:[],
+      templateTreeData: [{
+                id: 1,
+                label: 'Description Templates',
+                oid: 'TRJJMYDAUJTDDU5J9GPRUWAG7QJ6PHUU',
+                children: [
+                    {
+                        id: 100,
+                        "oid": "f7fbecf6-9d28-405e-b7d2-07ef9d924ca6",
+                        "label": "Vector Data Format"
+                    },
+                    {
+                        "oid": "9b104fd6-7949-4c3b-b277-138cd979d053",
+                        "label": "Raster Data Format",
+                    },
+                    {
+                        "oid": "316d4df0-436e-4600-a183-80abf7472a72",
+                        "label": "Mesh Data Format",
+                    },
+                    {
+                        "oid": "bc437c65-2cfe-4bde-ac31-04830f18885a",
+                        "label": "Image Data Format",
+                    },
+                    {
+                        "oid": "39c0824e-8b1a-44e5-8716-c7893afe05e8",
+                        "label": "Video Data Format",
+                    },
+                    {
+                        "oid": "82b1c2b4-4c12-441d-9d9c-09365c3c8a24",
+                        "label": "Audio Data Format",
+                    },
+                    {
+                        "nameCn": "",
+                        "oid": "df6d36e3-8f16-4b96-8d3f-cff24f7c0fd9",
+                        "label": "Unstructural Data Format",
+                    },
+                    {
+                        "oid": "26bb993b-453c-481a-a1ea-674db3e888e2",
+                        "label": "Model Related Data Format",
+                    },
+                    {
+                        "oid": "1d573467-f1f3-440a-a827-110ac1e820bd",
+                        "label": "3D Model Data Format",
+                    },
+                    {
+                        "oid": "8a189836-d563-440c-b5ea-c04778ac05f9",
+                        "label": "Tabular Data Format",
+                    }]
+      }],
+      choosedTemplate:{},
+      currentTemplatePage:0,
+      currentTemplatePageTotal:0,
+
+      currentTemplateCate:'f7fbecf6-9d28-405e-b7d2-07ef9d924ca6',
       workSpace:{
         name:'',
         description:''
@@ -717,6 +831,14 @@ export default {
         })
         return
       }
+
+      if(_this.choosedTemplate.oid==undefined){
+        this.$message({
+          message:'you have to select a data template',
+          type:'fail'
+        })
+        return
+      }
       let upObj={
         //instance基本信息
         'uid':_this.$route.query.instance_uid,
@@ -724,8 +846,8 @@ export default {
         'userToken':_this.$route.query.userToken,
         //关联用户信息
         'oid':localStorage.getItem('relatedUsr').split(',')[0],
-     
-       
+        // 数据模板信息
+       'dataTemplateOid':_this.choosedTemplate.oid,
         //处理方法信息
         'id':uuidv4(),
         'name':_this.processing.name,
@@ -958,6 +1080,69 @@ export default {
                      window.location.href='http://111.229.14.128:8899/data?uid=f394eb7c-bea9-462d-9b61-4cf8090cc893' 
 
           }
+    ,
+    telmplateDialogVisable(){
+      this.templateDialog=true
+      let _this=this
+      let postData={
+          "asc": 0,
+          "oid": _this.currentTemplateCate,
+          "page": 0,
+          "searchText": "",
+          "sortField": "viewCount"
+      }
+      
+      this.$axios.post('/template/getTemplateList',postData)
+      .then(res=>{
+        
+        _this.templateList=res.data.data.list
+        _this.currentTemplatePageTotal=res.data.data.total
+        _this.templateDialog=true
+
+      })
+    },
+    telmplate(a,b,c){
+       
+      let _this=this
+      _this.currentTemplateCate=a.oid
+      let postData={
+          "asc": 0,
+          "oid": _this.currentTemplateCate,
+          "page": _this.currentTemplatePage,
+          "searchText": "",
+          "sortField": "viewCount"
+      }
+       
+      this.$axios.post('/template/getTemplateList',postData)
+      .then(res=>{
+        _this.templateList=res.data.data.list
+        _this.currentTemplatePageTotal=res.data.data.total
+        console.log()
+
+      })
+    },
+    templateInfo(v){
+      // window.location.href='https://geomodeling.njnu.edu.cn/repository/template/'+v.oid
+      window.open('https://geomodeling.njnu.edu.cn/repository/template/'+v.oid)
+    },
+    currentChangeTemplate(p){
+      let _this=this
+      let postData={
+          "asc": 0,
+          "oid": _this.currentTemplateCate,
+          "page": p-1,
+          "searchText": "",
+          "sortField": "viewCount"
+      }
+      this.$axios.post('/template/getTemplateList',postData)
+      .then(res=>{
+        
+         _this.templateList=res.data.data.list
+         _this.currentTemplatePageTotal=res.data.data.total
+
+      })
+
+    }
 
 
 
@@ -1029,4 +1214,23 @@ export default {
 .el-form .el-collapse-item__wrap{
   background-color:#f8fafb;
 }
+
+.dataTemplate{
+    border: solid #e1e1e1 0.5px;
+    border-radius: 5%;
+    padding: 5px;
+}
+.dataTemplateName{
+   font-size: initial;
+  color: #0674d4;
+}
+.dataTemplateName:hover{
+  cursor: pointer; 
+ 
+
+}
+.dataTemplate:hover{
+    background-color: aliceblue;
+}
+
 </style>
