@@ -39,10 +39,10 @@
 
         <template slot="title">
           <i style="color:white" class="el-icon-postcard"></i>
-          <span>Information</span>
+          <span>Content</span>
         </template>
           <el-menu-item index="2-1"><span>Instances</span></el-menu-item>
-    
+          <el-menu-item index="2-2"><span>Method</span></el-menu-item>
       </el-submenu>
 
       <el-submenu index="3">
@@ -52,6 +52,7 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
+            <el-menu-item index="3-2"><span>Method</span></el-menu-item>
             <!-- <el-menu-item index="3-2"><span>Thematic</span></el-menu-item> -->
 
         
@@ -145,11 +146,14 @@ import { mapMutations } from 'vuex';
           }else if(index==='2-1'){
             this.$router.push({path:'/instance',query:{type:'Processing'}})
 
+          }else if(index==='2-2'){
+            this.$router.push({path:'/instance',query:{type:'ProcessingMethod'}})
+
           }else if(index==='3-1'){
             this.$router.push({path:'/instance',query:{type:'Visualization'}})
             
           }else if(index==='3-2'){
-            this.$router.push({path:'/thematic',})
+            this.$router.push({path:'/instance',query:{type:'VisualizationMethod'}})
             
           }else if(index==='4-1'){
             this.$router.push({path:'/state'})

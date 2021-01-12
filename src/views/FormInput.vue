@@ -80,7 +80,6 @@ import Content from '@/views/Content';
                   content="Specific to a file or a folder(for multi files)">
                 </el-popover>
                 <el-input v-model="form.LocalURL" placeholder="file://" style="width:100%;"></el-input>
-                
               </el-form-item>
           <el-form-item  label="Name" prop="name">
             <el-input v-model="form.name" style="width:40%" maxlength="25" show-word-limit placeholder="Name of the data" ></el-input>
@@ -108,6 +107,8 @@ import Content from '@/views/Content';
             inactive-text="private">
             </el-switch>
           </el-form-item>
+
+
 
           <!-- describe -->
           <el-form-item  label="Abstract">
@@ -320,8 +321,8 @@ import Content from '@/views/Content';
             </el-row>
  
             <span slot="footer" class="dialog-footer">
-              <el-button @click="templateDialog = false">取 消</el-button>
-              <el-button type="primary" @click="templateDialog = false">确 定</el-button>
+              <el-button @click="templateDialog = false">Cancel</el-button>
+              <el-button type="primary" @click="templateDialog = false">OK</el-button>
             </span>
           </el-dialog>
 
@@ -333,6 +334,16 @@ import Content from '@/views/Content';
             inactive-text="private">
           </el-switch>
           </el-form-item>
+
+
+          <!-- 类型选择 -->
+          <el-form-item  label="Type" prop="name">
+            <el-radio v-model="processing.processingType" label="Method">Method</el-radio>
+            <el-radio v-model="processing.processingType" label="Instance">Instance</el-radio>
+          </el-form-item>
+
+
+
 
           <!-- describe -->
           <el-form-item  label="Describe" prop="desc">
@@ -395,8 +406,8 @@ import Content from '@/views/Content';
               </el-col>
                </el-row>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="selectDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="connectData">确 定</el-button>
+                <el-button @click="selectDialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="connectData">OK</el-button>
               </span>
             </el-dialog>
             <span v-if="connectedData"></span>
@@ -410,7 +421,7 @@ import Content from '@/views/Content';
             <el-button     type="primary" @click="upload_pro" style="width:200px">Choose Scripts</el-button>
             <div   class="el-upload__tip">*Upload custom processing files based on template 
               <!-- <el-button type="text" @click="programming_template_visable=true">the programming templates</el-button> -->
-            <el-button type="danger" size="small" icon="el-icon-download" @c  lick="downProgramTemplate" circle></el-button>
+            <el-button type="danger" size="small" icon="el-icon-download" @click="downProgramTemplate" circle></el-button>
             </div>
           </el-form-item>
           <el-dialog
@@ -534,7 +545,8 @@ export default {
         name:'',
         authority:true,
         desc:'',
-        paramsCount:0
+        paramsCount:0,
+        processingType:'Instance'
       },
       templateDialog:false,
       templateList:[],
