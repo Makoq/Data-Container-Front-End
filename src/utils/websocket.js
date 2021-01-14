@@ -42,9 +42,6 @@ const websocket=function(it){
                         ws.send('{ "msg":"beat" }')
                     },60000);
                 }
-                
-
-
             }
             ws.onclose = function(e){
                  _this.$message({

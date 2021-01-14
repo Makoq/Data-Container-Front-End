@@ -5,7 +5,7 @@
         <!-- //挑选工作空间 -->
         <!-- <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button> -->
         <el-button   type="warning" @click="newFolder" >New Floder</el-button>
-        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type==="Processing"?"Information":this.$route.query.type}}</el-button>
+        <el-button   type="success"  @click="newFileData">New Service</el-button>
        </el-col>
        <el-col :span="10">
         <el-input style="width:60%"  v-model="instanceSearch" placeholder="instance search"></el-input>

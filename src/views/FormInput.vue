@@ -356,7 +356,7 @@ import Content from '@/views/Content';
           <el-input-number style="margin-top:20px;" v-model="processing.paramsCount"    ></el-input-number>
           </el-form-item>
            <!-- 关联数据 -->
-          <el-form-item label="Data">
+          <el-form-item label="Data" v-show="processing.processingType=='Instance'">
             <el-button type="primary" style="width:200px" @click="selectData">Select </el-button>
            
             <!-- </br><span>choose related data</span> -->
@@ -829,7 +829,7 @@ export default {
       console.log(document.getElementById('procesing_up').files)
 
       let fileNameList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
-      if(_this.connectedData<1){
+      if(_this.processing.processingType=='Instance'&&_this.connectedData<1){
          this.$message({
           message:'you have to choose a file',
           type:'fail'

@@ -27,7 +27,7 @@
           <el-card>
           
             <div slot="header" class="clearfix">
-              <strong style="color:white">   <i class="el-icon-info"> </i> Information Level In Situ Share</strong>
+              <strong style="color:white">   <i class="el-icon-info"> </i> Content Level In Situ Share</strong>
               <el-button style="float: right; padding: 3px 0" @click="check('pcs')" type="text">
                 <strong style="color:#24fff5">Check</strong>
                 </el-button>
