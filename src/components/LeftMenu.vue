@@ -32,6 +32,8 @@
           <span>File</span>
         </template>
           <el-menu-item index="1-1"><span>Instances</span></el-menu-item>
+          <el-menu-item index="1-2"><span>Results</span></el-menu-item>
+
       </el-submenu>
 
 
@@ -42,7 +44,7 @@
           <span>Content</span>
         </template>
           <el-menu-item index="2-1"><span>Instances</span></el-menu-item>
-          <el-menu-item index="2-2"><span>Method</span></el-menu-item>
+          <el-menu-item index="2-2"><span>Methods</span></el-menu-item>
       </el-submenu>
 
       <el-submenu index="3">
@@ -52,7 +54,7 @@
           <span>Visualization</span>
         </template>        
             <el-menu-item index="3-1"><span>Instances</span></el-menu-item>
-            <el-menu-item index="3-2"><span>Method</span></el-menu-item>
+            <el-menu-item index="3-2"><span>Methods</span></el-menu-item>
             <!-- <el-menu-item index="3-2"><span>Thematic</span></el-menu-item> -->
 
         
@@ -142,6 +144,9 @@ import { mapMutations } from 'vuex';
             this.$router.push('/Home')
           }else if(index==='1-1'){
             this.$router.push({path:'/instance',query:{type:'Data'}})
+
+          }else if(index==='1-2'){
+            this.$router.push({path:'/instance',query:{type:'DataOut'}})
 
           }else if(index==='2-1'){
             this.$router.push({path:'/instance',query:{type:'Processing'}})

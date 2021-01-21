@@ -53,6 +53,7 @@ import Content from '@/views/Content';
                 </el-card>
        </el-col>      
        <el-col :span="this.$route.query.type==='Data'?18:12"  >
+      <!--数据部分 开始  -->
         <el-form  v-if="this.$route.query.type==='Data'" ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
          
           <!-- 工作空间 -->
@@ -250,7 +251,9 @@ import Content from '@/views/Content';
           </el-form-item>
           <!--  -->
         </el-form>
-        <el-form v-if="this.$route.query.type==='Processing'||this.$route.query.type==='Visualization'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
+      <!-- 数据部分 结束 -->
+      <!-- 处理及可视化部分 开始-->
+        <el-form v-if="this.$route.query.type==='Processing'||this.$route.query.type==='Visualization'||this.$route.query.type.includes('Method')"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
             <!-- <el-form-item v-if="this.$route.params.type!='FileWorkSpace'" label="WorkSpace" prop="workspace">
 
               <el-select   v-model="form.workspace" placeholder="请选择">
@@ -336,11 +339,11 @@ import Content from '@/views/Content';
           </el-form-item>
 
 
-          <!-- 类型选择 -->
-          <el-form-item  label="Type" prop="name">
+          <!-- 类型选择 暂时去掉 在不同页面去创建-->
+          <!-- <el-form-item  label="Type" prop="name" >
             <el-radio v-model="processing.processingType" label="Method">Method</el-radio>
             <el-radio v-model="processing.processingType" label="Instance">Instance</el-radio>
-          </el-form-item>
+          </el-form-item> -->
 
 
 
@@ -356,12 +359,12 @@ import Content from '@/views/Content';
           <el-input-number style="margin-top:20px;" v-model="processing.paramsCount"    ></el-input-number>
           </el-form-item>
            <!-- 关联数据 -->
-          <el-form-item label="Data" v-show="processing.processingType=='Instance'">
+          <el-form-item label="Data" v-show="!this.$route.query.type.includes('Method')">
             <el-button type="primary" style="width:200px" @click="selectData">Select </el-button>
            
             <!-- </br><span>choose related data</span> -->
             <el-dialog
-              title="挑选数据"
+              title="Choose"
               :visible.sync="selectDialogVisible"
               width="60%"
               height="280px"
@@ -410,6 +413,8 @@ import Content from '@/views/Content';
                 <el-button type="primary" @click="connectData">OK</el-button>
               </span>
             </el-dialog>
+
+
             <span v-if="connectedData"></span>
             <div   class="el-upload__tip">*Specifies the processable data for the creating processing method</div>
           
@@ -461,9 +466,6 @@ import Content from '@/views/Content';
 
             <el-tag v-for="(it,key) in chooseDataArray" :key="key" type="warning" >{{it.name}}</el-tag>
 
-           
-
-
             <span slot="footer" class="dialog-footer">
                 <el-button @click="createProcessConfirm = false">Cancle</el-button>
                 <el-button type="primary" @click="submitUploadProcessing">OK</el-button>
@@ -474,8 +476,9 @@ import Content from '@/views/Content';
          
 
         </el-form>
+      <!-- 处理及可视化部分 结束-->
       </el-col >
-      
+      <!-- 工作空间复用页面部分 开始-->
       <el-col :span="this.$route.query.type==='WorkSpace'?18:12">
          <el-form v-if="this.$route.query.type==='WorkSpace'"  ref="ruleForm" label-width="100px" :hide-required-asterisk="true">
           <!-- name -->
@@ -493,6 +496,7 @@ import Content from '@/views/Content';
           </el-form-item>
          </el-form>
       </el-col>
+      <!-- 工作空间复用页面部分 结束-->
     </el-row>
   </div>
 </template>
@@ -817,6 +821,8 @@ export default {
 
     },
     submitUploadProcessing() {
+      let _this=this
+      // 处理包部分
       if(document.getElementById('procesing_up').files.length<2){
         this.$message({
           message:'no processing files',
@@ -825,17 +831,19 @@ export default {
         return
       }
 
-      let _this=this
-      console.log(document.getElementById('procesing_up').files)
-
       let fileNameList=[document.getElementById('procesing_up').files[0].name,document.getElementById('procesing_up').files[1].name]
-      if(_this.processing.processingType=='Instance'&&_this.connectedData<1){
+      
+      // 绑定数据部分
+
+      if(!_this.$route.query.type.includes("Method")&&_this.connectedData<1){
          this.$message({
           message:'you have to choose a file',
           type:'fail'
         })
         return
       }
+
+
       if(_this.processing.name.length<1){
          this.$message({
           message:'you have to give a name',
@@ -865,7 +873,7 @@ export default {
         'name':_this.processing.name,
         'date':utils.formatDate(new Date()),
         'type':_this.$route.query.type,
-        'relatedData':_this.connectedData,
+        'relatedData':_this.$route.query.type.includes("Method")?undefined:_this.connectedData,
         'authority':_this.processing.authority,
         'paramsCount':_this.processing.paramsCount,
         'fileList':fileNameList,
@@ -902,7 +910,16 @@ export default {
                         type: 'success'
                     });
 
-            }else if(_this.$route.query.type==='Visualization'){
+            }if(_this.$route.query.type==='ProcessingMethod'){
+                 
+                 this.$router.push({path:'/instance',query:{type:'ProcessingMethod'}})
+                  _this.$message({
+                        message: 'create success ',
+                        type: 'success'
+                    });
+
+            }
+            else if(_this.$route.query.type==='Visualization'){
                  
                  this.$router.push({path:'/instance',query:{type:'Visualization'}})
                   _this.$message({
@@ -910,7 +927,15 @@ export default {
                         type: 'success'
                     });
 
-            }               
+            }else if(_this.$route.query.type==='VisualizationMethod'){
+                 
+                 this.$router.push({path:'/instance',query:{type:'VisualizationMethod'}})
+                  _this.$message({
+                        message: 'create success ',
+                        type: 'success'
+                    });
+
+            }                  
 
           }
 

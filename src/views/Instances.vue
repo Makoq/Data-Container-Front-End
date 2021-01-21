@@ -1,12 +1,13 @@
 <template>
   <div class="instances">
    <el-row  class="instanceBtn">
-       <el-col :span="14">
+       <el-col :span="14" v-if="this.$route.query.type!='DataOut'" >
         <!-- //挑选工作空间 -->
         <!-- <el-button type="primary"  @click="selectWorkspaceList = true">Select Workspace</el-button> -->
         <el-button   type="warning" @click="newFolder" >New Floder</el-button>
-        <el-button   type="success"  @click="newFileData">New Service</el-button>
+        <el-button   type="success"  @click="newFileData">New {{this.$route.query.type.includes("Method")?"Method":"Instance"}}</el-button>
        </el-col>
+
        <el-col :span="10">
         <el-input style="width:60%"  v-model="instanceSearch" placeholder="instance search"></el-input>
         <el-button   style="position:fixed;float:left"  @click="search()" ><i class="el-icon-search"></i></el-button>       
@@ -201,16 +202,20 @@
 
                             <!-- <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari"> -->
                             <avatar v-if="it.type==='Processing'" :size="24" :rounded="false" :username="it.name"></avatar>
+                            <avatar v-if="it.type==='ProcessingMethod'" :size="24" :rounded="true" :username="it.name"></avatar>
+
                             
                             <!-- <img v-if="it.type==='Processing'" src="../assets/processing.png" width="28" height="28" alt="Safari" title="Safari"> -->
                             <avatar v-if="it.type==='Visualization'" :size="24" :rounded="false" :username="it.name"></avatar>
+                            <avatar v-if="it.type==='VisualizationMethod'" :size="24" :rounded="true" :username="it.name"></avatar>
+
 
                             <!-- <img v-if="it.type==='Visualization'" src="../assets/visualization.png" width="28" height="28" alt="Safari" title="Safari"> -->
                         </el-col>
                         <el-col :span="3" style="height:100%;"> 
                         
                             <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
-                            <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                                <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newFloderName" size="small" style="height:100%"></el-input ><el-button @click="renameFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancel" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
                             </el-row>
                             
                             <a v-else-if="it.type==='folder'" class="floderName" type="text"  @click="intoFolder(it)"  ref="floderName">
@@ -271,9 +276,170 @@
 
                         <el-col  v-if="it.type!='folder'" :span="4"  :offset="1" class="operate"  > 
                             &nbsp;
-                            <i  v-if="it.type!='file'" :class="it.type=='Visualization'?'el-icon-view':'el-icon-caret-right'" @click="invokeLocalPcs(it)"></i>
+                            <!-- 执行 -->
+                            <i  v-if="it.type!='file'&&!it.type.includes('Method')" :class="it.type=='Visualization'||it.type=='VisualizationMethod'?'el-icon-view':'el-icon-caret-right'" @click="invokeLocalPcs(it)"></i>
+                            <i  v-if="it.type!='file'&&it.type.includes('Method')" :class="it.type=='Visualization'||it.type=='VisualizationMethod'?'el-icon-view':'el-icon-caret-right'" @click="invokeMethod(it)"></i>
+
+                            <!-- Method类型 挑选数据 -->
+                            <el-dialog
+                                title="Select"
+                                :visible.sync="chooseMethodDataDialog"
+                                width="80%"
+                                height="280px"
+                                >
+                                <el-row :gutter="20">
+                                    <el-col :span="8" >
+                                        <h3>Input</h3><br>
+                                        <el-row style=" height:50px">
+                                            <span >{{chooseMethodData!=undefined? "Selected : ":"Unselected" }} </span>
+                                            
+                                            <el-tag v-if="chooseMethodData!=undefined">                                    
+                                            {{chooseMethodData.name}}
+                                            </el-tag>
+                                        </el-row>
+                                        <el-row >
+                                        <!-- <el-col :span="10" style=" height:250px;overflow-y:scroll">
+                                            <span v-if="chooseMethodData!=undefined">choose data</span>
+                                            <el-tag>                                    
+                                            {{chooseMethodData!=undefined? chooseMethodData.name:undefined}}
+                                            </el-tag>
+                                        </el-col> -->
+                                        <el-col :span="24" style=" height:300px;overflow-y:scroll" v-loading="methodInputLoading">
+                                            <!-- 文件层次深浅进出功能按钮 -->
+                                            <el-row style="height:30px;margin-left: 20PX;margin-top:10px"> 
+                                                    <el-button v-if="folderLayerMethodDataChooseData.length===1" size="mini" type="text" disabled>  All file</el-button>
+                                                <el-button  v-else size="mini" type="text"  @click="backUpperMethodDataFolder"  >Upper Folder</el-button>
+                                                <el-divider v-if="folderLayerMethodDataChooseData.length>1" direction="vertical"></el-divider>
+                                                <span v-if="folderLayerMethodDataChooseData.length>1">&nbsp;{{folderLayerMethodDataChooseData.join(' / ')}}</span>
+                                            </el-row>
+                                            <el-row  v-for="(it,key) in chooseMethodInstancesCont.list" :key="key"   >
+                                            
+                                                <el-col :span="2" :offset="1">
+                                                <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
+
+                                                    <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
+                                                </el-col>
+                                                <el-col :span="17" style="height:100%"> 
+                                                    <a v-if="it.type==='folder'" class="floderName" type="text"  @click="intoMethodDataFolder(it)"  ref="floderName">
+                                                        {{it.name}}
+                                                    </a>
+                                                    <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
+
+                                                </el-col>
+                                                <el-col v-if="it.type==='file'" :span="3" style="height:100%"> 
+                                                <el-button type="text" @click="chooseDataForMethod(it)" >Choose</el-button>
+                                                </el-col>
+                                            </el-row>
+                                        </el-col>
+                                        </el-row>
+                                    </el-col >
+
+                                    <el-col :span="8">
+                                        <h3>Configuration</h3><br>
+                                        <el-row style=" height:50px">
+                                            {{currentMethod!=undefined? currentMethod.description:''}}
+                                        </el-row>
+                                
+                                        <el-row style=" height:100%" v-loading="inputFilesCfigLoading">
+
+                                            <el-col v-if="currentMethod!=undefined" :span="24">
+                                                <el-form  >
+                                                    <div v-if="currentMethod.metaDetailJSON">
+                                                        <el-form-item  v-for="(it,key) in currentMethod.metaDetailJSON.Input" :label="it.name" :key="key">
+                                    
+                                                            <el-select v-model="inputConfigValue[key]"  placeholder="请选择">
+                                                                <el-option
+                                                                    v-for="item in inputFilesConfigureation"
+                                                                    :key="item.path"
+                                                                    :label="item.name"
+                                                                    :value="item.path">
+                                                                </el-option>
+                                                            </el-select>
+                                                        </el-form-item>
+                                                    </div>
+                                                    <div v-if="currentMethod.metaDetailJSON.Parameter.length>0">
+                                                        <el-form-item  v-for="(it,key) in currentMethod.metaDetailJSON.Parameter"   :key="key">
+                                                             <el-input v-model="inputConfigParams[key]"></el-input>
+                                                        </el-form-item>
+                                                    </div>
+
+
+
+                                                </el-form>
+                                            </el-col>
+
+                                        </el-row>
+                                    </el-col>
+                                    
+                                    <el-col :span="8" >
+                                        <h3>Output</h3><br>
+                                        <el-row style=" height:50px">
+                                           
+                                            <span >{{chooseOutDataFile!=undefined? "Selected : ":"Unselected" }} </span>
+                                            <el-tag v-if="chooseOutDataFile!=undefined" type="success">                                    
+                                            {{chooseOutDataFile.name}}
+                                            </el-tag>
+                                        </el-row>
+
+                                        <el-row>
+                                             <el-button @click="newFolderInMethod" type="warning">New Folder</el-button>
+                                             <el-button @click="newDataOut"  type="success">New Result</el-button>
+                                            
+                                              <el-col :span="24" style=" height:250px;overflow-y:scroll" v-loading="methodOutputLoading">
+                                                    <!-- 文件层次深浅进出功能按钮 -->
+                                                    <el-row style="height:30px;margin-left: 20PX;margin-top:10px"> 
+                                                            <el-button v-if="folderLayerDataOut.length===1" size="mini" type="text" disabled>  All file</el-button>
+                                                        <el-button  v-else size="mini" type="text"  @click="backUpperDataOutFolder"  >Upper Folder</el-button>
+                                                        <el-divider v-if="folderLayerDataOut.length>1" direction="vertical"></el-divider>
+                                                        <span v-if="folderLayerDataOut.length>1">&nbsp;{{folderLayerDataOut.join(' / ')}}</span>
+                                                    </el-row>
+                                                    <el-row  v-for="(it,key) in dataOutCont.list" :key="key"   >
+                                                    
+                                                        <el-col :span="2" :offset="1">
+                                                        <img  v-if="it.type==='folder'" src="../assets/folder.png" width="28" height="30" alt="Safari" title="Safari">
+
+                                                            <img v-if="it.type==='file'" src="../assets/zip.png" width="28" height="30" alt="Safari" title="Safari">
+                                                        </el-col>
+                                                        <el-col :span="17" style="height:100%"> 
+                                                            <!-- 新建文件夹 -->
+                                                            <el-row v-if="it.name==='NewFolder'&&it.type==='folder'" style="height:100%;z-index:99">
+                                                                <el-input id="renameInput" autofocus="autofocus" max="25" v-model="newDataOutFolderName" size="small" style="height:100%"></el-input ><el-button @click="renameDataOutFolder" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancelDataOut" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                                                            </el-row>
+                                                            <!-- 新建处理结果 -->
+                                                            <el-row v-if="it.name==='NewMethodResult'&&it.type==='file'" style="height:100%;z-index:99">
+                                                                <el-input id="renameInput" autofocus="autofocus" max="25" v-model="methodResultName" size="small" style="height:100%"></el-input ><el-button @click="renameDataOutFile" size="small"  style="position:fixed;float:left">√</el-button><el-button @click="cancelDataOut" size="small" style="position:fixed;float:left;margin-left:40px">x</el-button>
+                                                            </el-row>
+
+
+                                                            <a v-if="it.type==='folder'" class="floderName" type="text"  @click="intoDataOutFolder(it)"  ref="floderName">
+                                                                {{it.name}}
+                                                            </a>
+                                                            <span class="dataName"  v-if="it.type==='file'">{{it.name}}</span>
+
+                                                        </el-col>
+                                                        <el-col v-if="it.type==='file'" :span="3" style="height:100%"> 
+                                                        <el-button type="text" @click="chooseOutDataFileFuc(it)" >Choose</el-button>
+                                                        </el-col>
+                                                    </el-row>
+                                               </el-col>
+                                            
+                                        </el-row>            
+                                    </el-col>
+                                        
+                                  
+
+                                </el-row>
+
+                                <span slot="footer" class="dialog-footer">
+                                    <el-button @click="chooseMethodDataDialog = false">Cancel</el-button>
+                                    <el-button type="primary" @click="confirmMethodData">OK</el-button>
+                                </span>
+                            </el-dialog>
+
                             
-                            <i v-if="it.type==='file'" @click="download(it)" class="el-icon-bottom"></i>
+                            
+                            <!-- 下载 -->
+                            <i v-if="it.type==='file'" @click="download(it)" :class="instnaceType=='Data'?'el-icon-bottom':'el-icon-folder-opened'"></i>
 
            
                             <!-- 共享 -->
@@ -460,13 +626,49 @@ export default {
         pcsMetaInfo:'',
         imgVisualizationDialog:false,//可视化展示dialog,
         localPcsLoading:false,
-       
+
+        // 对于Method类型 选择数据
+        chooseMethodDataDialog:false,
+        chooseMethodData:undefined,
+        chooseMethodInstancesCont:{},
+        instanceLayerMethodChooseData:[],
+        folderLayerMethodDataChooseData:['All File'],
+
+        // loading
+
+        methodInputLoading:false,
+        methodOutputLoading:false,
+
+
+        // out data设置
+        newDataOutFolderName:'',
+        operateMethodFolder:false,
+
+
+        dataOutCont:{},
+        instanceLayerDataOut:[],
+        folderLayerDataOut:['All File'],
+        operateDataOutFloder:false,
+        methodResultName:'',
+        chooseOutDataFile:undefined,
+
+        currentMethod:undefined,
+
+        // 处理方法计算页面配置
+
+        inputFilesConfigureation:[ ],
+        inputFilesCfigLoading:false,
+        // 依据处理方法配置文件控制的路径数组
+
+        inputConfigValue:{},//有顺序的路径
+        inputConfigParams:[],//参数
 
 
 
 
 
-
+        
+        
     }),
     created(){
 
@@ -609,6 +811,31 @@ export default {
             }
             
         },
+        newFolderInMethod(){
+
+            let _this=this
+            let newFolder={
+                id:uuidv4(),
+                name: 'NewFolder',
+                date:utils.formatDate(new Date()),
+                type:'folder',
+                subContentId:'',
+                authority:true//1表示公开，0表示未公开
+            }
+             //创建新文件夹到最开始
+            if(!this.operateDataOutFloder){
+
+                this.dataOutCont.list.unshift(newFolder)
+                 
+
+                this.operateDataOutFloder=true
+            }else{
+                alert("finish create folder first")
+            }
+
+        },
+
+
         newFileData(){
             if(this.instnaceType==='Data'){
                 let _this=this,userToken=localStorage.getItem('Authorization')
@@ -618,14 +845,60 @@ export default {
 
                 this.$router.push({path:'/form/processing',query:{type:'Processing',instance_uid:_this.instancesCont.uid,userToken:userToken}})
 
-            }else if(this.instnaceType==='Visualization'){
+            }else if(this.instnaceType==='ProcessingMethod'){
+                let _this=this,userToken=localStorage.getItem('Authorization')
+
+                this.$router.push({path:'/form/processing',query:{type:'ProcessingMethod',instance_uid:_this.instancesCont.uid,userToken:userToken}})
+
+            }
+            else if(this.instnaceType==='Visualization'){
                 let _this=this,userToken=localStorage.getItem('Authorization')
 
                 this.$router.push({path:'/form/processing',query:{type:'Visualization',instance_uid:_this.instancesCont.uid,userToken:userToken}})
 
+            }else if(this.instnaceType==='VisualizationMethod'){
+                let _this=this,userToken=localStorage.getItem('Authorization')
+
+                this.$router.push({path:'/form/processing',query:{type:'VisualizationMethod',instance_uid:_this.instancesCont.uid,userToken:userToken}})
+
             }
 
         },
+        newDataOut(){
+            // 新建输出数据
+
+            
+            let _this=this
+            let newMethodResultFile={
+                id:uuidv4(),
+                name: 'NewMethodResult',
+                date:utils.formatDate(new Date()),
+                type:'file',
+                subContentId:'',
+                authority:true//1表示公开，0表示未公开
+            }
+             //创建新文件夹到最开始
+            if(!this.operateDataOutFloder){
+
+                this.dataOutCont.list.unshift(newMethodResultFile)
+                 
+
+                this.operateDataOutFloder=true
+            }else{
+                alert("finish create folder first")
+            }
+
+
+
+
+
+
+
+
+
+
+        },
+
         renameFolder(){
             if(this.newFloderName.length===0){
                 alert("not empty!")
@@ -649,6 +922,52 @@ export default {
             }
             
         },
+        renameDataOutFolder(){
+
+            if(this.newDataOutFolderName.length===0){
+                alert("not empty!")
+            }else{
+                //重命名功能
+                this.dataOutCont.list[0].name=this.newDataOutFolderName
+                this.newDataOutFolderName=''
+                this.operateDataOutFloder=false
+                let _this=this
+                let newInst={
+
+                    uid:_this.dataOutCont.uid,
+                    userToken:_this.dataOutCont.userToken,
+                    type:_this.dataOutCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.dataOutCont.list[0]//只使用新建项
+                }
+                this.addFolderAjax(newInst)
+            }
+        },
+        renameDataOutFile(){
+             if(this.methodResultName.length===0){
+                alert("not empty!")
+            }else{
+                //重命名功能
+                this.dataOutCont.list[0].name=this.methodResultName
+                this.methodResultName=''
+                this.operateDataOutFloder=false
+                let _this=this
+                let newInst={
+
+                    uid:_this.dataOutCont.uid,
+                    userToken:_this.dataOutCont.userToken,
+                    type:_this.dataOutCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.dataOutCont.list[0]//只使用新建项
+                }
+                this.addFolderAjax(newInst)
+            }
+
+
+        },
+
+
+
         cancel(){
             let current=new Date()
             this.instancesCont.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
@@ -665,10 +984,42 @@ export default {
                 }
             this.addFolderAjax(newInst)
 
+        },
+        cancelDataOut(){
 
+            let current=new Date()
+            this.dataOutCont.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
+            this.operateDataOutFloder=false
 
+            let _this=this
+                let newInst={
+
+                    uid:_this.dataOutCont.uid,
+                    userToken:_this.dataOutCont.userToken,
+                    type:_this.dataOutCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.dataOutCont.list[0]
+                }
+            this.addFolderAjax(newInst)
 
         },
+        cancelDataOutFile(){
+            let current=new Date()
+            this.dataOutCont.list[0].name='NewFolder_'+current.getFullYear()+"_"+current.getMonth()+1+'_'+current.getDate()+'_'+current.getHours()+'_'+current.getMinutes()+'_'+current.getSeconds()
+            this.operateDataOutFloder=false
+
+            let _this=this
+                let newInst={
+
+                    uid:_this.dataOutCont.uid,
+                    userToken:_this.dataOutCont.userToken,
+                    type:_this.dataOutCont.type,
+                    parentLevel:_this.parentLevel,
+                    data:_this.dataOutCont.list[0]
+                }
+            this.addFolderAjax(newInst)
+        },
+        
         intoFolder(Folder){
             let _this=this
             let info={
@@ -705,6 +1056,81 @@ export default {
             });
             
         },
+        intoMethodDataFolder(Folder){
+            let _this=this
+            let info={
+                uid:Folder.subContentId,
+                userToken:localStorage.getItem('Authorization'),
+                type:'Data',
+                parentLevel:_this.chooseMethodInstancesCont.parentLevel,
+                subContConnect:{
+                    uid:_this.chooseMethodInstancesCont.uid,
+                    id:Folder.id
+                }//关联文件下的子instances
+            }
+
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.chooseMethodInstancesCont=res.data.data
+                    //面包屑层次
+                    _this.folderLayerMethodDataChooseData.push(Folder.name)
+                    _this.instanceLayerMethodChooseData.push({
+                        type: _this.chooseMethodInstancesCont.type,
+                        uid:_this.chooseMethodInstancesCont.uid,
+                        parentLevel:_this.chooseMethodInstancesCont.parentLevel,
+                        userToken:_this.chooseMethodInstancesCont.userToken
+                    })
+                    
+                }
+            });
+            
+        },
+        intoDataOutFolder(Folder){
+
+
+            let _this=this
+            let info={
+                uid:Folder.subContentId,
+                userToken:localStorage.getItem('Authorization'),
+                type:'DataOut',
+                parentLevel:_this.dataOutCont.parentLevel,
+                subContConnect:{
+                    uid:_this.dataOutCont.uid,
+                    id:Folder.id
+                }//关联文件下的子instances
+            }
+
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.dataOutCont=res.data.data
+                    //面包屑层次
+                    _this.folderLayerDataOut.push(Folder.name)
+                    _this.instanceLayerDataOut.push({
+                        type: _this.dataOutCont.type,
+                        uid:_this.dataOutCont.uid,
+                        parentLevel:_this.dataOutCont.parentLevel,
+                        userToken:_this.dataOutCont.userToken
+                    })
+                    
+                }
+            });
+        },
+
+
         backUpperFolder(){
             //面包屑层次
             this.folderLayer.pop()
@@ -727,6 +1153,54 @@ export default {
                     
                 }
             })
+
+        }, 
+        backUpperMethodDataFolder(){
+            //面包屑层次
+            this.folderLayerMethodDataChooseData.pop()
+            this.instanceLayerMethodChooseData.pop()
+            let info=this.instanceLayerMethodChooseData[this.instanceLayerMethodChooseData.length-1]
+             
+            
+            let _this=this
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.chooseMethodInstancesCont=res.data.data
+                   
+                    
+                }
+            })
+
+        },
+        backUpperDataOutFolder(){
+                //面包屑层次
+            this.folderLayerDataOut.pop()
+            this.instanceLayerDataOut.pop()
+            let info=this.instanceLayerDataOut[this.instanceLayerDataOut.length-1]
+             
+            
+            let _this=this
+            this.$axios.get('/api/instances',{
+                params:info
+            }).then((res)=>{
+                if(res.code===-1){
+                    _this.$message({
+                            message: 'instances request failed ',
+                            type: 'fail'
+                        });
+                }else{
+                    _this.dataOutCont=res.data.data
+                    
+                }
+            })
+
 
         },
         addFolderAjax(newInstance){
@@ -1046,8 +1520,34 @@ export default {
         },
         download(it){
             let _this=this
-            
-            this.$axios.get('/api/insitudownload',{
+            // 处理结果的下载
+            if(this.$route.query.type=='DataOut'){
+                 this.$axios.get('/api/openExplorer',{
+                params:{
+                    id:it.id
+                },
+                
+            }).then(res=>{
+                if(res.data.code==0){
+                    this.$message({
+                        type:"success",
+                        message:'Show in file explorer'
+                    })
+                }else if(res.data.code==-1){
+                     this.$message({
+                        type:"fail",
+                        message:'Show in file explorer error'
+                    })
+                }
+
+
+            })
+
+
+
+            // 文件的下载
+            }else if(this.$route.query.type=='Data'){
+                 this.$axios.get('/api/insitudownload',{
                 params:{
                     uid:_this.instancesCont.uid,
                     id:it.id
@@ -1072,6 +1572,11 @@ export default {
                     window.URL.revokeObjectURL(href); 
                 }
             })
+        
+        
+            }
+           
+        
         },
         //本地调用选择数据
        invokeLocalPcs(it){
@@ -1098,11 +1603,9 @@ export default {
                    _this. shouwDelConfirm(it)
                }else if(res.data.code==-2){
 
-
                } 
            })
 
-           
        },
        //调用本地处理方法
        ivkLcalPcsExcute(){
@@ -1169,6 +1672,138 @@ export default {
 
 
        },
+
+       //调用Method
+       invokeMethod(it){
+        let _this=this
+        _this.methodInputLoading=true
+        _this.methodOutputLoading=true
+
+        _this.currentMethod=it
+        _this.chooseMethodDataDialog=true
+
+        //通过列表id和用户token获取对应层级的列表
+        let initInputList={
+            type: 'Data',
+            uid:'0',
+            parentLevel:'-1',
+            userToken:localStorage.getItem('Authorization')
+        }
+        
+       
+
+        //输入
+        this.$axios.get('/api/instances',{
+            params:initInputList
+        })
+        .then((res)=>{
+            if(res.data.code===-1){
+                  _this.$message({
+                        message: 'instances request failed ',
+                        type: 'fail'
+                    });
+            }else{
+           
+                _this.methodInputLoading=false
+                _this.chooseMethodInstancesCont=res.data.data
+                _this.instanceLayerMethodChooseData=[initInputList] 
+            }
+        });
+        let initOutputList={
+            type: 'DataOut',
+            uid:'0',
+            parentLevel:'-1',
+            userToken:localStorage.getItem('Authorization')
+        }
+        // 输出
+        this.$axios.get('/api/instances',{
+            params:initOutputList
+        })
+        .then((res)=>{
+            if(res.data.code===-1){
+                  _this.$message({
+                        message: 'instances request failed ',
+                        type: 'fail'
+                    });
+            }else{
+            
+                _this.methodOutputLoading=false
+                _this.dataOutCont=res.data.data
+                _this.instanceLayerDataOut=[initOutputList] 
+            }
+        });
+
+       },
+        chooseDataForMethod(data){
+             this.chooseMethodData=data;
+             let _this=this
+            console.log('data',data)
+             this.$axios.get('/api/pcsInputs',{
+                params:{
+                    dataId:data.id
+                }
+            })
+            .then(res=>{
+                if(res.data.code==0){
+                    _this.inputFilesConfigureation=res.data.data
+                    _this.inputFilesCfigLoading=false
+                    
+                }else if(res.data.code==-1){
+                    this.$message({
+                        type:'fail',
+                        message:res.data.data
+                    })
+                }
+            })
+
+
+
+        },
+        chooseOutDataFileFuc(data){
+            this.chooseOutDataFile=data;
+        },
+        // 执行本地处理方法
+        confirmMethodData(){
+            let _this=this
+
+            console.log(this.chooseMethodData,this.chooseOutDataFile,this.currentMethod,this.inputConfigValue);
+            if(!this.chooseOutDataFile){
+                
+                this.$message({
+                    type:'fail',
+                    message:'you have to choose out file'
+                })
+                return
+            }
+            let postData={
+                pcsId:_this.currentMethod.id,
+                dataId:_this.chooseMethodData,
+                outId:_this.chooseOutDataFile.id,
+                pathArray:_this.inputConfigValue,
+                paramsArray:_this.inputConfigParams.length>0?_this.inputConfigParams:undefined
+            }
+            this.$axios.post('/api/invokeLocalMethod',postData)
+            .then(res=>{
+
+                if(res.data.code==0){   
+                     _this.$message({
+                        type:'success',
+                        message:'execute success!'
+                    })
+                    _this.chooseMethodDataDialog=false
+                    _this.$router.push({path:'/instance',query:{type:'DataOut'}})
+                }else{
+                    _this.$message({
+                        type:'fail',
+                        message:'error'
+                    })
+                }
+
+
+
+            })
+
+        },
        serviceMigrationDialog(it){
            this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
            this.sceMigTargetTokent=''
