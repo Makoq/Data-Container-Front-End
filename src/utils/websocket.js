@@ -18,7 +18,7 @@ const websocket=function(it){
         _this.$root.$el.insitu_ip=DecryptJS.Encrypt(res.data.ip)
 
         //连接中转服务器websocket
-        
+        let heartBeat
         if(_this.$root.$el.myWS==undefined){
            var ws = new WebSocket('ws://111.229.14.128:1708');
            
@@ -35,10 +35,13 @@ const websocket=function(it){
                 let msg= JSON.stringify(cont)
                  
                 ws.send(msg);
+                console.log('open')
+                if(ws.readyState==1){
 
-                
-
-
+                    heartBeat=setInterval(()=>{
+                        ws.send('{ "msg":"beat" }')
+                    },60000);
+                }
             }
             ws.onclose = function(e){
                  _this.$message({
@@ -47,6 +50,8 @@ const websocket=function(it){
                 })
               
                 delete _this.$root.$el.myWS 
+                clearInterval(heartBeat)
+                 
 
             }
             ws.onerror = function(){
@@ -70,9 +75,7 @@ const websocket=function(it){
                         message:'连接中转服务器成功',
                         type:'success'
                     })
-                    setInterval(()=>{
-                        ws.send('{ "msg":"beat" }')
-                    },20000);
+                   
                    return
                } 
                if(e.data==='beat'){
@@ -99,7 +102,8 @@ const websocket=function(it){
                            name:re.name!=undefined?re.name:undefined,
                            token:re.token,
                            reqUsrOid:re.reqUsrOid!=undefined?re.reqUsrOid:undefined
-                        }
+                        },
+                        timeout:120*1000
                    }).then(resp=>{  
                        if(resp.data.code===-1){
                            if(resp.data.message=='no authority'){
@@ -287,7 +291,8 @@ const websocket=function(it){
                            params:re.params!=undefined?re.params:undefined,
                            token:re.token,
                            name:re.name
-                       }
+                       },
+                       timeout:120*1000
                 })
                    .then(resp=>{
                         if(resp.data.code===0){
@@ -498,14 +503,14 @@ const websocket=function(it){
                         params.append("pcsId",re.pcsId)
                         params.append("token",re.token)
                         params.append("urls",re.urls)
-
                         params.append("params",re.params!=undefined?re.params:undefined)
 
                          
                         _this.$axios.post('/api/invokeProUrls',params,{
                             headers:{
                                 'Content-Type':'application/x-www-form-urlencoded'
-                            }
+                            },
+                            timeout:120*1000
                         }
                         ).then(res=>{
                             if(res.data.code==0){
@@ -522,9 +527,7 @@ const websocket=function(it){
                                     'stout':res.data.message,
                                     
                                 }
-
                                 ws.send(JSON.stringify(executeError))
-
                             }
                             else{
                                 _this.$message({
@@ -547,7 +550,8 @@ const websocket=function(it){
                         _this.$axios.post('/api/invokeExternalUrlsDataPcs',params,{
                             headers:{
                                 'Content-Type':'application/x-www-form-urlencoded'
-                            }
+                            },
+                            timeout:120*1000
                         }
                         ).then(res=>{
                             if(res.data.code==0){
@@ -598,7 +602,8 @@ const websocket=function(it){
                         _this.$axios.post('/api/invokeExternalUrlsDataPcsWithKeys',json,{
                             headers:{
                                 'Content-Type':'application/json'
-                            }
+                            },
+                            timeout:120*1000
                         }
                         ).then(res=>{
                             if(res.data.code==0){
