@@ -20,15 +20,17 @@ const websocket=function(it){
         //连接中转服务器websocket
         let heartBeat
         if(_this.$root.$el.myWS==undefined){
-           var ws = new WebSocket('ws://111.229.14.128:1708');
+           var ws = new WebSocket('ws://172.21.213.174:1708');
            
           _this.$root.$el.myWS=ws
            ws.onopen = function(e){
                 
                 let token=localStorage.getItem('relatedUsr')
+                let authorization = localStorage.getItem('Authorization')
                 let cont={
                     msg:'regist',
                     token:token.split(',')[1],
+                    // token:authorization,
                     nodeIp:_this.$root.$el.insitu_ip,
                     date:new Date()
                 }

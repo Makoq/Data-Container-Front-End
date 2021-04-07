@@ -95,6 +95,11 @@
           <i  style="color:white" class="el-icon-info"></i>
           <span slot="title">About</span>
         </el-menu-item>
+      <div class="innerBorderGrey60" style="margin: 3px;background-color: rgb(228 224 224); height: 2px;"></div>
+      <el-menu-item index="7">
+        <i style="color:white" class="el-icon-user"></i>
+        <span slot="title">My Information</span>
+      </el-menu-item>
 
      
       
@@ -173,6 +178,8 @@ import { mapMutations } from 'vuex';
             this.$router.push({path:'/worldCluster',query:{type:'worldCluster'}})
           }else if(index==='6'){
             this.$router.push({path:'/about',query:{type:'About'}})
+          }else if(index === '7'){
+            this.$router.push({path:'/userInfo', query:{type:'UserInfo'}})
           }
         
         

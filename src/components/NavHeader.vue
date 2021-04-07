@@ -29,7 +29,7 @@
         <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-3" @click="Setting" >Setting</el-menu-item>
         <el-menu-item v-if="this.$store.state.Authorization!='' "  index="2-2" @click="OnlineWithCenterServer" >State</el-menu-item>
       
-        <el-menu-item   index="2-2" @click="Logout" >Log out</el-menu-item>
+        <el-menu-item   index="2-4" @click="Logout" >Log out</el-menu-item>
      
       </el-submenu>
        
@@ -39,22 +39,25 @@
       <el-dialog
             title="Connect"
             :visible.sync="settingDialog"
-            width="30%"
+            width="40%"
              >
              
-              <el-form :model="connectPortalUsr" status-icon   ref="ruleForm" label-width="100px" class="demo-ruleForm">
+              <el-form :model="connectPortalUsr" status-icon   ref="ruleForm" label-width="170px" class="demo-ruleForm">
               <el-form-item label="Account:" prop="account">
                 <el-input type="text" v-model="connectPortalUsr.email" autocomplete="off" :readonly="connectPortalUsr.email!=''?true:false"></el-input>
               </el-form-item>
-              <el-form-item  label="Your token" >
+              <el-form-item  label="Your Token:" >
                                 <el-input type="text" v-model="yourToken" ref="myOwnToken" readonly>
                                  <el-button slot="append" icon="el-icon-document-copy" @click="copyMyToken()"></el-button>    
                                 </el-input> 
                 </el-form-item>
+                <el-form-item label="Python Environment:" prop="environment">
+                <el-input type="text" v-model="pythonEnv" autocomplete="off" :readonly="pythonEnv!=''?true:false"></el-input>
+              </el-form-item>
               </el-form>
             <span slot="footer" class="dialog-footer">
-              <el-button @click="settingDialog = false">取 消</el-button>
-              <el-button type="primary" @click="connectPortal" :disabled="connectPortal!=''?false:true">确 定</el-button>
+              <el-button @click="settingDialog = false">Cancel</el-button>
+              <el-button type="primary" @click="connectPortal" :disabled="connectPortal!=''?false:true">Confirm</el-button>
             </span>
         </el-dialog>
  
@@ -76,7 +79,8 @@ import DecryptJS from '../utils/cycrypto.js';
         email:'',
 
       },
-      yourToken:''
+      yourToken:'',
+      pythonEnv:''
       
       
       
@@ -93,9 +97,10 @@ import DecryptJS from '../utils/cycrypto.js';
            this.connectPortalUsr.email = DecryptJS.Decrypt(connUsr.split(',')[1])
            this.yourToken=localStorage.getItem('relatedUsr').split(',')[1]
         }
+        this.pythonEnv = localStorage.getItem('pythonEnv');
     },
     methods: {
-       ...mapMutations(['changerelatedUsr']),
+       ...mapMutations(['changerelatedUsr','changePythonEnv']),
       OnlineWithCenterServer(){
         ws(this)
         console.log(this.$root.$el.myWS)
@@ -127,20 +132,28 @@ import DecryptJS from '../utils/cycrypto.js';
         this.settingDialog=true
       },
       connectPortal(){
-         var _this=this
+         var _this=this;
+
          //通过门户的email关联用户
          _this.$axios.put('/api/connectusr',
           {
-            email:_this.connectPortalUsr.email
+            email:_this.connectPortalUsr.email,
+            pythonEnv:this.pythonEnv
           }
          ).then((res)=>{
-           if(res.data.code===0){
+           if(res.data.code === -2){
+            _this.$message({
+              message:'python environment is empty!',
+              type:'error'
+            })
+           }else if(res.data.code===0){
                 _this.$message({
                         message: 'Success! ',
                         type: 'success'
                 });
-                //将登录用户信息存入vuex
+                //将登录用户信息以及python路径信息存入vuex
                  _this.changerelatedUsr({relatedUsr:res.data.info.oid+','+res.data.info.email})
+                 _this.changePythonEnv({pythonEnv:_this.pythonEnv});
                   this.$router.push('/Login') 
                 _this.settingDialog=false
            }else{//门户中找不到用户

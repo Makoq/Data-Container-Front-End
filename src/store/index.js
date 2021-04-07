@@ -19,7 +19,8 @@ const store = new Vuex.Store({
 
     // 当前工作空间
     currentWorkSpace:undefined,
-    workSpaceIndex : 0
+    workSpaceIndex : 0,
+    pythonEnv :'',
 
   },
  //更改store的状态
@@ -46,7 +47,12 @@ const store = new Vuex.Store({
     },
     changeWorkSpaceIndex(state, uid){
       state.workSpaceIndex = uid.uid;
+    },
+    changePythonEnv(state,pythonEnv){
+      state.pythonEnv = pythonEnv.pythonEnv;
+      localStorage.setItem('pythonEnv', pythonEnv.pythonEnv);
     }
+
 
   },
 

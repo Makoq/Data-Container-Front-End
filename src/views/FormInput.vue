@@ -100,6 +100,67 @@ import Content from '@/views/Content';
             </el-tag>
           </el-form-item>
 
+          <!-- 模板 -->
+          <el-form-item label = "Template" prop="name">
+            <el-button type="primary" @click="dataTelmplateDialogVisable" plain>
+              Select Templates
+            </el-button>
+            <el-tag type="success" closable @close="handleCloseTemplate(tag)" style="margin:1%">{{choosedTemplate.name}}</el-tag>
+
+          </el-form-item>
+          <el-dialog
+            title="Data Template Select"
+            :visible.sync="dataTemplateDialog"
+            width="60%"
+            :show-close="true">
+            <h3>You have selected data template:  </h3><br>
+            <el-alert
+              :title="choosedTemplate.name!=undefined?choosedTemplate.name:'not select'"
+
+              type="success">
+            </el-alert>
+            <el-divider></el-divider>
+            <el-row>
+
+              <el-col :span="8">
+                <!-- <div @click="telmplate('f7fbecf6-9d28-405e-b7d2-07ef9d924ca6')">Raster Data Format</div> -->
+                <el-tree 
+                  :data="templateTreeData"
+                  @node-click="telmplate"
+                 :default-checked-keys="[100]"
+                  :default-expand-all="true"
+                  style="width:100%"
+                  ></el-tree>
+              </el-col>
+
+              <el-col :span="16"> 
+                <div class="dataTemplate" v-for="(v,k) in templateList" :key="k">
+                  <div class="dataTemplateName" >
+                   <span @click="choosedTemplate=v">{{v.name}}</span><i class="el-icon-info"  @click="templateInfo(v)"></i>
+                 
+                  </div>
+                  <div style="font-size: smaller;">{{v.description}}</div>                  
+                  </div>
+                
+                <div class="block">
+                  <el-pagination
+                    layout="prev, pager, next"
+                    :total="currentTemplatePageTotal"
+                    :current-page="currentTemplatePage"
+                    @current-change="currentChangeTemplate"
+                    >
+                  </el-pagination>
+                </div>
+              
+              </el-col>
+            </el-row>
+ 
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dataTemplateDialog = false">Cancel</el-button>
+              <el-button type="primary" @click="dataTemplateDialog = false">OK</el-button>
+            </span>
+          </el-dialog>
+
           <!-- 权限 -->
           <el-form-item  label="Authority" prop="name">
             <el-switch
@@ -647,7 +708,8 @@ export default {
          activeNames:['1','2'],
          activeNames1:['11','12'],
          cateId:undefined
-       }
+       },
+       dataTemplateDialog:false,
     };
   },
   computed: {
@@ -741,7 +803,8 @@ export default {
           email:_this.form.email,
           format:_this.form.format,
           semanticDescription:_this.form.semanticDescription,
-          modelRelated:_this.form.modelRelated
+          modelRelated:_this.form.modelRelated,
+          template:_this.choosedTemplate.oid,
         }
 
         
@@ -757,8 +820,9 @@ export default {
         _this.submitUploadLoading=false
        
         if(res.data.code===-1){
+          let msg = res.data.message;
             _this.$message({
-                message: 'failed ',
+                message: msg,
                 type: 'fail'
             });
           }else if(res.data.code===0){
@@ -1140,6 +1204,26 @@ export default {
 
       })
     },
+    dataTelmplateDialogVisable(){
+      this.dataTemplateDialog=true
+      let _this=this
+      let postData={
+          "asc": 0,
+          "oid": _this.currentTemplateCate,
+          "page": 0,
+          "searchText": "",
+          "sortField": "viewCount"
+      }
+      
+      this.$axios.post('/template/getTemplateList',postData)
+      .then(res=>{
+        
+        _this.templateList=res.data.data.list
+        _this.currentTemplatePageTotal=res.data.data.total
+        _this.templateDialog=true
+
+      })
+    },
     telmplate(a,b,c){
        
       let _this=this
@@ -1181,6 +1265,9 @@ export default {
 
       })
 
+    },
+    handleCloseTemplate(tag){
+        console.log(tag);
     }
 
 
