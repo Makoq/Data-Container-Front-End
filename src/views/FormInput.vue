@@ -279,8 +279,7 @@ import Content from '@/views/Content';
             title="Data Template Select"
             :visible.sync="templateDialog"
             width="60%"
-            :show-close="true"
-            :before-close="handleClose">
+            :show-close="true">
             <h3>You have selected data template:  </h3><br>
             <el-alert
               :title="choosedTemplate.name!=undefined?choosedTemplate.name:'not select'"
@@ -799,6 +798,9 @@ export default {
     handleClose(tag) {
       this.form.dynamicTags.splice(this.form.dynamicTags.indexOf(tag), 1);
     },
+    // handleCloseTemplate(done){
+
+    // }
 
     showInput() {
       this.inputVisible = true;
