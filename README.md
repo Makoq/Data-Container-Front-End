@@ -130,4 +130,4 @@ npm run serve
 
 ### Home Page
 
-![在这里插入图片描述](/src/assets/readme/home.JPG)
+![在这里插入图片描述](/src/assets/readme/home.jpg)
