@@ -1,0 +1,83 @@
+D:\Projects\dataContainerFrontEnd
+├─.env
+├─.env.development
+├─.env.production
+├─.gitignore
+├─babel.config.js
+├─DevelopNote.md
+├─package-lock.json
+├─package.json
+├─README.md
+├─vue.config.js
+├─src
+|  ├─App.vue
+|  ├─main.js
+|  ├─router.js
+|  ├─views
+|  |   ├─About.vue
+|  |   ├─Cluster.vue
+|  |   ├─FormInput.vue
+|  |   ├─Home.vue
+|  |   ├─Index.vue
+|  |   ├─Instances.vue
+|  |   ├─State.vue
+|  |   ├─Thematic.vue
+|  |   ├─Upload.vue
+|  |   ├─WorkSpace.vue
+|  |   ├─WorldNodes.vue
+|  |   ├─user
+|  |   |  ├─Login.vue
+|  |   |  └Register.vue
+|  ├─utils
+|  |   ├─config.js
+|  |   ├─cycrypto.js
+|  |   ├─utils.js
+|  |   └websocket.js
+|  ├─store
+|  |   └index.js
+|  ├─plugins
+|  |    ├─axios.js
+|  |    └vuetify.js
+|  ├─components
+|  |     ├─BottomFooter.vue
+|  |     ├─LeftMenu.vue
+|  |     ├─ManagerList.vue
+|  |     ├─NavHeader.vue
+|  |     └template.vue
+|  ├─assets
+|  |   ├─dataServiceContainer.png
+|  |   ├─dataServiceContainer3.png
+|  |   ├─folder.png
+|  |   ├─logo.png
+|  |   ├─logo.svg
+|  |   ├─processing.png
+|  |   ├─programing_template.png
+|  |   ├─py.jpg
+|  |   ├─visualization.png
+|  |   ├─xml.png
+|  |   ├─zip.png
+|  |   ├─video
+|  |   |   └earth.mp4
+|  |   ├─markdown
+|  |   |    └framework.JPG
+|  |   ├─css
+|  |   |  └manageList.css
+├─public
+|   ├─favicon.ico
+|   ├─index.html
+|   ├─js
+|   | ├─echart
+|   | |   ├─browser.js
+|   | |   ├─echarts-gl.js
+|   | |   ├─echarts-gl.min.js
+|   | |   └echarts.min.js
+|   ├─img
+|   |  ├─aboutInsitu.png
+|   |  ├─aboutInsitu2.jpg
+|   |  ├─bk.svg
+|   |  ├─bk2.webp
+|   |  ├─earth.gif
+|   |  ├─file.gif
+|   |  ├─info.gif
+|   |  ├─ogms.jpg
+|   |  └visual.gif
